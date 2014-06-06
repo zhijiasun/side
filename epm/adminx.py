@@ -51,6 +51,10 @@ class PartyAdmin(object):
     list_filter = ('party_name','member_number','contact_info')
     actions = [MyAction,]
 
+class MemberAdmin(object):
+    list_display = ('member_name','member_gender','member_worktime')
+    list_filter = ('member_name','member_gender','member_worktime')
+
 class GolbeSetting(object):
     globe_search_models = [Article, ]
     site_title = (u'崂山党建管理系统')
@@ -88,6 +92,7 @@ class CategoryAdmin(object):
 
 xadmin.site.register(enterprise,EnterpriseAdmin)
 xadmin.site.register(party,PartyAdmin)
+xadmin.site.register(member,MemberAdmin)
 site.register_plugin(MyPlugin,ListAdminView)
 xadmin.site.register(Article, ArticleAdmin)
 xadmin.site.register(Category, CategoryAdmin)

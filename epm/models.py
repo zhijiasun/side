@@ -52,6 +52,19 @@ class enterprise(models.Model):
         return self.enter_name
 
 
+class member(models.Model):
+    member_name = models.CharField(verbose_name=u'党员姓名',max_length=80)
+    member_gender = models.IntegerField(u'性别',default=1,choices=((1,u'男'),(2,u'女')))
+    member_nation = models.IntegerField(u'民族',default=2,choices=((1,u'汉族'),(2,u'藏族')))
+    member_enter = models.ForeignKey(enterprise,verbose_name=u'隶属企业')
+    member_worktime = models.DateField(u'参加工作时间')
+
+    class Meta:
+        verbose_name = u'党员信息'
+        verbose_name_plural = u'党员信息'
+
+    def __unicode__(self):
+        return self.member_name
 
 
 class Jason(models.Model):
