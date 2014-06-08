@@ -1,3 +1,4 @@
+#coding:utf-8
 from django.shortcuts import render
 from django.contrib.auth.models import User,Group
 from rest_framework import viewsets
@@ -9,6 +10,9 @@ from rest_framework import status
 from epm.serializers import *
 from models import *
 from django.views.decorators.csrf import csrf_exempt
+from xadmin.views.edit import ModelFormAdminView,CreateAdminView
+from django import forms
+from django.utils.encoding import force_unicode
 
 # Create your views here.
 
@@ -88,5 +92,21 @@ class MyAdminView(BaseAdminView):
 # class MyCommView(CommAdminView):
 #     site_title = 'me_comm'
 
-# site.register_view(r'^me_test/$',MyAdminView,name='my_test')
+site.register_view(r'^me_test/$',MyAdminView,name='my_test')
 # site.register_view(r'^me_comm/$',MyCommView,name='my_comm')
+class ImportForm(forms.Form):
+    f = forms.FileField()
+    
+
+class ImportAdminView(CreateAdminView):
+    print 'aaaaaaaa##' 
+    add_form_template = 'model_form.html'
+
+    def get_context(self):
+        fileform = ImportForm
+        new_context = {'import_title':('从文件导入 %s') % force_unicode(self.opts.verbose_name),'fileform':fileform}
+        context = super(CreateAdminView, self).get_context()
+        context.update(new_context)
+        return context
+
+site.register_modelview(r'^import/$',ImportAdminView,name='%s_%s_import')

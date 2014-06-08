@@ -55,14 +55,19 @@ class MemberAdmin(object):
     list_display = ('member_name','member_gender','member_worktime')
     list_filter = ('member_name','member_gender','member_worktime')
 
+class ListSetting(object):
+    object_list_template = 'new.html'
+
 class GolbeSetting(object):
     globe_search_models = [Article, ]
+    # menu_template = 'test.html'
     site_title = (u'崂山党建管理系统')
     site_footer = (u'www.centling.com')
     globe_models_icon = {
         Article: 'file', Category: 'cloud'
     }
 xadmin.site.register(CommAdminView, GolbeSetting)
+# xadmin.site.register(ListAdminView,ListSetting)
 
 class ArticleAdmin(object):
     list_display = ('title', 'categories', 'date')
@@ -94,5 +99,6 @@ xadmin.site.register(enterprise,EnterpriseAdmin)
 xadmin.site.register(party,PartyAdmin)
 xadmin.site.register(member,MemberAdmin)
 site.register_plugin(MyPlugin,ListAdminView)
+# site.register_plugin(ImportPlugin,ListAdminView)
 xadmin.site.register(Article, ArticleAdmin)
 xadmin.site.register(Category, CategoryAdmin)
