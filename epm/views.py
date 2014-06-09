@@ -13,6 +13,9 @@ from django.views.decorators.csrf import csrf_exempt
 from xadmin.views.edit import ModelFormAdminView,CreateAdminView
 from django import forms
 from django.utils.encoding import force_unicode
+from import_export.admin import ImportMixin
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Submit
 
 # Create your views here.
 
@@ -86,7 +89,6 @@ from django.template.response import TemplateResponse
 
 class MyAdminView(BaseAdminView):
     def get(self,request,*args,**kwargs):
-        print 'aaaa'
         return TemplateResponse(request,'test.html')
 
 # class MyCommView(CommAdminView):
@@ -95,15 +97,29 @@ class MyAdminView(BaseAdminView):
 site.register_view(r'^me_test/$',MyAdminView,name='my_test')
 # site.register_view(r'^me_comm/$',MyCommView,name='my_comm')
 class ImportForm(forms.Form):
-    f = forms.FileField()
+    import_file = forms.FileField(label = u'选择输入的文件')
+
+    def __init__(self,*args,**kwargs):
+        super(ImportForm,self).__init__(*args,**kwargs)
+        self.helper = FormHelper()
     
 
-class ImportAdminView(CreateAdminView):
-    print 'aaaaaaaa##' 
+class ImportAdminView(ImportMixin,CreateAdminView):
     add_form_template = 'model_form.html'
+    import_template_name = 'model_form.html'
 
     def get_context(self):
+        '''
+        re-implement import_action()
+        '''
+        resource = self.get_import_resource_class()()
+        icontext = {}
+        print resource
         fileform = ImportForm
+        fileform.helper = self.get_form_helper()
+        if fileform.helper:
+            print 'add input'
+            fileform.helper.add_input(Submit('submit', 'Submit'))
         new_context = {'import_title':('从文件导入 %s') % force_unicode(self.opts.verbose_name),'fileform':fileform}
         context = super(CreateAdminView, self).get_context()
         context.update(new_context)

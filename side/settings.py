@@ -45,6 +45,7 @@ INSTALLED_APPS = (
     'xcms',
     'import_export',
     'gunicorn',
+    'import_export',
 )
 
 MIDDLEWARE_CLASSES = (

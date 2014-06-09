@@ -25,6 +25,11 @@ class party(models.Model):
     def __unicode__(self):
         return self.party_name
 
+    # def related_enter(self):
+    #     enters = enterprise.objects.filter(party_status=self)
+    #     print enters
+    #     return enters
+
 class enterprise(models.Model):
 
     enter_id = models.AutoField(primary_key=True,auto_created=True)
