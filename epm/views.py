@@ -1,6 +1,7 @@
 #coding:utf-8
 from django.shortcuts import render
 from django.contrib.auth.models import User,Group
+from django.http import HttpResponseRedirect
 from rest_framework import viewsets
 from rest_framework import permissions
 from rest_framework.views import APIView
@@ -106,6 +107,7 @@ class ImportForm(forms.Form):
     def __init__(self,*args,**kwargs):
         super(ImportForm,self).__init__(*args,**kwargs)
         self.helper = FormHelper()
+        self.helper.add_input(Submit('submit','Submit'))
     
 
 class ImportAdminView(ImportMixin,CreateAdminView):
@@ -130,3 +132,7 @@ class ImportAdminView(ImportMixin,CreateAdminView):
         return context
 
 site.register_modelview(r'^import/$',ImportAdminView,name='%s_%s_import')
+
+def process_import(request):
+    print request.FILES
+    return HttpResponseRedirect('/xadmin/')

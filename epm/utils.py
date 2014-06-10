@@ -1,6 +1,5 @@
 #coding:utf-8
-PARTY_STATUS = (
-        (0,u'无'),
+PARTY_ATTRIBUTE = (
         (1,u'党委'),        
         (2,u'党总支部'),        
         (3,u'党支部'),        

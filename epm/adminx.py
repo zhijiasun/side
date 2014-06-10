@@ -41,21 +41,22 @@ class MyAction(BaseActionView):
     def do_action(self,queryset):
         pass
 class EnterpriseAdmin(object):
-    list_display = ('enter_name','enter_address','enter_nature',
-            'industry_type','industry_nature','enter_scale','total_assets','party_name',
+    list_display = ('enter_name','enter_address','enter_attribute',
+            'industry_type','industry_nature','enter_scale','total_assets','related_party_status',
             'legal_person','legal_email','enter_email','legal_phone','fixed_phone')
     list_filter = ('enter_name','enter_address')
     resource_class = EnterpriseResource
 
 
 class PartyAdmin(object):
-    list_display = ('party_name','secretary_name','secretary_phone','member_number','responsible_name','responsible_phone','contact_info')
-    list_filter = ('party_name','member_number','contact_info')
+    list_display = ('party_name','secretary_name','secretary_phone','member_number','responsible_name','responsible_phone')
+    list_filter = ('party_name','member_number')
     actions = [MyAction,]
 
 
 class MemberAdmin(object):
-    list_display = ('member_name','member_gender','member_worktime')
+
+    list_display = ('member_name','member_gender','member_worktime','member_enter_name','member_party_name')
     list_filter = ('member_name','member_gender','member_worktime')
 
 class ListSetting(object):

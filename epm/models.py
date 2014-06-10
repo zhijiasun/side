@@ -10,12 +10,15 @@ from epm.utils import *
 class party(models.Model):
     party_id = models.AutoField(primary_key=True,auto_created=True)
     party_name = models.CharField(u'党组织名称',max_length=100)
+    party_attribute = models.IntegerField(u'党组织属性',default=1,choices=PARTY_ATTRIBUTE)
+    member_number = models.IntegerField(u'党员人数')
     secretary_name = models.CharField(u'书记姓名',max_length = 50)
     secretary_phone = models.CharField(u'书记电话',max_length = 30)
-    member_number = models.IntegerField(u'党员人数')
     responsible_name = models.CharField(u'党务负责人姓名',max_length=50)
     responsible_phone = models.IntegerField(u'党务负责人电话')
-    contact_info = models.CharField(u'联系方式',max_length=300)
+    qq = models.CharField(u'QQ号',max_length=20)
+    weixin = models.CharField(u'微信号',max_length=20)
+    party_email = models.EmailField(u'党组织邮箱')
 
     class Meta:
         verbose_name = u'党支部信息'
@@ -35,18 +38,17 @@ class enterprise(models.Model):
     enter_id = models.AutoField(primary_key=True,auto_created=True)
     enter_name = models.CharField(u'企业名称',max_length=50)
     enter_address = models.CharField(u'企业地址',max_length=300)
-    enter_nature = models.IntegerField(u'单位属性',default=1,choices=NATURE_CHOICES)
+    enter_attribute = models.IntegerField(u'单位属性',default=1,choices=NATURE_CHOICES)
     industry_type = models.IntegerField(u'行业类别',default=1,choices=INDUSTRY_TYPE)
     industry_nature = models.IntegerField(u'企业类型',default=1,choices=INDUSTRY_NATURE)
     enter_scale = models.IntegerField(u'企业规模',default=1,choices=ENTER_SCALE)
     total_assets = models.IntegerField(u'资产总额',default=1,choices=TOTAL_ASSETS)
-    # party_status = models.IntegerField(u'党组织情况',default=0,choices=PARTY_STATUS)
-    party_name = models.ForeignKey(party,verbose_name=u'所属党组织')
     legal_person = models.CharField(u'法人姓名',max_length=50)
-    legal_email = models.EmailField(u'法人邮箱',max_length=50)
+    legal_email = models.EmailField(u'法人邮箱')
     enter_email = models.EmailField(u'企业邮箱',max_length=50)
     legal_phone = models.CharField(u'负责人手机',max_length=50)
     fixed_phone = models.CharField(u'固定电话',max_length=50)
+    related_party = models.ForeignKey(party,verbose_name = u'党组织情况')
 
     class Meta:
         verbose_name = u'企业信息'
@@ -56,10 +58,15 @@ class enterprise(models.Model):
     def __unicode__(self):
         return self.enter_name
 
+    def related_party_status(self):
+        print self.related_party.party_attribute
+        return self.related_party.party_attribute
+    related_party_status.short_description = u'党组织属性'
+
 
 class member(models.Model):
     member_name = models.CharField(verbose_name=u'党员姓名',max_length=80)
-    member_gender = models.IntegerField(u'性别',default=1,choices=((1,u'男'),(1,u'女')))
+    member_gender = models.IntegerField(u'性别',default=1,choices=((1,u'男'),(2,u'女')))
     member_nation = models.IntegerField(u'民族',default=1,choices=((1,u'汉族'),(2,u'藏族')))
     member_education = models.IntegerField(u'学历',default=1,choices=((1,u'本科'),(2,u'研究生')))
     member_birth = models.DateField(u'出生日期')
@@ -75,6 +82,7 @@ class member(models.Model):
     weixin = models.CharField(u'微信号',max_length=20)
     school = models.CharField(u'毕业院校',max_length=80)
     id_card = models.CharField(u'身份证号',max_length=30)
+    member_party = models.ForeignKey(party,verbose_name=u'隶属党组织')
     member_enter = models.ForeignKey(enterprise,verbose_name=u'隶属企业')
 
     class Meta:
@@ -84,6 +92,14 @@ class member(models.Model):
     def __unicode__(self):
         return self.member_name
 
+    def member_enter_name(self):
+        return self.member_enter.enter_name
+
+    member_enter_name.short_description = u'隶属企业'
+
+    def member_party_name(self):
+        return self.member_party.party_name
+    member_party_name.short_description = u'隶属党组织'
 
 class Jason(models.Model):
     party_id = models.AutoField(primary_key=True,auto_created=True)
