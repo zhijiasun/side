@@ -59,10 +59,23 @@ class enterprise(models.Model):
 
 class member(models.Model):
     member_name = models.CharField(verbose_name=u'党员姓名',max_length=80)
-    member_gender = models.IntegerField(u'性别',default=1,choices=((1,u'男'),(2,u'女')))
-    member_nation = models.IntegerField(u'民族',default=2,choices=((1,u'汉族'),(2,u'藏族')))
-    member_enter = models.ForeignKey(enterprise,verbose_name=u'隶属企业')
+    member_gender = models.IntegerField(u'性别',default=1,choices=((1,u'男'),(1,u'女')))
+    member_nation = models.IntegerField(u'民族',default=1,choices=((1,u'汉族'),(2,u'藏族')))
+    member_education = models.IntegerField(u'学历',default=1,choices=((1,u'本科'),(2,u'研究生')))
+    member_birth = models.DateField(u'出生日期')
     member_worktime = models.DateField(u'参加工作时间')
+    formal_member_time = models.DateField(u'转正时间')
+    now_party_time = models.DateField(u'转入现组织时间')
+    birth_address = models.CharField(u'出生地',max_length=100)
+    home_address = models.CharField(u'家庭住址',max_length=100)
+    living_address = models.CharField(u'现居住地址',max_length=100)
+    member_phone = models.CharField(u'手机号',max_length=11)
+    member_email = models.EmailField(u'电子邮箱',max_length=50)
+    qq = models.CharField(u'QQ号',max_length=15)
+    weixin = models.CharField(u'微信号',max_length=20)
+    school = models.CharField(u'毕业院校',max_length=80)
+    id_card = models.CharField(u'身份证号',max_length=30)
+    member_enter = models.ForeignKey(enterprise,verbose_name=u'隶属企业')
 
     class Meta:
         verbose_name = u'党员信息'

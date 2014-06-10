@@ -27,6 +27,10 @@ class GroupViewSet(viewsets.ModelViewSet):
 	queryset = Group.objects.all()
 	serializer_class = GroupSerializer
 
+class MemberViewSet(viewsets.ModelViewSet):
+    queryset = member.objects.all()
+    serializer_class = MemberSerializer
+
 
 class EnterpriseViewSet(viewsets.ModelViewSet):
 	queryset = enterprise.objects.all()

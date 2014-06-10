@@ -28,3 +28,8 @@ class PartySerializer(serializers.HyperlinkedModelSerializer):
 		model = party
 		fields = ['party_name','contact_info','member_number']
 
+
+class MemberSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = member
+        fields = ['member_name','member_gender','member_nation','member_worktime']
