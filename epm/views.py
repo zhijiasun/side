@@ -41,6 +41,10 @@ class PartyViewSet(viewsets.ModelViewSet):
 	queryset = party.objects.all()
 	serializer_class = PartySerializer
 
+class TestViewSet(viewsets.ModelViewSet):
+    queryset = Test.objects.all()
+    serializer_class = TestSerializer
+
 @api_view(['POST'])
 @csrf_exempt
 def create_user(request):

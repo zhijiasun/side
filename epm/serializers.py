@@ -33,3 +33,8 @@ class MemberSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = member
         fields = ['member_name','member_gender','member_nation','member_worktime']
+
+class TestSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Test
+        fields = ['party_id','party_name','member_number','contact_info']

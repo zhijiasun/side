@@ -91,7 +91,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
 STATIC_URL = '/static/'
-MEDIA_ROOT = '/home/jasonsun/svn_repo/'
+# MEDIA_ROOT = '/home/jasonsun/svn_repo/'
+MEDIA_ROOT = BASE_DIR + '/media_repo/'
 
 REST_FRAMEWORK = {
     #'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAdminUser',),

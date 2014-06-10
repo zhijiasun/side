@@ -18,7 +18,7 @@ from django import forms
 #     class Meta:
 #         model = Jason
 
-class JasonAdmin(CommAdminView):
+class TestAdmin(CommAdminView):
     list_display = ('party_name','member_number','contact_info','attachment')
     list_filter = ('party_name','member_number','contact_info')
 
@@ -30,7 +30,7 @@ class JasonAdmin(CommAdminView):
     #     super(JasonAdmin,self).save_models()
     #     print 'ok'
 
-xadmin.site.register(Jason,JasonAdmin)
+xadmin.site.register(Test,TestAdmin)
 
 
 class MyAction(BaseActionView):

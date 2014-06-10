@@ -48,7 +48,7 @@ class enterprise(models.Model):
     enter_email = models.EmailField(u'企业邮箱',max_length=50)
     legal_phone = models.CharField(u'负责人手机',max_length=50)
     fixed_phone = models.CharField(u'固定电话',max_length=50)
-    related_party = models.ForeignKey(party,verbose_name = u'党组织情况')
+    related_party = models.ForeignKey(party,verbose_name = u'党组织情况',blank=True)
 
     class Meta:
         verbose_name = u'企业信息'
@@ -82,8 +82,8 @@ class member(models.Model):
     weixin = models.CharField(u'微信号',max_length=20)
     school = models.CharField(u'毕业院校',max_length=80)
     id_card = models.CharField(u'身份证号',max_length=30)
-    member_party = models.ForeignKey(party,verbose_name=u'隶属党组织')
-    member_enter = models.ForeignKey(enterprise,verbose_name=u'隶属企业')
+    member_party = models.ForeignKey(party,verbose_name=u'隶属党组织',blank=True)
+    member_enter = models.ForeignKey(enterprise,verbose_name=u'隶属企业',blank=True)
 
     class Meta:
         verbose_name = u'党员信息'
@@ -101,7 +101,7 @@ class member(models.Model):
         return self.member_party.party_name
     member_party_name.short_description = u'隶属党组织'
 
-class Jason(models.Model):
+class Test(models.Model):
     party_id = models.AutoField(primary_key=True,auto_created=True)
     party_name = models.CharField(u'党支部名称',max_length=100)
     member_number = models.IntegerField(u'党员人数')
@@ -109,8 +109,8 @@ class Jason(models.Model):
     attachment = models.FileField(upload_to='upload/',blank=True)
 
     class Meta:
-        verbose_name = u'Jason'
-        verbose_name_plural = u'Jason'
+        verbose_name = u'测试'
+        verbose_name_plural = u'测试'
 
 
     def __unicode__(self):
