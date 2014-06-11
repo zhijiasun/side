@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect
 from rest_framework import viewsets
 from rest_framework import permissions
 from rest_framework.views import APIView
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view,link
 from rest_framework.response import Response
 from rest_framework import status
 from epm.serializers import *
@@ -17,6 +17,7 @@ from django.utils.encoding import force_unicode
 from import_export.admin import ImportMixin
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
+import time,datetime
 
 # Create your views here.
 
@@ -44,6 +45,44 @@ class PartyViewSet(viewsets.ModelViewSet):
 class TestViewSet(viewsets.ModelViewSet):
     queryset = Test.objects.all()
     serializer_class = TestSerializer
+
+    @link()
+    def get_bynumber(self,request,pk=None):
+        print pk
+        tests = Test.objects.filter(member_number=pk)
+        tserializer = TestSerializer(tests,many=True)
+        return Response(tserializer.data)
+
+
+@api_view(['GET','POST'])
+def pioneer_list(request):
+    """
+    support four parameters in request.GET
+    startTime -- the start time of the record
+    endTime -- the end time of the record
+    maxCount -- the max number of the results
+    offset -- offset of the results
+    """
+    print 'pioneer_list'
+    if request.method == 'GET':
+        startTime = time.localtime(float(request.GET.get('startTime',0)))
+        # endTime = time.localtime(float(request.GET.get('endTime',datetime.datetime.now().microsecond)))
+        startTime = datetime.datetime.fromtimestamp(time.mktime(startTime))
+        if 'endTime' in request.GET.keys():
+            endTime = time.localtime(float(request.GET.get('endTime')))
+            endTime = datetime.datetime.fromtimestamp(time.mktime(endTime))
+        else:
+            endTime = datetime.datetime.now()
+        p = Pioneer.objects.filter(pioneer_date__gte=startTime).filter(pioneer_date__lte=endTime)
+
+        maxCount = int(request.GET.get('maxCount',10))
+        offset = int(request.GET.get('offset',0))
+
+        p = p[offset:offset+maxCount]
+        ps = PioneerSerializer(p,many=True)
+    elif request.method == 'POST':
+        print request.POST
+    return Response(ps.data)
 
 @api_view(['POST'])
 @csrf_exempt

@@ -59,6 +59,10 @@ class MemberAdmin(object):
     list_display = ('member_name','member_gender','member_worktime','member_enter_name','member_party_name')
     list_filter = ('member_name','member_gender','member_worktime')
 
+class PioneerAdmin(object):
+    list_display = ('pioneer_id','pioneer_title','pioneer_date','pioneer_author','pioneer_content')
+    list_filter = ('pioneer_title','pioneer_date','pioneer_author','pioneer_content')
+
 class ListSetting(object):
     object_list_template = 'new.html'
 
@@ -102,6 +106,7 @@ class CategoryAdmin(object):
 xadmin.site.register(enterprise,EnterpriseAdmin)
 xadmin.site.register(party,PartyAdmin)
 xadmin.site.register(member,MemberAdmin)
+xadmin.site.register(Pioneer,PioneerAdmin)
 site.register_plugin(MyPlugin,ListAdminView)
 # site.register_plugin(ImportPlugin,ListAdminView)
 xadmin.site.register(Article, ArticleAdmin)

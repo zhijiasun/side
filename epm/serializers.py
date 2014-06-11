@@ -38,3 +38,8 @@ class TestSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Test
         fields = ['party_id','party_name','member_number','contact_info']
+
+class PioneerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Pioneer
+        fields = ['pioneer_id','pioneer_title','pioneer_date','pioneer_author']

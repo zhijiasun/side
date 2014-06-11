@@ -101,6 +101,20 @@ class member(models.Model):
         return self.member_party.party_name
     member_party_name.short_description = u'隶属党组织'
 
+class Pioneer(models.Model):
+    pioneer_id = models.AutoField(primary_key=True,auto_created=True)
+    pioneer_title = models.CharField(max_length=10)
+    pioneer_date = models.DateTimeField(auto_now_add=True)
+    pioneer_author = models.CharField(max_length=30)
+    pioneer_content = models.TextField()
+
+    class Meta:
+        verbose_name = u'党务先锋'
+        verbose_name_plural = u'党务先锋'
+
+    def __unicode__(self):
+        return self.pioneer_title
+
 class Test(models.Model):
     party_id = models.AutoField(primary_key=True,auto_created=True)
     party_name = models.CharField(u'党支部名称',max_length=100)
