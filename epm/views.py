@@ -63,7 +63,6 @@ def pioneer_list(request):
     maxCount -- the max number of the results
     offset -- offset of the results
     """
-    print 'pioneer_list'
     if request.method == 'GET':
         startTime = time.localtime(float(request.GET.get('startTime',0)))
         # endTime = time.localtime(float(request.GET.get('endTime',datetime.datetime.now().microsecond)))
@@ -80,16 +79,11 @@ def pioneer_list(request):
 
         p = p[offset:offset+maxCount]
         pa = PioneerSerializer(p,many=True)
-        # ps = ResultPioneerSerializer(data={'result':'0000',"message":"success","data":[{'pionner_title':"xxx"},]})
-        print type(p)
-        data = [{'result':'000','message':'xxxx'}]
-        ps = ResultPioneerSerializer(data)
-        print 'xxx'
-        print ps.data
-        print ps.errors
+        print pa.data
+        result = {"result":"0000","message":"xxxx","data":pa.data}
     elif request.method == 'POST':
         print request.POST
-    return Response(ps.data)
+    return Response(result,status = status.HTTP_200_OK)
 
 @api_view(['POST'])
 @csrf_exempt
