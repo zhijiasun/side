@@ -43,3 +43,8 @@ class PioneerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Pioneer
         fields = ['pioneer_id','pioneer_title','pioneer_date','pioneer_author']
+
+class ResultPioneerSerializer(serializers.Serializer):
+    result = serializers.CharField(max_length=10)
+    message = serializers.CharField(max_length=30)
+    data_content = PioneerSerializer(required=False,many=True)

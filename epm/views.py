@@ -79,7 +79,14 @@ def pioneer_list(request):
         offset = int(request.GET.get('offset',0))
 
         p = p[offset:offset+maxCount]
-        ps = PioneerSerializer(p,many=True)
+        pa = PioneerSerializer(p,many=True)
+        # ps = ResultPioneerSerializer(data={'result':'0000',"message":"success","data":[{'pionner_title':"xxx"},]})
+        print type(p)
+        data = [{'result':'000','message':'xxxx'}]
+        ps = ResultPioneerSerializer(data)
+        print 'xxx'
+        print ps.data
+        print ps.errors
     elif request.method == 'POST':
         print request.POST
     return Response(ps.data)
