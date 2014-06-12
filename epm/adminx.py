@@ -19,7 +19,7 @@ from django import forms
 #         model = Jason
 
 class TestAdmin(CommAdminView):
-    list_display = ('party_name','member_number','contact_info','attachment')
+    list_display = ('party_name','member_number','contact_info','attachment','pic')
     list_filter = ('party_name','member_number','contact_info')
 
     # def save_models(self):
@@ -62,6 +62,11 @@ class MemberAdmin(object):
 class PioneerAdmin(object):
     list_display = ('pioneer_id','pioneer_title','pioneer_date','pioneer_author','pioneer_content')
     list_filter = ('pioneer_title','pioneer_date','pioneer_author','pioneer_content')
+
+
+class LifeTipsAdmin(object):
+    list_display = ('lifetips_id','lifetips_title','lifetips_date','lifetips_author','lifetips_content')
+    list_filter = ('lifetips_id','lifetips_title','lifetips_date','lifetips_author','lifetips_content')
 
 class ListSetting(object):
     object_list_template = 'new.html'
@@ -107,6 +112,7 @@ xadmin.site.register(enterprise,EnterpriseAdmin)
 xadmin.site.register(party,PartyAdmin)
 xadmin.site.register(member,MemberAdmin)
 xadmin.site.register(Pioneer,PioneerAdmin)
+xadmin.site.register(LifeTips,LifeTipsAdmin)
 site.register_plugin(MyPlugin,ListAdminView)
 # site.register_plugin(ImportPlugin,ListAdminView)
 xadmin.site.register(Article, ArticleAdmin)

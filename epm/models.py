@@ -115,12 +115,27 @@ class Pioneer(models.Model):
     def __unicode__(self):
         return self.pioneer_title
 
+class LifeTips(models.Model):
+    lifetips_id = models.AutoField(primary_key=True,auto_created=True)
+    lifetips_title = models.CharField(max_length=10)
+    lifetips_date = models.DateTimeField(auto_now_add=True)
+    lifetips_author = models.CharField(max_length=30)
+    lifetips_content = models.TextField()
+
+    class Meta:
+        verbose_name = u'生活小贴士'
+        verbose_name_plural = u'生活小贴士'
+
+    def __unicode__(self):
+        return self.lifetips_title
+
 class Test(models.Model):
     party_id = models.AutoField(primary_key=True,auto_created=True)
     party_name = models.CharField(u'党支部名称',max_length=100)
     member_number = models.IntegerField(u'党员人数')
     contact_info = models.CharField(u'联系方式',max_length=300)
     attachment = models.FileField(upload_to='upload/',blank=True)
+    pic = models.ImageField(upload_to='upload/',blank=True)
 
     class Meta:
         verbose_name = u'测试'

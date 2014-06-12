@@ -42,4 +42,4 @@ class TestSerializer(serializers.HyperlinkedModelSerializer):
 class PioneerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Pioneer
-        fields = ['pioneer_id','pioneer_title','pioneer_date','pioneer_author']
+        fields = ['pioneer_title','pioneer_date','pioneer_author']

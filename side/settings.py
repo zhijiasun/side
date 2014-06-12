@@ -108,3 +108,65 @@ INTERNAL_IPS=('135.242.96.163',)
 def show_toolbar(request):
     return True
 SHOW_TOOLBAR_CALLBACK = show_toolbar
+
+#log configuration
+LOG_FILE = '/tmp/blog.log'
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': True,
+
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse'
+        }
+    },
+    'formatters': {
+        'simple': {
+            'format': '[%(levelname)s] %(module)s : %(message)s'
+        },
+        'verbose': {
+            'format': '[%(asctime)s] [%(levelname)s] %(module)s : %(message)s'
+        }
+    },
+
+    'handlers': {
+        'null': {
+            'level': 'DEBUG',
+            'class': 'django.utils.log.NullHandler',
+        },
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose'
+        },
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'formatter': 'verbose',
+            'filename': LOG_FILE,
+            'mode': 'a',
+        },
+        'mail_admins': {
+            'level': 'ERROR',
+            'class': 'django.utils.log.AdminEmailHandler',
+            'filters': ['require_debug_false']
+        }
+    },
+    'loggers': {
+        '': {
+            'handlers': ['file', 'console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'django': {
+            'handlers': ['file', 'console'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'django.request': {
+            'handlers': ['mail_admins', 'console'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+    }
+}

@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect
 from rest_framework import viewsets
 from rest_framework import permissions
 from rest_framework.views import APIView
-from rest_framework.decorators import api_view,link
+from rest_framework.decorators import api_view,link,authentication_classes,permission_classes
 from rest_framework.response import Response
 from rest_framework import status
 from epm.serializers import *
@@ -18,6 +18,8 @@ from import_export.admin import ImportMixin
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
 import time,datetime
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.permissions import IsAuthenticated
 
 # Create your views here.
 
@@ -55,6 +57,8 @@ class TestViewSet(viewsets.ModelViewSet):
 
 
 @api_view(['GET','POST'])
+@authentication_classes((SessionAuthentication, BasicAuthentication))
+@permission_classes((IsAuthenticated,))
 def pioneer_list(request):
     """
     support four parameters in request.GET
@@ -79,10 +83,9 @@ def pioneer_list(request):
 
         p = p[offset:offset+maxCount]
         pa = PioneerSerializer(p,many=True)
-        print pa.data
         result = {"result":"0000","message":"xxxx","data":pa.data}
     elif request.method == 'POST':
-        print request.POST
+        print 'Method is POST'
     return Response(result,status = status.HTTP_200_OK)
 
 @api_view(['POST'])
