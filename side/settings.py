@@ -45,7 +45,7 @@ INSTALLED_APPS = (
     'xcms',
     'import_export',
     'gunicorn',
-    'import_export',
+    'registration',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -108,6 +108,8 @@ INTERNAL_IPS=('135.242.96.163',)
 def show_toolbar(request):
     return True
 SHOW_TOOLBAR_CALLBACK = show_toolbar
+
+ACCOUNT_ACTIVATION_DAYS = 7 # One-week activation window; you may, of course, use a different value.
 
 #log configuration
 LOG_FILE = '/tmp/blog.log'
