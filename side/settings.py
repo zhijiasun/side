@@ -172,3 +172,9 @@ LOGGING = {
         },
     }
 }
+EMAIL_HOST='smtp.163.com'
+EMAIL_PORT=25
+EMAIL_HOST_USER='szjrabbit@163.com'
+EMAIL_HOST_PASSWORD='wodemima@4$'
+EMAIL_USE_TLS=True
+DEFAULT_FROM_EMAIL='szjrabbit@163.com'
