@@ -68,6 +68,22 @@ class LifeTipsAdmin(object):
     list_display = ('lifetips_id','lifetips_title','lifetips_date','lifetips_author','lifetips_content')
     list_filter = ('lifetips_id','lifetips_title','lifetips_date','lifetips_author','lifetips_content')
 
+class PartyWorkAdmin(object):
+    list_display = ('partywork_id','partywork_title','partywork_date','partywork_author','partywork_content')
+    list_filter = ('partywork_id','partywork_title','partywork_date','partywork_author','partywork_content')
+
+class NoticeAdmin(object):
+    list_display = ('notice_id','notice_title','notice_date','notice_author','notice_content')
+    list_filter = ('notice_id','notice_title','notice_date','notice_author','notice_content')
+
+class SpiritAdmin(object):
+    list_display = ('spirit_id','spirit_title','spirit_date','spirit_author','spirit_content')
+    list_filter = ('spirit_id','spirit_title','spirit_date','spirit_author','spirit_content')
+
+class PolicyAdmin(object):
+    list_display = ('policy_id','policy_title','policy_date','policy_author','policy_content')
+    list_filter = ('policy_id','policy_title','policy_date','policy_author','policy_content')
+
 class ListSetting(object):
     object_list_template = 'new.html'
 
@@ -112,7 +128,10 @@ xadmin.site.register(enterprise,EnterpriseAdmin)
 xadmin.site.register(party,PartyAdmin)
 xadmin.site.register(member,MemberAdmin)
 xadmin.site.register(Pioneer,PioneerAdmin)
-xadmin.site.register(LifeTips,LifeTipsAdmin)
+xadmin.site.register(PartyWork,PartyWorkAdmin)
+xadmin.site.register(Notice,NoticeAdmin)
+xadmin.site.register(Spirit,SpiritAdmin)
+xadmin.site.register(Policy,PolicyAdmin)
 site.register_plugin(MyPlugin,ListAdminView)
 # site.register_plugin(ImportPlugin,ListAdminView)
 xadmin.site.register(Article, ArticleAdmin)

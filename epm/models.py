@@ -129,6 +129,62 @@ class LifeTips(models.Model):
     def __unicode__(self):
         return self.lifetips_title
 
+class PartyWork(models.Model):
+    partywork_id = models.AutoField(primary_key=True,auto_created=True)
+    partywork_title = models.CharField(max_length=10)
+    partywork_date = models.DateTimeField(auto_now_add=True)
+    partywork_author = models.CharField(max_length=30)
+    partywork_content = models.TextField()
+
+    class Meta:
+        verbose_name = u'党务提醒信息'
+        verbose_name_plural = u'党务提醒信息'
+
+    def __unicode__(self):
+        return self.partywork_title
+
+class Notice(models.Model):
+    notice_id = models.AutoField(primary_key=True,auto_created=True)
+    notice_title = models.CharField(max_length=10)
+    notice_date = models.DateTimeField(auto_now_add=True)
+    notice_author = models.CharField(max_length=30)
+    notice_content = models.TextField()
+
+    class Meta:
+        verbose_name = u'公告活动信息'
+        verbose_name_plural = u'公告活动信息'
+
+    def __unicode__(self):
+        return self.notice_title
+
+class Spirit(models.Model):
+    spirit_id = models.AutoField(primary_key=True,auto_created=True)
+    spirit_title = models.CharField(max_length=10)
+    spirit_date = models.DateTimeField(auto_now_add=True)
+    spirit_author = models.CharField(max_length=30)
+    spirit_content = models.TextField()
+
+    class Meta:
+        verbose_name = u'上级精神'
+        verbose_name_plural = u'上级精神'
+
+    def __unicode__(self):
+        return self.spirit_title
+
+class Policy(models.Model):
+    policy_id = models.AutoField(primary_key=True,auto_created=True)
+    policy_title = models.CharField(max_length=10)
+    policy_date = models.DateTimeField(auto_now_add=True)
+    policy_author = models.CharField(max_length=30)
+    policy_content = models.TextField()
+
+    class Meta:
+        verbose_name = u'惠企政府'
+        verbose_name_plural = u'惠企政府'
+
+    def __unicode__(self):
+        return self.policy_title
+
 class Test(models.Model):
     party_id = models.AutoField(primary_key=True,auto_created=True)
     party_name = models.CharField(u'党支部名称',max_length=100)
