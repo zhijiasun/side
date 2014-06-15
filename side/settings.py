@@ -46,6 +46,7 @@ INSTALLED_APPS = (
     'import_export',
     'gunicorn',
     'registration',
+    'rest_auth',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -98,8 +99,12 @@ MEDIA_ROOT = BASE_DIR + '/media_repo/'
 REST_FRAMEWORK = {
     #'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAdminUser',),
     'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAuthenticatedOrReadOnly',),
+    'DEFAULT_AUTHENTICATION_CLASSES':('rest_framework.authentication.SessionAuthentication',),
     'PAGINATE_BY': 10
 }
+
+REST_REGISTRATION_BACKEND = 'registration.backends.simple.views.RegistrationView'
+REST_PROFILE_MODULE = 'registration.RegistrationProfile'
 
 LOGGING = {
         'version':1,

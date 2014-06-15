@@ -32,4 +32,5 @@ urlpatterns = patterns('',
     url(r'^epm/',include('epm.urls')),
     url(r'accounts/', include('django.contrib.auth.urls')),
     url(r'accounts/',include('registration.backends.default.urls')),
+    url(r'^rest-auth/', include('rest_auth.urls')),
 )
