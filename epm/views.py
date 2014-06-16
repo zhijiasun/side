@@ -178,8 +178,21 @@ class ImportAdminView(ImportMixin,CreateAdminView):
         context.update(new_context)
         return context
 
+    def post(self,request,*args,**kwargs):
+        print '############'
+        print self.model
+        print '############'
+        print dir(self)
+        return HttpResponseRedirect('/xadmin/')
+
+
 site.register_modelview(r'^import/$',ImportAdminView,name='%s_%s_import')
 
 def process_import(request):
     print request.FILES
+    if request.POST:
+        f = request.FILES['file']
+        line = f.readline()
+        while True:
+            print '---------------------'
     return HttpResponseRedirect('/xadmin/')
