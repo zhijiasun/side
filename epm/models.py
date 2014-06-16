@@ -103,10 +103,10 @@ class member(models.Model):
 
 class Pioneer(models.Model):
     pioneer_id = models.AutoField(primary_key=True,auto_created=True)
-    pioneer_title = models.CharField(max_length=10)
-    pioneer_date = models.DateTimeField(auto_now_add=True)
-    pioneer_author = models.CharField(max_length=30)
-    pioneer_content = models.TextField()
+    pioneer_title = models.CharField(u'标题',max_length=10)
+    pioneer_date = models.DateTimeField(u'创建日期',auto_now_add=True)
+    pioneer_author = models.CharField(u'作者',max_length=30)
+    pioneer_content = models.TextField(u'内容')
 
     class Meta:
         verbose_name = u'党务先锋'
@@ -117,10 +117,10 @@ class Pioneer(models.Model):
 
 class LifeTips(models.Model):
     lifetips_id = models.AutoField(primary_key=True,auto_created=True)
-    lifetips_title = models.CharField(max_length=10)
-    lifetips_date = models.DateTimeField(auto_now_add=True)
-    lifetips_author = models.CharField(max_length=30)
-    lifetips_content = models.TextField()
+    lifetips_title = models.CharField(u'标题',max_length=10)
+    lifetips_date = models.DateTimeField(u'创建日期',auto_now_add=True)
+    lifetips_author = models.CharField(u'作者',max_length=30)
+    lifetips_content = models.TextField(u'内容')
 
     class Meta:
         verbose_name = u'生活小贴士'
@@ -131,10 +131,10 @@ class LifeTips(models.Model):
 
 class PartyWork(models.Model):
     partywork_id = models.AutoField(primary_key=True,auto_created=True)
-    partywork_title = models.CharField(max_length=10)
-    partywork_date = models.DateTimeField(auto_now_add=True)
-    partywork_author = models.CharField(max_length=30)
-    partywork_content = models.TextField()
+    partywork_title = models.CharField(u'标题',max_length=10)
+    partywork_date = models.DateTimeField(u'创建日期',auto_now_add=True)
+    partywork_author = models.CharField(u'作者',max_length=30)
+    partywork_content = models.TextField(u'内容',)
 
     class Meta:
         verbose_name = u'党务提醒信息'
@@ -145,10 +145,10 @@ class PartyWork(models.Model):
 
 class Notice(models.Model):
     notice_id = models.AutoField(primary_key=True,auto_created=True)
-    notice_title = models.CharField(max_length=10)
-    notice_date = models.DateTimeField(auto_now_add=True)
-    notice_author = models.CharField(max_length=30)
-    notice_content = models.TextField()
+    notice_title = models.CharField(u'标题',max_length=10)
+    notice_date = models.DateTimeField(u'创建日期',auto_now_add=True)
+    notice_author = models.CharField(u'作者',max_length=30)
+    notice_content = models.TextField(u'内容')
 
     class Meta:
         verbose_name = u'公告活动信息'
@@ -159,10 +159,10 @@ class Notice(models.Model):
 
 class Spirit(models.Model):
     spirit_id = models.AutoField(primary_key=True,auto_created=True)
-    spirit_title = models.CharField(max_length=10)
-    spirit_date = models.DateTimeField(auto_now_add=True)
-    spirit_author = models.CharField(max_length=30)
-    spirit_content = models.TextField()
+    spirit_title = models.CharField(u'标题',max_length=10)
+    spirit_date = models.DateTimeField(u'创建日期',auto_now_add=True)
+    spirit_author = models.CharField(u'作者',max_length=30)
+    spirit_content = models.TextField(u'内容')
 
     class Meta:
         verbose_name = u'上级精神'
@@ -173,10 +173,10 @@ class Spirit(models.Model):
 
 class Policy(models.Model):
     policy_id = models.AutoField(primary_key=True,auto_created=True)
-    policy_title = models.CharField(max_length=10)
-    policy_date = models.DateTimeField(auto_now_add=True)
-    policy_author = models.CharField(max_length=30)
-    policy_content = models.TextField()
+    policy_title = models.CharField(u'标题',max_length=10)
+    policy_date = models.DateTimeField(u'创建日期',auto_now_add=True)
+    policy_author = models.CharField(u'作者',max_length=30)
+    policy_content = models.TextField(u'内容')
 
     class Meta:
         verbose_name = u'惠企政府'
