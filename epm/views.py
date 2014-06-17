@@ -56,6 +56,28 @@ class TestViewSet(viewsets.ModelViewSet):
         return Response(tserializer.data)
 
 
+def get_result(model, modelSerializer, **kwargs):
+    if isinstance(model,models.Model):
+        startTime = time.localtime(float(kwargs.get('startTime',0)))
+        startTime = datetime.datetime.fromtimestamp(time.mktime(startTime))
+
+        if 'endTime' in kwargs.keys():
+            endTime = time.localtime(float(kwargs.get('endTime')))
+            endTime = datetime.datetime.fromtimestamp(time.mktime(endTime))
+        else:
+            endTime = datetime.datetime.now()
+
+        ###???? shoud change this line
+        obj = model.objects.filter(pioneer_date__gte=startTime).filter(pioneer_date__lte=endTime)
+        maxCount = int(kwargs.get('maxCount',10))
+        offset = int(kwargs.get('offset',0))
+
+        obj = obj[offset:offset+maxCount]
+        objs = modelSerializer(obj,many=True)
+        result = {"result":"0000","message":"xxxx","data":objs.data}
+        return result
+
+
 @api_view(['GET','POST'])
 @authentication_classes((SessionAuthentication, BasicAuthentication))
 @permission_classes((IsAuthenticated,))
