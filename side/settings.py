@@ -117,6 +117,8 @@ SHOW_TOOLBAR_CALLBACK = show_toolbar
 
 ACCOUNT_ACTIVATION_DAYS = 7 # One-week activation window; you may, of course, use a different value.
 
+LOGIN_REDIRECT_URL = '/xadmin/'
+
 #log configuration
 LOG_FILE = '/tmp/blog.log'
 LOGGING = {
