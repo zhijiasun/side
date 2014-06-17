@@ -43,3 +43,33 @@ class PioneerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Pioneer
         fields = ['pioneer_title','pioneer_date','pioneer_author']
+
+
+class LifeTipsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LifeTips
+        fields = ['lifetips_title','lifetips_date','lifetips_author']
+
+
+class PartyWorkSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PartyWork
+        fields = ['partywork_title', 'partywork_date', 'partywork_author']
+
+
+class NoticeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Notice
+        fields = ['notice_title','notice_date','notice_author']
+
+
+class SpiritSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Spirit
+        fields = ['spirit_title','spirit_date','spirit_author']
+
+
+class PolicySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Policy
+        fields = ['policy_title','policy_date','policy_author']

@@ -88,6 +88,38 @@ def pioneer_list(request):
         print 'Method is POST'
     return Response(result,status = status.HTTP_200_OK)
 
+@api_view(['GET','POST'])
+@authentication_classes((SessionAuthentication, BasicAuthentication))
+@permission_classes((IsAuthenticated,))
+def lifetips_list(request):
+    """
+    support four parameters in request.GET
+    startTime -- the start time of the record
+    endTime -- the end time of the record
+    maxCount -- the max number of the results
+    offset -- offset of the results
+    """
+    if request.method == 'GET':
+        startTime = time.localtime(float(request.GET.get('startTime',0)))
+        # endTime = time.localtime(float(request.GET.get('endTime',datetime.datetime.now().microsecond)))
+        startTime = datetime.datetime.fromtimestamp(time.mktime(startTime))
+        if 'endTime' in request.GET.keys():
+            endTime = time.localtime(float(request.GET.get('endTime')))
+            endTime = datetime.datetime.fromtimestamp(time.mktime(endTime))
+        else:
+            endTime = datetime.datetime.now()
+        p = LifeTips.objects.filter(lifetips_date__gte=startTime).filter(lifetips_date__lte=endTime)
+
+        maxCount = int(request.GET.get('maxCount',10))
+        offset = int(request.GET.get('offset',0))
+
+        p = p[offset:offset+maxCount]
+        pa = LifeTipsSerializer(p,many=True)
+        result = {"result":"0000","message":"xxxx","data":pa.data}
+    elif request.method == 'POST':
+        print 'Method is POST'
+    return Response(result,status = status.HTTP_200_OK)
+
 @api_view(['POST'])
 @csrf_exempt
 def create_user(request):
