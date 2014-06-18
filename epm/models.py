@@ -8,7 +8,6 @@ from django.core.files import File
 from django.core.files.storage import default_storage
 from epm.utils import *
 from django.core.exceptions import ValidationError
-import chardet
 
 # Create your models here.
 class party(models.Model):
