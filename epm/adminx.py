@@ -49,7 +49,7 @@ class EnterpriseAdmin(object):
 
 
 class PartyAdmin(object):
-    list_display = ('party_name','secretary_name','secretary_phone','member_number','responsible_name','responsible_phone')
+    list_display = ('party_name','secretary_name','secretary_phone','member_number','responsible_name','related_enter','responsible_phone')
     list_filter = ('party_name','member_number')
     actions = [MyAction,]
 
@@ -128,6 +128,7 @@ xadmin.site.register(enterprise,EnterpriseAdmin)
 xadmin.site.register(party,PartyAdmin)
 xadmin.site.register(member,MemberAdmin)
 xadmin.site.register(Pioneer,PioneerAdmin)
+xadmin.site.register(LifeTips,LifeTipsAdmin)
 xadmin.site.register(PartyWork,PartyWorkAdmin)
 xadmin.site.register(Notice,NoticeAdmin)
 xadmin.site.register(Spirit,SpiritAdmin)

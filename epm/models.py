@@ -1,10 +1,14 @@
 #coding:utf-8
 import os
+import sys
+print sys.getdefaultencoding()
 from django.db import models
 from django.core.files.base import ContentFile
 from django.core.files import File
 from django.core.files.storage import default_storage
 from epm.utils import *
+from django.core.exceptions import ValidationError
+import chardet
 
 # Create your models here.
 class party(models.Model):
@@ -28,12 +32,34 @@ class party(models.Model):
     def __unicode__(self):
         return self.party_name
 
-    # def related_enter(self):
-    #     enters = enterprise.objects.filter(party_status=self)
-    #     print enters
-    #     return enters
+    def related_enter(self):
+        # enters = enterprise.objects.filter(party_status=self)
+        enters = self.enters.all() # use the realted_name in enterprise
+        results = ''
+        for enter in enters:
+            print type(enter.enter_name)
+            print enter.enter_name
+            if results:
+                results  = results + ';' + enter.enter_name
+            else:
+                results = results + enter.enter_name
+        # enters = [ enter.enter_name for enter in enters ] # !! so strange, can't return chinese correctly
+
+        return results
+
+    related_enter.short_description = u'关联企业'
+
+    def related_members(self):
+        members = self.membersAtParty.all()
+        return members
+
 
 class enterprise(models.Model):
+
+    def validate_notnull(obj):
+        if not obj:
+            print 'aaaa'
+            raise ValidationError('related party is NULL')
 
     enter_id = models.AutoField(primary_key=True,auto_created=True)
     enter_name = models.CharField(u'企业名称',max_length=50)
@@ -48,7 +74,19 @@ class enterprise(models.Model):
     enter_email = models.EmailField(u'企业邮箱',max_length=50)
     legal_phone = models.CharField(u'负责人手机',max_length=50)
     fixed_phone = models.CharField(u'固定电话',max_length=50)
-    related_party = models.ForeignKey(party,verbose_name = u'党组织情况',blank=True)
+    """
+    blank=True, null=True can make ForeignKey is optional.
+    1.
+    we also can create an default party which means NULL and the id is 1 at DB, and do as follows:
+
+    def get_default_party():
+        return party.objects.get(id=1) 
+    related_party = models.ForeignKey(party,verbose_name = u'党组织情况',default=get_default_party())
+
+    2. chagne the behaviour when delete the ForeignKey:
+       set the on_delete can change the behaviour
+    """
+    related_party = models.ForeignKey(party,verbose_name = u'党组织情况',blank=True,null=True,on_delete=models.SET_NULL,related_name='enters')
 
     class Meta:
         verbose_name = u'企业信息'
@@ -59,8 +97,8 @@ class enterprise(models.Model):
         return self.enter_name
 
     def related_party_status(self):
-        print self.related_party.party_attribute
-        return self.related_party.party_attribute
+        return PARTY_ATTRIBUTE[self.related_party.party_attribute - 1][1]
+
     related_party_status.short_description = u'党组织属性'
 
 
@@ -82,8 +120,8 @@ class member(models.Model):
     weixin = models.CharField(u'微信号',max_length=20)
     school = models.CharField(u'毕业院校',max_length=80)
     id_card = models.CharField(u'身份证号',max_length=30)
-    member_party = models.ForeignKey(party,verbose_name=u'隶属党组织',blank=True)
-    member_enter = models.ForeignKey(enterprise,verbose_name=u'隶属企业',blank=True)
+    member_party = models.ForeignKey(party,verbose_name=u'隶属党组织',blank=True,null=True,on_delete=models.SET_NULL,related_name='membersAtParty')
+    member_enter = models.ForeignKey(enterprise,verbose_name=u'隶属企业',blank=True,null=True,on_delete=models.SET_NULL,related_name='membersAtEnter')
 
     class Meta:
         verbose_name = u'党员信息'
@@ -179,8 +217,8 @@ class Policy(models.Model):
     policy_content = models.TextField(u'内容')
 
     class Meta:
-        verbose_name = u'惠企政府'
-        verbose_name_plural = u'惠企政府'
+        verbose_name = u'惠企政策'
+        verbose_name_plural = u'惠企政策'
 
     def __unicode__(self):
         return self.policy_title
