@@ -8,6 +8,21 @@ from django.core.files import File
 from django.core.files.storage import default_storage
 from epm.utils import *
 from django.core.exceptions import ValidationError
+import os
+from PIL import Image
+from side.settings import MEDIA_ROOT
+from django.db.models.fields.files import ImageFieldFile
+
+
+def make_thumb(path,size = 480):
+    pixbuf = Image.open(path)
+    width, height = pixbuf.size
+
+    if width > size:
+        delta = width / size
+        height = int(height / delta)
+        pixbuf.thumbnail((size,height),Image.ANTIALIAS)
+        return pixbuf
 
 # Create your models here.
 class party(models.Model):
@@ -259,6 +274,7 @@ class Test(models.Model):
     contact_info = models.CharField(u'联系方式',max_length=300)
     attachment = models.FileField(upload_to='upload/',blank=True)
     pic = models.ImageField(upload_to='upload/',blank=True)
+    thumb = models.ImageField(upload_to='thumb/',blank=True)
 
     class Meta:
         verbose_name = u'测试'
@@ -268,6 +284,19 @@ class Test(models.Model):
     def __unicode__(self):
         return self.party_name
 
+    def save(self):
+        super(Test,self).save()
+        print self.pic.path
+        base, ext = os.path.splitext(os.path.basename(self.pic.path))
+        print base,ext
+        thumb_path = os.path.join(MEDIA_ROOT, base + '.thumb' + ext)
+        print os.path.join(MEDIA_ROOT, self.pic.name)
+        thumb_pixbuf = make_thumb(os.path.join(MEDIA_ROOT, self.pic.name))
+        print '###############'
+        # thumb_pixbuf = make_thumb(self.pic.path)
+        thumb_pixbuf.save(thumb_path)
+        self.thumb = ImageFieldFile(self,self.thumb,thumb_path)
+        super(Test,self).save()
 
 
 class Category(models.Model):
