@@ -95,6 +95,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 # MEDIA_ROOT = '/home/jasonsun/svn_repo/'
 MEDIA_ROOT = BASE_DIR + '/media_repo/'
+MEDIA_URL = '/media/'
 
 REST_FRAMEWORK = {
     #'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAdminUser',),

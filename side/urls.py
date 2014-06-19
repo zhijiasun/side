@@ -1,6 +1,8 @@
 from django.conf.urls import patterns, include, url
 from rest_framework import routers
 from epm import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 """
 from django.contrib import admin
@@ -34,3 +36,5 @@ urlpatterns = patterns('',
     url(r'accounts/',include('registration.backends.default.urls')),
     url(r'^rest-auth/', include('rest_auth.urls')),
 )
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

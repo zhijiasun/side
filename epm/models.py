@@ -108,6 +108,7 @@ class member(models.Model):
     member_education = models.IntegerField(u'学历',default=1,choices=((1,u'本科'),(2,u'研究生')))
     member_birth = models.DateField(u'出生日期')
     member_worktime = models.DateField(u'参加工作时间')
+    join_party_time = models.DateField(u'入党时间')
     formal_member_time = models.DateField(u'转正时间')
     now_party_time = models.DateField(u'转入现组织时间')
     birth_address = models.CharField(u'出生地',max_length=100)
@@ -221,6 +222,35 @@ class Policy(models.Model):
 
     def __unicode__(self):
         return self.policy_title
+
+class BusinessProcess(models.Model):
+    process_id = models.AutoField(primary_key=True,auto_created=True)
+    process_title = models.CharField(u'标题',max_length=10)
+    process_date = models.DateTimeField(u'创建日期',auto_now_add=True)
+    process_author = models.CharField(u'作者',max_length=30)
+    process_content = models.TextField(u'内容')
+
+    class Meta:
+        verbose_name = u'业务办理流程'
+        verbose_name_plural = u'业务办理流程'
+
+    def __unicode__(self):
+        return self.process_title
+
+class Question(models.Model):
+    question_id = models.AutoField(primary_key=True,auto_created=True)
+    question_title = models.CharField(u'标题',max_length=10,default=u'问题咨询')
+    question_date = models.DateTimeField(u'创建日期',auto_now_add=True)
+    question_author = models.CharField(u'作者',max_length=30)
+    question_content = models.TextField(u'咨询内容')
+    is_published = models.BooleanField(default=False)
+
+    class Meta:
+        verbose_name = u'咨询服务'
+        verbose_name_plural = u'咨询服务'
+
+    def __unicode__(self):
+        return self.question_title
 
 class Test(models.Model):
     party_id = models.AutoField(primary_key=True,auto_created=True)
