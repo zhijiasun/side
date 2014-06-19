@@ -61,6 +61,9 @@ class MemberAdmin(object):
     list_filter = ('member_name','member_gender','member_worktime')
     reversion_enable = True
 
+class UserProfileAdmin(object):
+    list_display = ('user','is_verified')
+
 class PioneerAdmin(object):
     list_display = ('pioneer_id','pioneer_title','pioneer_date','pioneer_author','pioneer_content')
     list_filter = ('pioneer_title','pioneer_date','pioneer_author','pioneer_content')
@@ -153,6 +156,7 @@ class CategoryAdmin(object):
 xadmin.site.register(enterprise,EnterpriseAdmin)
 xadmin.site.register(party,PartyAdmin)
 xadmin.site.register(member,MemberAdmin)
+xadmin.site.register(UserProfile,UserProfileAdmin)
 xadmin.site.register(Pioneer,PioneerAdmin)
 xadmin.site.register(LifeTips,LifeTipsAdmin)
 xadmin.site.register(PartyWork,PartyWorkAdmin)

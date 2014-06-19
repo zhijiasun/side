@@ -12,6 +12,7 @@ import os
 from PIL import Image
 from side.settings import MEDIA_ROOT
 from django.db.models.fields.files import ImageFieldFile
+from django.contrib.auth.models import User
 
 
 def make_thumb(path,size = 480):
@@ -25,6 +26,7 @@ def make_thumb(path,size = 480):
         return pixbuf
 
 # Create your models here.
+
 class party(models.Model):
     party_id = models.AutoField(primary_key=True,auto_created=True)
     party_name = models.CharField(u'党组织名称',max_length=100)
@@ -153,6 +155,18 @@ class member(models.Model):
     def member_party_name(self):
         return self.member_party.party_name
     member_party_name.short_description = u'隶属党组织'
+
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, unique=True)
+    member_info = models.OneToOneField(member,blank=True,null=True)
+    is_verified = models.BooleanField(u'是否已认证',default=False)
+
+    class Meta:
+        verbose_name = u'APP用户'
+        verbose_name_plural = u'APP用户'
+
+
 
 class Pioneer(models.Model):
     pioneer_id = models.AutoField(primary_key=True,auto_created=True)

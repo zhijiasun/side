@@ -104,9 +104,10 @@ REST_FRAMEWORK = {
     'PAGINATE_BY': 10
 }
 
-REST_REGISTRATION_BACKEND = 'registration.backends.simple.views.RegistrationView'#we can define our own View
-# REST_PROFILE_MODULE = 'registration.RegistrationProfile'
-REST_PROFILE_MODULE = 'auth.User'#here we can define our own UserProfile
+# REST_REGISTRATION_BACKEND = 'registration.backends.simple.views.RegistrationView'#we can define our own View
+#REST_PROFILE_MODULE = 'auth.User'#here we can define our own UserProfile
+REST_REGISTRATION_BACKEND = 'epm.views.RegistrationView'#we can define our own View
+REST_PROFILE_MODULE = 'epm.UserProfile'#here we can define our own UserProfile
 
 LOGGING = {
         'version':1,

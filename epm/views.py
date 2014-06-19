@@ -20,8 +20,33 @@ from crispy_forms.layout import Submit
 import time,datetime
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
+from registration.views import RegistrationView as BaseRegistrationView
+from registration import signals
+from rest_framework.serializers import _resolve_model
+from django.contrib.auth import authenticate,login
 
 # Create your views here.
+
+
+class RegistrationView(BaseRegistrationView):
+    def register(self,request,**cleaned_data):
+        print cleaned_data
+        username,email,password = cleaned_data['username'],cleaned_data['email'],cleaned_data['password1']
+        u = User.objects.create_user(username, email, password)
+        # u.is_staff = True
+        # u.save()
+        new_user = authenticate(username=username, password=password)
+        login(request, new_user)
+
+        signals.user_registered.send(sender=self.__class__,
+            user=new_user, request=request)
+        
+        # user_profile_model = _resolve_model
+        new_user.is_staff=True
+        UserProfile.objects.create(user=u)
+        return new_user
+
+
 
 class UserViewSet(viewsets.ModelViewSet):
 	queryset = User.objects.all()
