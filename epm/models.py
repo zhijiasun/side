@@ -160,7 +160,13 @@ class member(models.Model):
 class UserProfile(models.Model):
     user = models.OneToOneField(User, unique=True)
     member_info = models.OneToOneField(member,blank=True,null=True)
-    is_verified = models.BooleanField(u'是否已认证',default=False)
+    # need to consider what is content of the table ?
+    # real_name and real_idcard is the field that user should commit
+    # and through member_info to find the registerd info to verify
+    real_name = models.CharField(u'认证姓名', max_length=40, blank=True, null=True)
+    real_idcard = models.CharField(u'认证身份证号', max_length=20, blank=True, null=True)
+    is_verified = models.BooleanField(u'是否已认证', default=False)
+    is_manager = models.BooleanField(u'是否是党组织管理员', default=False)
 
     class Meta:
         verbose_name = u'APP用户'

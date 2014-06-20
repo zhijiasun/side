@@ -35,16 +35,16 @@ class RegistrationView(BaseRegistrationView):
         u = User.objects.create_user(username, email, password)
         # u.is_staff = True
         # u.save()
-        new_user = authenticate(username=username, password=password)
-        login(request, new_user)
+        # new_user = authenticate(username=username, password=password)
+        # login(request, new_user)
 
         signals.user_registered.send(sender=self.__class__,
-            user=new_user, request=request)
+            user=u, request=request)
         
         # user_profile_model = _resolve_model
-        new_user.is_staff=True
+        # new_user.is_staff=True
         UserProfile.objects.create(user=u)
-        return new_user
+        return u
 
 
 

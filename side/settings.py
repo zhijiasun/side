@@ -41,6 +41,7 @@ INSTALLED_APPS = (
     'crispy_forms',
     'reversion',
     'rest_framework',
+    'rest_framework.authtoken',
     'epm',
     'xcms',
     'import_export',
@@ -99,6 +100,7 @@ MEDIA_URL = '/media/'
 
 REST_FRAMEWORK = {
     #'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAdminUser',),
+    'DEFAULT_RENDERER_CLASSES':('rest_framework.renderers.UnicodeJSONRenderer',),
     'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAuthenticatedOrReadOnly',),
     'DEFAULT_AUTHENTICATION_CLASSES':('rest_framework.authentication.SessionAuthentication',),
     'PAGINATE_BY': 10
