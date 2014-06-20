@@ -300,16 +300,12 @@ class Test(models.Model):
 
     def save(self):
         super(Test,self).save()
-        print self.pic.path
         base, ext = os.path.splitext(os.path.basename(self.pic.path))
-        print base,ext
-        thumb_path = os.path.join(MEDIA_ROOT, base + '.thumb' + ext)
-        print os.path.join(MEDIA_ROOT, self.pic.name)
-        thumb_pixbuf = make_thumb(os.path.join(MEDIA_ROOT, self.pic.name))
-        print '###############'
-        # thumb_pixbuf = make_thumb(self.pic.path)
+        thumb_path = os.path.join(MEDIA_ROOT, base + '_thumb' + ext)
+        thumb_path1 = os.path.join(base + '_thumb' + ext)
+        thumb_pixbuf = make_thumb(self.pic.path)
         thumb_pixbuf.save(thumb_path)
-        self.thumb = ImageFieldFile(self,self.thumb,thumb_path)
+        self.thumb = ImageFieldFile(self,self.thumb,thumb_path1)
         super(Test,self).save()
 
 
