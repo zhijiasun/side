@@ -35,7 +35,8 @@ urlpatterns = patterns('',
     url(r'^dangjian/laoshanparty/v1/',include('epm.urls')),
     url(r'accounts/', include('django.contrib.auth.urls')),
     url(r'accounts/',include('registration.backends.default.urls')),
-    url(r'^rest-auth/', include('rest_auth.urls')),
+    # url(r'^rest-auth/', include('rest_auth.urls')),
+    url(r'^dangjian/laoshanparty/v1/', include('rest_auth.urls')),
 )
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

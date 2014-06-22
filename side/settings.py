@@ -111,6 +111,8 @@ REST_FRAMEWORK = {
 REST_REGISTRATION_BACKEND = 'epm.views.RegistrationView'#we can define our own View
 REST_PROFILE_MODULE = 'epm.UserProfile'#here we can define our own UserProfile
 
+AUTH_PROFILE_MODULE='epm.UserProfile'
+
 LOGGING = {
         'version':1,
 }
