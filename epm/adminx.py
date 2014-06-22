@@ -52,14 +52,14 @@ class PartyAdmin(object):
     list_display = ('party_name','secretary_name','secretary_phone','member_number','responsible_name','related_enter','responsible_phone')
     list_filter = ('party_name','member_number')
     actions = [MyAction,]
-    reversion_enable = True
+    # reversion_enable = True
 
 
 class MemberAdmin(object):
 
     list_display = ('member_name','member_gender','member_worktime','member_enter_name','member_party_name')
     list_filter = ('member_name','member_gender','member_worktime')
-    reversion_enable = True
+    # reversion_enable = True
 
 class UserProfileAdmin(object):
     list_display = ('user','is_verified')
@@ -67,51 +67,51 @@ class UserProfileAdmin(object):
 class PioneerAdmin(object):
     list_display = ('pioneer_id','pioneer_title','pioneer_date','pioneer_author','pioneer_content')
     list_filter = ('pioneer_title','pioneer_date','pioneer_author','pioneer_content')
-    reversion_enable = True
+    # reversion_enable = True
 
 
 class LifeTipsAdmin(object):
     list_display = ('lifetips_id','lifetips_title','lifetips_date','lifetips_author','lifetips_content')
     list_filter = ('lifetips_id','lifetips_title','lifetips_date','lifetips_author','lifetips_content')
-    reversion_enable = True
+    # reversion_enable = True
 
 class PartyWorkAdmin(object):
     list_display = ('partywork_id','partywork_title','partywork_date','partywork_author','partywork_content')
     list_filter = ('partywork_id','partywork_title','partywork_date','partywork_author','partywork_content')
 
-    reversion_enable = True
+    # reversion_enable = True
 
 
 class NoticeAdmin(object):
     list_display = ('notice_id','notice_title','notice_date','notice_author','notice_content')
     list_filter = ('notice_id','notice_title','notice_date','notice_author','notice_content')
 
-    reversion_enable = True
+    # reversion_enable = True
 
 
 class SpiritAdmin(object):
     list_display = ('spirit_id','spirit_title','spirit_date','spirit_author','spirit_content')
     list_filter = ('spirit_id','spirit_title','spirit_date','spirit_author','spirit_content')
 
-    reversion_enable = True
+    # reversion_enable = True
 
 class PolicyAdmin(object):
     list_display = ('policy_id','policy_title','policy_date','policy_author','policy_content')
     list_filter = ('policy_id','policy_title','policy_date','policy_author','policy_content')
 
-    reversion_enable = True
+    # reversion_enable = True
     
 class BusinessProcessAdmin(object):
     list_display = ('process_id','process_title','process_date','process_author','process_content')
     list_filter = ('process_id','process_title','process_date','process_author','process_content')
 
-    reversion_enable = True
+    # reversion_enable = True
 
 class QuestionAdmin(object):
     list_display = ('question_id','question_title','question_date','question_author','question_content')
     list_filter = ('question_id','question_title','question_date','question_author','question_content')
 
-    reversion_enable = True
+    # reversion_enable = True
 
 class ListSetting(object):
     object_list_template = 'new.html'

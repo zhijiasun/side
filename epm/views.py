@@ -81,26 +81,37 @@ class TestViewSet(viewsets.ModelViewSet):
         return Response(tserializer.data)
 
 
-def get_result(model, modelSerializer, **kwargs):
-    if isinstance(model,models.Model):
-        startTime = time.localtime(float(kwargs.get('startTime',0)))
-        startTime = datetime.datetime.fromtimestamp(time.mktime(startTime))
+def get_result(model, modelSerializer,kwargs):
 
-        if 'endTime' in kwargs.keys():
-            endTime = time.localtime(float(kwargs.get('endTime')))
-            endTime = datetime.datetime.fromtimestamp(time.mktime(endTime))
-        else:
-            endTime = datetime.datetime.now()
+    print model,modelSerializer,kwargs
+    startTime = time.localtime(float(kwargs.get('startTime',0)))
+    startTime = datetime.datetime.fromtimestamp(time.mktime(startTime))
 
-        ###???? shoud change this line
-        obj = model.objects.filter(pioneer_date__gte=startTime).filter(pioneer_date__lte=endTime)
-        maxCount = int(kwargs.get('maxCount',10))
-        offset = int(kwargs.get('offset',0))
+    if 'endTime' in kwargs.keys():
+        endTime = time.localtime(float(kwargs.get('endTime')))
+        endTime = datetime.datetime.fromtimestamp(time.mktime(endTime))
+    else:
+        endTime = datetime.datetime.now()
 
-        obj = obj[offset:offset+maxCount]
-        objs = modelSerializer(obj,many=True)
-        result = {"result":"0000","message":"xxxx","data":objs.data}
-        return result
+    ###???? shoud change this line
+    obj = model.objects.filter(pioneer_date__gte=startTime).filter(pioneer_date__lte=endTime)
+    print obj
+    maxCount = int(kwargs.get('maxCount',10))
+    offset = int(kwargs.get('offset',0))
+    print obj
+
+    obj = obj[offset:offset+maxCount]
+    print obj
+    objs = modelSerializer(obj,many=True)
+    print objs.data
+    result = {"result":"0000","message":"Successfully get content","data":objs.data}
+    # if objs.is_valid():
+    #     result = {"result":"0000","message":"Successfully get content","data":objs.data}
+    #     print result
+    # else:
+    #     result = {"result":"0001","message":"Get content error!","data":objs.errors}
+    #     print result
+    return result
 
 
 @api_view(['GET','POST'])
