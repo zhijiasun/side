@@ -88,6 +88,30 @@ class TestViewSet(viewsets.ModelViewSet):
         return Response(tserializer.data)
 
 
+@api_view(['POST'])
+@authentication_classes((SessionAuthentication, BasicAuthentication))
+@permission_classes((IsAuthenticated,))
+def member_verify(request):
+    if request.method == 'POST':
+        result = {"result":"0001", "message": "invalid request","is_verified":"False"}
+        name = request.DATA.get('real_name','')
+        idcard = request.DATA.get('real_idcard','')
+        print request.DATA
+        if name and idcard:
+            print name,idcard
+            m = member.objects.filter(id_card=idcard)
+            print m
+            if len(m) is 1:
+                u = UserProfile.objects.get(user=request.user)
+                u.is_verified = True
+                u.save()
+                result['is_verified']="True"
+                result['result']='0000'
+                result['message']='OK'
+                return Response(result,status = status.HTTP_200_OK)
+        return Response(result,status=status.HTTP_400_BAD_REQUEST)
+
+
 def party_list(request):
     pass
 
@@ -102,10 +126,12 @@ def enter_list(request):
 def member_list(request):
     if request.method == 'GET':
         print request.user
-        app = request.user.app_user
-        if app.is_verified:
+        appuser = request.user.app_user.all()
+        print type(appuser)
+        print dir(appuser)
+        if appuser[0].is_verified:
             try:
-                m = member.objects.get(member_idcard = app.real_idcard)
+                m = member.objects.get(id_card = appuser[0].real_idcard)
             except ObjectDoesNotExist:
                 print 'object does not exist'
             ms = MemberSerializer(m)

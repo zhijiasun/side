@@ -10,4 +10,6 @@ urlpatterns = patterns('',
     url(r'^policy$',views.policy_list),
     url(r'^spirit$',views.spirit_list),
     url(r'^notice$',views.notice_list),
+    url(r'^member/verify/$',views.member_verify),
+    url(r'^member/$',views.member_list),
 )
