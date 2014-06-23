@@ -158,7 +158,7 @@ class member(models.Model):
 
 
 class UserProfile(models.Model):
-    user = models.ForeignKey(User, unique=True)
+    user = models.ForeignKey(User, unique=True, related_name='app_user')
     # member_info = models.OneToOneField(member,blank=True,null=True)
     # need to consider what is content of the table ?
     # real_name and real_idcard is the field that user should commit
@@ -180,6 +180,7 @@ class Pioneer(models.Model):
     pioneer_date = models.DateTimeField(u'创建日期',auto_now_add=True)
     pioneer_author = models.CharField(u'作者',max_length=30)
     pioneer_content = models.TextField(u'内容')
+    pioneer_pic = models.ImageField(upload_to='upload/',blank=True,verbose_name=u"图片")
 
     class Meta:
         verbose_name = u'党务先锋'

@@ -24,6 +24,7 @@ from registration.views import RegistrationView as BaseRegistrationView
 from registration import signals
 from rest_framework.serializers import _resolve_model
 from django.contrib.auth import authenticate,login
+from django.core.exceptions import ObjectDoesNotExist
 
 # Create your views here.
 
@@ -47,6 +48,12 @@ class RegistrationView(BaseRegistrationView):
         return u
 
 
+class IsVerified(permissions.BasePermission):
+
+    def has_object_permission(self, request, view, obj):
+        print 'obj is:',type(obj)
+        print obj.app_user
+        print request.user
 
 class UserViewSet(viewsets.ModelViewSet):
 	queryset = User.objects.all()
@@ -81,6 +88,31 @@ class TestViewSet(viewsets.ModelViewSet):
         return Response(tserializer.data)
 
 
+def party_list(request):
+    pass
+
+
+def enter_list(request):
+    pass
+
+
+@api_view(['GET','POST'])
+@authentication_classes((SessionAuthentication, BasicAuthentication))
+@permission_classes((IsAuthenticated,))
+def member_list(request):
+    if request.method == 'GET':
+        print request.user
+        app = request.user.app_user
+        if app.is_verified:
+            try:
+                m = member.objects.get(member_idcard = app.real_idcard)
+            except ObjectDoesNotExist:
+                print 'object does not exist'
+            ms = MemberSerializer(m)
+            result = {"result":"0000","message":"","data":ms.data}
+            return Response(result,status = status.HTTP_200_OK)
+
+
 def get_result(model, modelSerializer,kwargs):
 
     print model,modelSerializer,kwargs
@@ -112,6 +144,8 @@ def get_result(model, modelSerializer,kwargs):
     #     result = {"result":"0001","message":"Get content error!","data":objs.errors}
     #     print result
     return result
+
+
 
 
 @api_view(['GET','POST'])
@@ -177,6 +211,106 @@ def lifetips_list(request):
     elif request.method == 'POST':
         print 'Method is POST'
     return Response(result,status = status.HTTP_200_OK)
+
+
+@api_view(['GET','POST'])
+@authentication_classes((SessionAuthentication, BasicAuthentication))
+@permission_classes((IsAuthenticated,))
+def notice_list(request):
+    """
+    support four parameters in request.GET
+    startTime -- the start time of the record
+    endTime -- the end time of the record
+    maxCount -- the max number of the results
+    offset -- offset of the results
+    """
+    if request.method == 'GET':
+        startTime = time.localtime(float(request.GET.get('startTime',0)))
+        # endTime = time.localtime(float(request.GET.get('endTime',datetime.datetime.now().microsecond)))
+        startTime = datetime.datetime.fromtimestamp(time.mktime(startTime))
+        if 'endTime' in request.GET.keys():
+            endTime = time.localtime(float(request.GET.get('endTime')))
+            endTime = datetime.datetime.fromtimestamp(time.mktime(endTime))
+        else:
+            endTime = datetime.datetime.now()
+        p = Notice.objects.filter(notice_date__gte=startTime).filter(notice_date__lte=endTime)
+
+        maxCount = int(request.GET.get('maxCount',10))
+        offset = int(request.GET.get('offset',0))
+
+        p = p[offset:offset+maxCount]
+        pa = NoticeSerializer(p,many=True)
+        result = {"result":"0000","message":"xxxx","data":pa.data}
+    elif request.method == 'POST':
+        print 'Method is POST'
+    return Response(result,status = status.HTTP_200_OK)
+
+
+@api_view(['GET','POST'])
+@authentication_classes((SessionAuthentication, BasicAuthentication))
+@permission_classes((IsAuthenticated,))
+def spirit_list(request):
+    """
+    support four parameters in request.GET
+    startTime -- the start time of the record
+    endTime -- the end time of the record
+    maxCount -- the max number of the results
+    offset -- offset of the results
+    """
+    if request.method == 'GET':
+        startTime = time.localtime(float(request.GET.get('startTime',0)))
+        # endTime = time.localtime(float(request.GET.get('endTime',datetime.datetime.now().microsecond)))
+        startTime = datetime.datetime.fromtimestamp(time.mktime(startTime))
+        if 'endTime' in request.GET.keys():
+            endTime = time.localtime(float(request.GET.get('endTime')))
+            endTime = datetime.datetime.fromtimestamp(time.mktime(endTime))
+        else:
+            endTime = datetime.datetime.now()
+        p = Spirit.objects.filter(spirit_date__gte=startTime).filter(spirit_date__lte=endTime)
+
+        maxCount = int(request.GET.get('maxCount',10))
+        offset = int(request.GET.get('offset',0))
+
+        p = p[offset:offset+maxCount]
+        pa = SpiritSerializer(p,many=True)
+        result = {"result":"0000","message":"xxxx","data":pa.data}
+    elif request.method == 'POST':
+        print 'Method is POST'
+    return Response(result,status = status.HTTP_200_OK)
+
+
+@api_view(['GET','POST'])
+@authentication_classes((SessionAuthentication, BasicAuthentication))
+@permission_classes((IsAuthenticated,))
+def policy_list(request):
+    """
+    support four parameters in request.GET
+    startTime -- the start time of the record
+    endTime -- the end time of the record
+    maxCount -- the max number of the results
+    offset -- offset of the results
+    """
+    if request.method == 'GET':
+        startTime = time.localtime(float(request.GET.get('startTime',0)))
+        # endTime = time.localtime(float(request.GET.get('endTime',datetime.datetime.now().microsecond)))
+        startTime = datetime.datetime.fromtimestamp(time.mktime(startTime))
+        if 'endTime' in request.GET.keys():
+            endTime = time.localtime(float(request.GET.get('endTime')))
+            endTime = datetime.datetime.fromtimestamp(time.mktime(endTime))
+        else:
+            endTime = datetime.datetime.now()
+        p = Policy.objects.filter(policy_date__gte=startTime).filter(policy_date__lte=endTime)
+
+        maxCount = int(request.GET.get('maxCount',10))
+        offset = int(request.GET.get('offset',0))
+
+        p = p[offset:offset+maxCount]
+        pa = PolicySerializer(p,many=True)
+        result = {"result":"0000","message":"xxxx","data":pa.data}
+    elif request.method == 'POST':
+        print 'Method is POST'
+    return Response(result,status = status.HTTP_200_OK)
+
 
 @api_view(['POST'])
 @csrf_exempt

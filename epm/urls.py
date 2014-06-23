@@ -7,4 +7,7 @@ urlpatterns = patterns('',
     # url(r'^users/register',views.create_user),
     url(r'^pioneer$',views.pioneer_list),
     url(r'^lifetips$',views.lifetips_list),
+    url(r'^policy$',views.policy_list),
+    url(r'^spirit$',views.spirit_list),
+    url(r'^notice$',views.notice_list),
 )

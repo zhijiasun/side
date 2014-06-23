@@ -19,7 +19,7 @@ from django import forms
 #         model = Jason
 
 class TestAdmin(CommAdminView):
-    list_display = ('party_name','member_number','contact_info','attachment','pic')
+    list_display = ('party_name','member_number','contact_info','attachment','pic','thumb')
     list_filter = ('party_name','member_number','contact_info')
 
     # def save_models(self):

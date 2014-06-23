@@ -40,9 +40,14 @@ class TestSerializer(serializers.HyperlinkedModelSerializer):
         fields = ['party_id','party_name','member_number','contact_info']
 
 class PioneerSerializer(serializers.ModelSerializer):
+    image_url = serializers.SerializerMethodField('get_image_url')
     class Meta:
         model = Pioneer
-        fields = ['pioneer_title','pioneer_date','pioneer_author']
+        fields = ['pioneer_title','pioneer_date','pioneer_author','pioneer_pic']
+
+
+    def get_image_url(self,obj):
+        return obj.pioneer_pic.path
 
 
 class LifeTipsSerializer(serializers.ModelSerializer):
