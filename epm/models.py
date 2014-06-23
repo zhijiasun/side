@@ -158,8 +158,8 @@ class member(models.Model):
 
 
 class UserProfile(models.Model):
-    user = models.OneToOneField(User, unique=True)
-    member_info = models.OneToOneField(member,blank=True,null=True)
+    user = models.ForeignKey(User, unique=True)
+    # member_info = models.OneToOneField(member,blank=True,null=True)
     # need to consider what is content of the table ?
     # real_name and real_idcard is the field that user should commit
     # and through member_info to find the registerd info to verify
