@@ -291,7 +291,7 @@ class Question(models.Model):
     question_date = models.DateTimeField(u'创建日期',auto_now_add=True)
     question_author = models.CharField(u'作者',max_length=30)
     question_content = models.TextField(u'咨询内容')
-    question_answer = models.TextField(u'咨询回复',blank=True,null=True)
+    question_answer = models.TextField(u'咨询回复',blank=True,null=True,default=u'未回复')
     is_published = models.BooleanField(default=False)
 
     class Meta:

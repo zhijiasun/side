@@ -12,4 +12,6 @@ urlpatterns = patterns('',
     url(r'^notice$',views.notice_list),
     url(r'^member/verify/$',views.member_verify),
     url(r'^member/$',views.member_list),
+    # url(r'^question/$',views.raise_question),
+    url(r'^questions$',views.question_list),
 )

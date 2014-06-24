@@ -78,3 +78,9 @@ class PolicySerializer(serializers.ModelSerializer):
     class Meta:
         model = Policy
         fields = ['policy_title','policy_date','policy_author']
+
+
+class QuestionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Question
+        fields = ['question_title','question_date','question_author','question_content','question_answer','is_published']

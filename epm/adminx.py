@@ -52,7 +52,7 @@ class PartyAdmin(object):
     list_display = ('party_name','secretary_name','secretary_phone','member_number','responsible_name','related_enter','responsible_phone')
     list_filter = ('party_name','member_number')
     actions = [MyAction,]
-    # reversion_enable = True
+    reversion_enable = True
 
 
 class MemberAdmin(object):
@@ -72,7 +72,7 @@ class PioneerAdmin(object):
     list_display = ('pioneer_id','pioneer_title','pioneer_date','pioneer_author','pioneer_content')
     list_filter = ('pioneer_title','pioneer_date','pioneer_author','pioneer_content')
     inlines = [PioneerImageAdmin]
-    # reversion_enable = True
+    reversion_enable = True
 
 
 class LifeTipsAdmin(object):
