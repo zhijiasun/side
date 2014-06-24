@@ -173,14 +173,13 @@ class UserProfile(models.Model):
         verbose_name_plural = u'APP用户'
 
 
-
 class Pioneer(models.Model):
     pioneer_id = models.AutoField(primary_key=True,auto_created=True)
     pioneer_title = models.CharField(u'标题',max_length=10)
     pioneer_date = models.DateTimeField(u'创建日期',auto_now_add=True)
     pioneer_author = models.CharField(u'作者',max_length=30)
     pioneer_content = models.TextField(u'内容')
-    pioneer_pic = models.ImageField(upload_to='upload/',blank=True,verbose_name=u"图片")
+    # pioneer_pic = models.ImageField(upload_to='upload/',blank=True,verbose_name=u"图片")
 
     class Meta:
         verbose_name = u'党务先锋'
@@ -188,6 +187,16 @@ class Pioneer(models.Model):
 
     def __unicode__(self):
         return self.pioneer_title
+
+
+class PioneerImage(models.Model):
+    pioneer = models.ForeignKey(Pioneer,related_name='pioneer_images', verbose_name=u"附图")
+    pic = models.ImageField(upload_to='upload/',blank=True,verbose_name=u"图片")
+
+    class Meta:
+        verbose_name = u'党务先锋附图'
+        verbose_name_plural = u'党务先锋附图'
+
 
 class LifeTips(models.Model):
     lifetips_id = models.AutoField(primary_key=True,auto_created=True)
@@ -202,6 +211,7 @@ class LifeTips(models.Model):
 
     def __unicode__(self):
         return self.lifetips_title
+
 
 class PartyWork(models.Model):
     partywork_id = models.AutoField(primary_key=True,auto_created=True)

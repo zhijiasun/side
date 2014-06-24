@@ -1,3 +1,5 @@
+curl -X POST -d "username=test" -d "password=123456" -d "email=test@centling.com" http://115.28.79.151:8081/dangjian/laoshanparty/v1/register/
+
 curl -X POST -d "username=test" -d "password=123456" -H {'Content-type':'application/json'} http://127.0.0.1:8000/dangjian/laoshanparty/v1/login/
 
 curl -X POST -d "real_name=test" -d "real_idcard=370214" -u uesrname:password http://127.0.0.1:8000/dangjian/laoshanparty/v1/member/verify/ -H 'Authorization: Token d8ff99773091eb3cc7ce738bffd405a08002f775'
