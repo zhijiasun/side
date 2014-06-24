@@ -25,6 +25,7 @@ from registration import signals
 from rest_framework.serializers import _resolve_model
 from django.contrib.auth import authenticate,login
 from django.core.exceptions import ObjectDoesNotExist
+import csv
 
 # Create your views here.
 
@@ -461,10 +462,20 @@ class ImportAdminView(ImportMixin,CreateAdminView):
         return context
 
     def post(self,request,*args,**kwargs):
+        """
+        here we can process the imported file,we can easily get the related model
+        """
         print '############'
         print self.model
         print '############'
-        print dir(self)
+        print request.FILES
+        f = request.FILES['import_file']
+        datareader = csv.reader(f)
+        print datareader
+        line = f.readline()
+        print line
+        for row in datareader:
+            print row
         return HttpResponseRedirect('/xadmin/')
 
 
@@ -474,7 +485,10 @@ def process_import(request):
     print request.FILES
     if request.POST:
         f = request.FILES['file']
+        datareader = csv.reader(f)
+        print datareader
         line = f.readline()
-        while True:
-            print '---------------------'
+        print line
+        for row in datareader:
+            print row
     return HttpResponseRedirect('/xadmin/')
