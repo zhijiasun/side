@@ -1,4 +1,9 @@
 #coding:utf-8
+PROCESS_TYPE = (
+        (1,u'我要入党'),
+        (2,u'我要成立党支部'),
+        (3,u'民主生活评议备案'),
+        )
 PARTY_ATTRIBUTE = (
         (1,u'党委'),        
         (2,u'党总支部'),        

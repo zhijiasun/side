@@ -107,8 +107,8 @@ class PolicyAdmin(object):
     # reversion_enable = True
     
 class BusinessProcessAdmin(object):
-    list_display = ('process_id','process_title','process_date','process_author','process_content')
-    list_filter = ('process_id','process_title','process_date','process_author','process_content')
+    list_display = ('process_id','process_title','process_date','process_author','process_content','process_type')
+    list_filter = ('process_id','process_title','process_date','process_author','process_content','process_type')
 
     # reversion_enable = True
 

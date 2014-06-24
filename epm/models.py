@@ -273,8 +273,10 @@ class BusinessProcess(models.Model):
     process_id = models.AutoField(primary_key=True,auto_created=True)
     process_title = models.CharField(u'标题',max_length=10)
     process_date = models.DateTimeField(u'创建日期',auto_now_add=True)
+    process_type = models.IntegerField(u'流程类型',choices =PROCESS_TYPE)
     process_author = models.CharField(u'作者',max_length=30)
     process_content = models.TextField(u'内容')
+    process_file = models.FileField(upload_to='upload/',blank=True,null=True,verbose_name=u'附件')
 
     class Meta:
         verbose_name = u'业务办理流程'
@@ -289,6 +291,7 @@ class Question(models.Model):
     question_date = models.DateTimeField(u'创建日期',auto_now_add=True)
     question_author = models.CharField(u'作者',max_length=30)
     question_content = models.TextField(u'咨询内容')
+    question_answer = models.TextField(u'咨询回复',blank=True,null=True)
     is_published = models.BooleanField(default=False)
 
     class Meta:
