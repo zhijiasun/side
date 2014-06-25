@@ -470,6 +470,8 @@ class ImportAdminView(ImportMixin,CreateAdminView):
         print '############'
         print request.FILES
         f = request.FILES['import_file']
+        mycsv = PartyModel.import_data(f)
+        print mycsv
         datareader = csv.reader(f)
         print datareader
         line = f.readline()

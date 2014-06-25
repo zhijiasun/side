@@ -13,6 +13,7 @@ from PIL import Image
 from side.settings import MEDIA_ROOT
 from django.db.models.fields.files import ImageFieldFile
 from django.contrib.auth.models import User
+from adaptor.model import CsvDbModel
 
 
 def make_thumb(path,size = 480):
@@ -68,6 +69,11 @@ class party(models.Model):
     def related_members(self):
         members = self.membersAtParty.all()
         return members
+
+class PartyModel(CsvDbModel):
+    class Meta:
+        dbModel = party
+        delimiter = ","
 
 
 class enterprise(models.Model):
