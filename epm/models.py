@@ -294,8 +294,9 @@ class BusinessProcess(models.Model):
 class Question(models.Model):
     question_id = models.AutoField(primary_key=True,auto_created=True)
     question_title = models.CharField(u'标题',max_length=10,default=u'问题咨询')
-    question_date = models.DateTimeField(u'创建日期',auto_now_add=True)
-    question_author = models.CharField(u'作者',max_length=30)
+    create_time = models.DateTimeField(u'创建日期',auto_now_add=True)
+    reply_time = models.DateTimeField(u'回复时间')
+    question_author = models.ForeignKey(UserProfile,unique=True)
     question_content = models.TextField(u'咨询内容')
     question_answer = models.TextField(u'咨询回复',blank=True,null=True,default=u'未回复')
     is_published = models.BooleanField(default=False)
@@ -306,6 +307,13 @@ class Question(models.Model):
 
     def __unicode__(self):
         return self.question_title
+
+    def save(self):
+        """
+        reply_time equals to the time that when the is_published set to true.
+        Otherwise reply_time equals to create_time
+        """
+        pass
 
 class Test(models.Model):
     party_id = models.AutoField(primary_key=True,auto_created=True)

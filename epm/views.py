@@ -176,8 +176,8 @@ def get_result(model, modelSerializer,kwargs):
 
 
 @api_view(['GET','POST'])
-@authentication_classes((SessionAuthentication, BasicAuthentication))
-@permission_classes((IsAuthenticated,))
+# @authentication_classes((SessionAuthentication, BasicAuthentication))
+# @permission_classes((IsAuthenticated,))
 def pioneer_list(request):
     """
     support four parameters in request.GET
@@ -208,8 +208,8 @@ def pioneer_list(request):
     return Response(result,status = status.HTTP_200_OK)
 
 @api_view(['GET','POST'])
-@authentication_classes((SessionAuthentication, BasicAuthentication))
-@permission_classes((IsAuthenticated,))
+# @authentication_classes((SessionAuthentication, BasicAuthentication))
+# @permission_classes((IsAuthenticated,))
 def lifetips_list(request):
     """
     support four parameters in request.GET
@@ -274,8 +274,8 @@ def notice_list(request):
 
 
 @api_view(['GET','POST'])
-@authentication_classes((SessionAuthentication, BasicAuthentication))
-@permission_classes((IsAuthenticated,))
+# @authentication_classes((SessionAuthentication, BasicAuthentication))
+# @permission_classes((IsAuthenticated,))
 def spirit_list(request):
     """
     support four parameters in request.GET
@@ -307,8 +307,8 @@ def spirit_list(request):
 
 
 @api_view(['GET','POST'])
-@authentication_classes((SessionAuthentication, BasicAuthentication))
-@permission_classes((IsAuthenticated,))
+# @authentication_classes((SessionAuthentication, BasicAuthentication))
+# @permission_classes((IsAuthenticated,))
 def policy_list(request):
     """
     support four parameters in request.GET
@@ -340,8 +340,8 @@ def policy_list(request):
 
 
 @api_view(['GET','POST'])
-@authentication_classes((SessionAuthentication, BasicAuthentication))
-@permission_classes((IsAuthenticated,))
+# @authentication_classes((SessionAuthentication, BasicAuthentication))
+# @permission_classes((IsAuthenticated,))
 def question_list(request):
     """
     support four parameters in request.GET
@@ -374,7 +374,6 @@ def question_list(request):
 @api_view(['POST'])
 @csrf_exempt
 def create_user(request):
-    print 'aaaaaaaaaaaa'
     serialized = MyUserSerializer(data=request.DATA)
     if serialized.is_valid():
         print dir(serialized)
