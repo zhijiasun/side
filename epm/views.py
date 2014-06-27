@@ -189,7 +189,7 @@ def submit_question(request,username):
         return Response(result,status = status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['GET','POST'])
+@api_view(['GET'])
 # @authentication_classes((SessionAuthentication, BasicAuthentication))
 # @permission_classes((IsAuthenticated,))
 def member_info(request, username):
@@ -204,6 +204,15 @@ def member_info(request, username):
                 return Response(result,status = status.HTTP_200_OK)
         result = {"errCode":10009, "errDesc":"failed to get member info"}
         return Response(result,status = status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET','POST'])
+def party_info(request,username):
+    # if request.method == 'GET':
+    #     users = User.objects.filter(username=username)
+    #     if users:
+    #         appuser = users[0].app_user.all()
+    #         if appuser:
+    pass
 
 
 def get_result(model, modelSerializer,kwargs):

@@ -69,15 +69,15 @@ class PioneerImageAdmin(object):
     extra = 1
 
 class PioneerAdmin(object):
-    list_display = ('pioneer_id','pioneer_title','pioneer_date','pioneer_author','pioneer_content')
+    list_display = ('pioneer_title','pioneer_date','pioneer_author','pioneer_content')
     list_filter = ('pioneer_title','pioneer_date','pioneer_author','pioneer_content')
     inlines = [PioneerImageAdmin]
     reversion_enable = True
 
 
 class LifeTipsAdmin(object):
-    list_display = ('lifetips_id','lifetips_title','lifetips_date','lifetips_author','lifetips_content')
-    list_filter = ('lifetips_id','lifetips_title','lifetips_date','lifetips_author','lifetips_content')
+    list_display = ('lifetips_title','lifetips_date','lifetips_author','lifetips_content')
+    list_filter = ('lifetips_title','lifetips_date','lifetips_author','lifetips_content')
     # reversion_enable = True
 
 class PartyWorkAdmin(object):
