@@ -174,7 +174,7 @@ class UserProfile(models.Model):
     real_idcard = models.CharField(u'认证身份证号', max_length=20, blank=True, null=True)
     real_organization = models.CharField(u'认证党组织',max_length=120,blank=True, null=True)
     is_verified = models.BooleanField(u'是否已认证', default=False)
-    is_manager = models.BooleanField(u'是否是党组织管理员', default=False)
+    is_manager = models.IntegerField(u'是否是党组织管理员', default=1,choices=VERIFY_PROCESS)
 
     class Meta:
         verbose_name = u'APP用户'

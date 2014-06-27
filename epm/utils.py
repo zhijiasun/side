@@ -1,4 +1,9 @@
 #coding:utf-8
+VERIFY_PROCESS = (
+        (1,u'正在审核'),
+        (2,u'审核已通过'),
+        (3,u'审核未通过'),
+        )
 QUESTION_TYPE = (
         (1,u'企业党建'),
         (2,u'技改创新'),
