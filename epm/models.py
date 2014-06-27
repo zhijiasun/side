@@ -14,6 +14,7 @@ from side.settings import MEDIA_ROOT
 from django.db.models.fields.files import ImageFieldFile
 from django.contrib.auth.models import User
 from adaptor.model import CsvDbModel
+import datetime
 
 
 def make_thumb(path,size = 480):
@@ -298,8 +299,8 @@ class Question(models.Model):
     question_id = models.AutoField(primary_key=True,auto_created=True)
     question_title = models.CharField(u'标题',max_length=10,default=u'问题咨询')
     create_time = models.DateTimeField(u'创建日期',auto_now_add=True)
-    reply_time = models.DateTimeField(u'回复时间')
-    question_author = models.ForeignKey(UserProfile,unique=True)
+    reply_time = models.DateTimeField(u'回复时间', auto_now_add=True)
+    question_author = models.ForeignKey(User,unique=True,verbose_name=u'提问者',related_name='user_questions')
     question_type = models.IntegerField(u'问题类型', default=1, choices=QUESTION_TYPE)
     question_content = models.TextField(u'咨询内容')
     question_answer = models.TextField(u'咨询回复',blank=True,null=True,default=u'未回复')
@@ -312,12 +313,15 @@ class Question(models.Model):
     def __unicode__(self):
         return self.question_title
 
-    def save(self):
+    def save(self,*args,**kwargs):
         """
         reply_time equals to the time that when the is_published set to true.
         Otherwise reply_time equals to create_time
         """
-        pass
+        if self.is_published:
+            self.reply_time = datetime.datetime.now()
+            
+        super(Question,self).save(*args,**kwargs)
 
 class Test(models.Model):
     party_id = models.AutoField(primary_key=True,auto_created=True)

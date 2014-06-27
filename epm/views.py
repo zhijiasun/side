@@ -171,6 +171,24 @@ def enter_list(request):
     pass
 
 
+@api_view(['POST'])
+def submit_question(request,username):
+    if request.method == 'POST':
+        users = User.objects.filter(username=username)
+        result = {'errCode':10009,'errDesc':'failed to submit question'}
+        if users:
+            question_type = request.POST.get('question_type','')
+            question_content = request.POST.get('question_content','')
+            print question_type,question_content
+            if question_type and question_content:
+                q = Question.objects.create(question_type=question_type,question_content=question_content,question_author=users[0])
+                q.save()
+                result['errCode']=10000
+                result['errDesc']='successfully submit question'
+                return Response(result,status = status.HTTP_200_OK)
+        return Response(result,status = status.HTTP_400_BAD_REQUEST)
+
+
 @api_view(['GET','POST'])
 # @authentication_classes((SessionAuthentication, BasicAuthentication))
 # @permission_classes((IsAuthenticated,))
@@ -455,10 +473,10 @@ def policy_list(request):
     return Response(result,status = status.HTTP_200_OK)
 
 
-@api_view(['GET','POST'])
+@api_view(['GET'])
 # @authentication_classes((SessionAuthentication, BasicAuthentication))
 # @permission_classes((IsAuthenticated,))
-def question_list(request):
+def question_list(request,username):
     """
     support four parameters in request.GET
     startTime -- the start time of the record
@@ -467,22 +485,25 @@ def question_list(request):
     offset -- offset of the results
     """
     if request.method == 'GET':
-        startTime = time.localtime(float(request.GET.get('startTime',0)))
-        # endTime = time.localtime(float(request.GET.get('endTime',datetime.datetime.now().microsecond)))
-        startTime = datetime.datetime.fromtimestamp(time.mktime(startTime))
-        if 'endTime' in request.GET.keys():
-            endTime = time.localtime(float(request.GET.get('endTime')))
-            endTime = datetime.datetime.fromtimestamp(time.mktime(endTime))
-        else:
-            endTime = datetime.datetime.now()
-        p = Question.objects.filter(question_date__gte=startTime).filter(question_date__lte=endTime)
+        users = User.objects.filter(username=username)
+        result = {"result":10000,"message":"successfully get questions","data":[]}
+        if users:
+            startTime = time.localtime(float(request.GET.get('startTime',0)))
+            # endTime = time.localtime(float(request.GET.get('endTime',datetime.datetime.now().microsecond)))
+            startTime = datetime.datetime.fromtimestamp(time.mktime(startTime))
+            if 'endTime' in request.GET.keys():
+                endTime = time.localtime(float(request.GET.get('endTime')))
+                endTime = datetime.datetime.fromtimestamp(time.mktime(endTime))
+            else:
+                endTime = datetime.datetime.now()
+            p = Question.objects.filter(question_author=users[0]).filter(reply_time__gte=startTime).filter(reply_time__lte=endTime)
 
-        maxCount = int(request.GET.get('maxCount',10))
-        offset = int(request.GET.get('offset',0))
+            maxCount = int(request.GET.get('maxCount',10))
+            offset = int(request.GET.get('offset',0))
 
-        p = p[offset:offset+maxCount]
-        pa = QuestionSerializer(p,many=True)
-        result = {"result":"0000","message":"xxxx","data":pa.data}
+            p = p[offset:offset+maxCount]
+            pa = QuestionSerializer(p,many=True)
+            result['data']=pa.data
     elif request.method == 'POST':
         print 'Method is POST'
     return Response(result,status = status.HTTP_200_OK)
