@@ -83,4 +83,9 @@ class PolicySerializer(serializers.ModelSerializer):
 class QuestionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Question
-        fields = ['question_title','question_date','question_author','question_content','question_answer','is_published']
+        fields = ['question_title','create_time','reply_time','question_author','question_content','question_answer','is_published']
+
+class ProcessSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BusinessProcess
+        fields = ['process_title','process_date','process_type','process_author','process_content']

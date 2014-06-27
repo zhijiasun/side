@@ -113,8 +113,8 @@ class BusinessProcessAdmin(object):
     # reversion_enable = True
 
 class QuestionAdmin(object):
-    list_display = ('question_id','question_title','question_date','question_author','question_content')
-    list_filter = ('question_id','question_title','question_date','question_author','question_content')
+    list_display = ('question_id','question_title','create_time','question_author','question_content')
+    list_filter = ('question_id','question_title','create_time','question_author','question_content')
 
     # reversion_enable = True
 

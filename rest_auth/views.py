@@ -74,6 +74,7 @@ class Login(LoggedOutRESTAPIView, GenericAPIView):
     def post(self, request):
         # Create a serializer with request.DATA
         serializer = self.serializer_class(data=request.DATA)
+        result = {}
 
         if serializer.is_valid():
             # Authenticate the credentials by grabbing Django User object
@@ -89,17 +90,22 @@ class Login(LoggedOutRESTAPIView, GenericAPIView):
 
                     # Return REST Token object with OK HTTP status
                     token, created = self.token_model.objects.get_or_create(user=user)
-                    return Response(self.token_serializer(token).data,
-                                    status=status.HTTP_200_OK)
+                    result['errCode'] = 10000
+                    result['errDesc'] = 'successfully login'
+                    result['data'] = {'is_verified': user.app_user.all()[0].is_verified}
+                    return Response(result, status=status.HTTP_200_OK)
                 else:
-                    return Response({'error': 'This account is disabled.'},
-                                    status=status.HTTP_401_UNAUTHORIZED)
+                    result['errCode'] = 10002
+                    result['errDesc'] = 'This account is disabled.'
+                    return Response(result, status=status.HTTP_401_UNAUTHORIZED)
             else:
-                return Response({'error': 'Invalid Username/Password.'},
-                                status=status.HTTP_401_UNAUTHORIZED)
+                result['errCode'] = 10003
+                result['errDesc'] = 'Invalid Username or Password.'
+                return Response(result, status=status.HTTP_401_UNAUTHORIZED)
         else:
-            return Response(serializer.errors,
-                            status=status.HTTP_400_BAD_REQUEST)
+            result['errCode'] = 10004
+            result['errDesc'] = 'Unknow errors!'
+            return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
 
 class Logout(LoggedInRESTAPIView):
@@ -158,13 +164,13 @@ class Register(LoggedOutRESTAPIView, GenericAPIView):
             RESTRegistrationView().register(request, **data)
 
             # Return the User object with Created HTTP status
-            result['msgCode'] = 10000
-            result['msgDesc'] = 'successfully register'
+            result['errCode'] = 10000
+            result['errDesc'] = 'successfully register'
             return Response(result, status=status.HTTP_201_CREATED)
 
         else:
-            result['msgCode'] = 10001
-            result['msgDesc'] = 'username is already exist'
+            result['errCode'] = 10001
+            result['errDesc'] = 'Invalid post.'
             return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
 

@@ -61,8 +61,9 @@ class UserViewSet(viewsets.ModelViewSet):
 	serializer_class = UserSerializer
 
 class GroupViewSet(viewsets.ModelViewSet):
-	queryset = Group.objects.all()
-	serializer_class = GroupSerializer
+    queryset = Group.objects.all()
+    serializer_class = GroupSerializer
+
 
 class MemberViewSet(viewsets.ModelViewSet):
     queryset = member.objects.all()
@@ -70,12 +71,14 @@ class MemberViewSet(viewsets.ModelViewSet):
 
 
 class EnterpriseViewSet(viewsets.ModelViewSet):
-	queryset = enterprise.objects.all()
-	serializer_class = EnterpriseSerializer
+    queryset = enterprise.objects.all()
+    serializer_class = EnterpriseSerializer
+
 
 class PartyViewSet(viewsets.ModelViewSet):
-	queryset = party.objects.all()
-	serializer_class = PartySerializer
+    queryset = party.objects.all()
+    serializer_class = PartySerializer
+
 
 class TestViewSet(viewsets.ModelViewSet):
     queryset = Test.objects.all()
@@ -90,27 +93,74 @@ class TestViewSet(viewsets.ModelViewSet):
 
 
 @api_view(['POST'])
-@authentication_classes((SessionAuthentication, BasicAuthentication))
-@permission_classes((IsAuthenticated,))
-def member_verify(request):
+def party_verify(request, username):
     if request.method == 'POST':
-        result = {"result":"0001", "message": "invalid request","is_verified":"False"}
-        name = request.DATA.get('real_name','')
-        idcard = request.DATA.get('real_idcard','')
-        print request.DATA
-        if name and idcard:
-            print name,idcard
-            m = member.objects.filter(id_card=idcard)
-            print m
-            if len(m) is 1:
-                u = UserProfile.objects.get(user=request.user)
-                u.is_verified = True
+        result = {}
+        result['errCode']=10007
+        result['errDesc']='submit invalid info'
+        users = User.objects.filter(username=username)
+        if users:
+            name = request.DATA.get('real_name','')
+            idcard = request.DATA.get('real_idcard','')
+            organization = request.DATA.get('party_name','')
+
+            if name and idcard and organization:
+                u = UserProfile.objects.get(user=users[0])
+                u.real_name = name
+                u.real_idcard = idcard
+                u.real_organization = organization
                 u.save()
-                result['is_verified']="True"
-                result['result']='0000'
-                result['message']='OK'
+                result['errCode']=10000
+                result['errDesc']='verifiy ok'
+                return Response(result,status = status.HTTP_200_OK)
+
+        return Response(result, status = status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
+def member_verify(request, username):
+    if request.method == 'POST':
+        result = {}
+        users = User.objects.filter(username=username)
+        if users:
+            name = request.DATA.get('real_name','')
+            idcard = request.DATA.get('real_idcard','')
+            if name and idcard:
+                m = member.objects.filter(id_card=idcard,member_name=name)
+                if len(m) is 1:
+                    u = UserProfile.objects.get(user=users[0])
+                    u.is_verified = True
+                    u.real_name = name
+                    u.real_idcard = idcard
+                    u.save()
+                    result['errCode']=10000
+                    result['errDesc']='verifiy ok'
+                    return Response(result,status = status.HTTP_200_OK)
+
+            result['errCode']=10005
+            result['errDesc']='invalid member info'
+
+        else:
+            result['errCode']=10006
+            result['errDesc']='username:%s does not exist' % username
+        return Response(result,status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+def user_info(request, username):
+    if request.method == 'GET':
+        result = {}
+        result['errCode'] = 10008
+        result['errDesc'] = 'get member info error'
+        users = User.objects.filter(username=username)
+        if users:
+            ups = users[0].app_user.all()
+            if len(ups) is 1:
+                result['errCode'] = 10000
+                result['errDesc'] = 'successfully get member info'
+                result['data'] = {'is_verified':ups[0].is_verified, 'is_manager': ups[0].is_manager}
                 return Response(result,status = status.HTTP_200_OK)
         return Response(result,status=status.HTTP_400_BAD_REQUEST)
+
 
 
 def party_list(request):
@@ -122,22 +172,20 @@ def enter_list(request):
 
 
 @api_view(['GET','POST'])
-@authentication_classes((SessionAuthentication, BasicAuthentication))
-@permission_classes((IsAuthenticated,))
-def member_list(request):
+# @authentication_classes((SessionAuthentication, BasicAuthentication))
+# @permission_classes((IsAuthenticated,))
+def member_info(request, username):
     if request.method == 'GET':
-        print request.user
-        appuser = request.user.app_user.all()
-        print type(appuser)
-        print dir(appuser)
-        if appuser[0].is_verified:
-            try:
-                m = member.objects.get(id_card = appuser[0].real_idcard)
-            except ObjectDoesNotExist:
-                print 'object does not exist'
-            ms = MemberSerializer(m)
-            result = {"result":"0000","message":"","data":ms.data}
-            return Response(result,status = status.HTTP_200_OK)
+        users = User.objects.filter(username=username)
+        if users:
+            appuser = users[0].app_user.all()
+            if appuser[0].is_verified:
+                m = member.objects.filter(id_card = appuser[0].real_idcard, member_name = appuser[0].real_name)
+                ms = MemberSerializer(m)
+                result = {"errCode":10000, "errDesc":"successfully get member info","data":ms.data}
+                return Response(result,status = status.HTTP_200_OK)
+        result = {"errCode":10009, "errDesc":"failed to get member info"}
+        return Response(result,status = status.HTTP_400_BAD_REQUEST)
 
 
 def get_result(model, modelSerializer,kwargs):
@@ -202,7 +250,7 @@ def pioneer_list(request):
 
         p = p[offset:offset+maxCount]
         pa = PioneerSerializer(p,many=True)
-        result = {"result":"0000","message":"xxxx","data":pa.data}
+        result = {"errCode":10000,"errDesc":"get result successfully","data":pa.data}
     elif request.method == 'POST':
         print 'Method is POST'
     return Response(result,status = status.HTTP_200_OK)
@@ -234,15 +282,48 @@ def lifetips_list(request):
 
         p = p[offset:offset+maxCount]
         pa = LifeTipsSerializer(p,many=True)
-        result = {"result":"0000","message":"xxxx","data":pa.data}
+        result = {"errCode":10000,"errDesc":"get result successfully","data":pa.data}
     elif request.method == 'POST':
         print 'Method is POST'
     return Response(result,status = status.HTTP_200_OK)
 
 
 @api_view(['GET','POST'])
-@authentication_classes((SessionAuthentication, BasicAuthentication))
-@permission_classes((IsAuthenticated,))
+# @authentication_classes((SessionAuthentication, BasicAuthentication))
+# @permission_classes((IsAuthenticated,))
+def partywork_list(request,username):
+    """
+    support four parameters in request.GET
+    startTime -- the start time of the record
+    endTime -- the end time of the record
+    maxCount -- the max number of the results
+    offset -- offset of the results
+    """
+    if request.method == 'GET':
+        startTime = time.localtime(float(request.GET.get('startTime',0)))
+        # endTime = time.localtime(float(request.GET.get('endTime',datetime.datetime.now().microsecond)))
+        startTime = datetime.datetime.fromtimestamp(time.mktime(startTime))
+        if 'endTime' in request.GET.keys():
+            endTime = time.localtime(float(request.GET.get('endTime')))
+            endTime = datetime.datetime.fromtimestamp(time.mktime(endTime))
+        else:
+            endTime = datetime.datetime.now()
+        p = LifeTips.objects.filter(lifetips_date__gte=startTime).filter(lifetips_date__lte=endTime)
+
+        maxCount = int(request.GET.get('maxCount',10))
+        offset = int(request.GET.get('offset',0))
+
+        p = p[offset:offset+maxCount]
+        pa = LifeTipsSerializer(p,many=True)
+        result = {"errCode":10000,"errDesc":"get result successfully","data":pa.data}
+    elif request.method == 'POST':
+        print 'Method is POST'
+    return Response(result,status = status.HTTP_200_OK)
+
+
+@api_view(['GET','POST'])
+# @authentication_classes((SessionAuthentication, BasicAuthentication))
+# @permission_classes((IsAuthenticated,))
 def notice_list(request):
     """
     support four parameters in request.GET
@@ -267,7 +348,7 @@ def notice_list(request):
 
         p = p[offset:offset+maxCount]
         pa = NoticeSerializer(p,many=True)
-        result = {"result":"0000","message":"xxxx","data":pa.data}
+        result = {"errCode":10000,"errDesc":"get result successfully","data":pa.data}
     elif request.method == 'POST':
         print 'Method is POST'
     return Response(result,status = status.HTTP_200_OK)
@@ -300,11 +381,46 @@ def spirit_list(request):
 
         p = p[offset:offset+maxCount]
         pa = SpiritSerializer(p,many=True)
-        result = {"result":"0000","message":"xxxx","data":pa.data}
+        result = {"errCode":10000,"errDesc":"get result successfully","data":pa.data}
     elif request.method == 'POST':
         print 'Method is POST'
     return Response(result,status = status.HTTP_200_OK)
 
+@api_view(['GET','POST'])
+# @authentication_classes((SessionAuthentication, BasicAuthentication))
+# @permission_classes((IsAuthenticated,))
+def process_list(request):
+    """
+    support four parameters in request.GET
+    startTime -- the start time of the record
+    endTime -- the end time of the record
+    maxCount -- the max number of the results
+    offset -- offset of the results
+    """
+    if request.method == 'GET':
+        process_type = request.GET.get('type','')
+        startTime = time.localtime(float(request.GET.get('startTime',0)))
+        # endTime = time.localtime(float(request.GET.get('endTime',datetime.datetime.now().microsecond)))
+        startTime = datetime.datetime.fromtimestamp(time.mktime(startTime))
+        if 'endTime' in request.GET.keys():
+            endTime = time.localtime(float(request.GET.get('endTime')))
+            endTime = datetime.datetime.fromtimestamp(time.mktime(endTime))
+        else:
+            endTime = datetime.datetime.now()
+        p = BusinessProcess.objects.filter(process_date__gte=startTime).filter(process_date__lte=endTime)
+        if process_type:
+            p = p.filter(process_type=process_type)
+
+        maxCount = int(request.GET.get('maxCount',10))
+        offset = int(request.GET.get('offset',0))
+
+        p = p[offset:offset+maxCount]
+        pa = ProcessSerializer(p,many=True)
+        result = {"errCode":10000,"errDesc":"get result successfully","data":pa.data}
+
+    elif request.method == 'POST':
+        print 'Method is POST'
+    return Response(result,status = status.HTTP_200_OK)
 
 @api_view(['GET','POST'])
 # @authentication_classes((SessionAuthentication, BasicAuthentication))
@@ -333,7 +449,7 @@ def policy_list(request):
 
         p = p[offset:offset+maxCount]
         pa = PolicySerializer(p,many=True)
-        result = {"result":"0000","message":"xxxx","data":pa.data}
+        result = {"errCode":10000,"errDesc":"get result successfully","data":pa.data}
     elif request.method == 'POST':
         print 'Method is POST'
     return Response(result,status = status.HTTP_200_OK)
