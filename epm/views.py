@@ -109,6 +109,8 @@ def party_verify(request, username):
                 u.real_name = name
                 u.real_idcard = idcard
                 u.real_organization = organization
+                if u.is_manager is 0:
+                    u.is_manager = 1
                 u.save()
                 result['errCode']=10000
                 result['errDesc']='verifiy ok'
