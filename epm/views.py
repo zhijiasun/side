@@ -208,18 +208,26 @@ def member_info(request, username):
         return Response(result,status = status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET','POST'])
-def party_info(request,username):
-    # if request.method == 'GET':
-    #     users = User.objects.filter(username=username)
-    #     if users:
-    #         appuser = users[0].app_user.all()
-    #         if appuser:
-    pass
+def party_info(request,partyname):
+    if request.method == 'GET':
+        parties = party.objects.filter(party_name=partyname)
+        if parties:
+            m = parties[0].memberAtParty.all()
+            ms = MemberSerializer(m,many=True)
+            result = {"errCode":10000, "errDesc":"successfully get member info","data":ms.data}
+            return Response(result,status = status.HTTP_200_OK)
+        result = {"errCode":10009, "errDesc":"failed to get member info"}
+        return Response(result,status = status.HTTP_400_BAD_REQUEST)
 
 
 def get_result(model, modelSerializer,kwargs):
-
-    print model,modelSerializer,kwargs
+    """
+    support four parameters in request.GET
+    startTime -- the start time of the record
+    endTime -- the end time of the record
+    maxCount -- the max number of the results
+    offset -- offset of the results
+    """
     startTime = time.localtime(float(kwargs.get('startTime',0)))
     startTime = datetime.datetime.fromtimestamp(time.mktime(startTime))
 
@@ -229,18 +237,13 @@ def get_result(model, modelSerializer,kwargs):
     else:
         endTime = datetime.datetime.now()
 
-    ###???? shoud change this line
-    obj = model.objects.filter(pioneer_date__gte=startTime).filter(pioneer_date__lte=endTime)
-    print obj
+    obj = model.objects.filter(date__gte=startTime).filter(date__lte=endTime)
     maxCount = int(kwargs.get('maxCount',10))
     offset = int(kwargs.get('offset',0))
-    print obj
 
     obj = obj[offset:offset+maxCount]
-    print obj
     objs = modelSerializer(obj,many=True)
-    print objs.data
-    result = {"result":"0000","message":"Successfully get content","data":objs.data}
+    result = {"errCode":10000,"errDesc":"get result successfully","data":objs.data}
     # if objs.is_valid():
     #     result = {"result":"0000","message":"Successfully get content","data":objs.data}
     #     print result
@@ -256,70 +259,42 @@ def get_result(model, modelSerializer,kwargs):
 # @authentication_classes((SessionAuthentication, BasicAuthentication))
 # @permission_classes((IsAuthenticated,))
 def pioneer_list(request):
-    """
-    support four parameters in request.GET
-    startTime -- the start time of the record
-    endTime -- the end time of the record
-    maxCount -- the max number of the results
-    offset -- offset of the results
-    """
     if request.method == 'GET':
-        startTime = time.localtime(float(request.GET.get('startTime',0)))
-        # endTime = time.localtime(float(request.GET.get('endTime',datetime.datetime.now().microsecond)))
-        startTime = datetime.datetime.fromtimestamp(time.mktime(startTime))
-        if 'endTime' in request.GET.keys():
-            endTime = time.localtime(float(request.GET.get('endTime')))
-            endTime = datetime.datetime.fromtimestamp(time.mktime(endTime))
-        else:
-            endTime = datetime.datetime.now()
-        p = Pioneer.objects.filter(pioneer_date__gte=startTime).filter(pioneer_date__lte=endTime)
+        result = get_result(Pioneer, PioneerSerializer,request.GET)
+        return Response(result, status = status.HTTP_200_OK)
 
-        maxCount = int(request.GET.get('maxCount',10))
-        offset = int(request.GET.get('offset',0))
 
-        p = p[offset:offset+maxCount]
-        pa = PioneerSerializer(p,many=True)
-        result = {"errCode":10000,"errDesc":"get result successfully","data":pa.data}
-    elif request.method == 'POST':
-        print 'Method is POST'
-    return Response(result,status = status.HTTP_200_OK)
-
-@api_view(['GET','POST'])
-# @authentication_classes((SessionAuthentication, BasicAuthentication))
-# @permission_classes((IsAuthenticated,))
+@api_view(['GET'])
 def lifetips_list(request):
-    """
-    support four parameters in request.GET
-    startTime -- the start time of the record
-    endTime -- the end time of the record
-    maxCount -- the max number of the results
-    offset -- offset of the results
-    """
     if request.method == 'GET':
-        startTime = time.localtime(float(request.GET.get('startTime',0)))
-        # endTime = time.localtime(float(request.GET.get('endTime',datetime.datetime.now().microsecond)))
-        startTime = datetime.datetime.fromtimestamp(time.mktime(startTime))
-        if 'endTime' in request.GET.keys():
-            endTime = time.localtime(float(request.GET.get('endTime')))
-            endTime = datetime.datetime.fromtimestamp(time.mktime(endTime))
-        else:
-            endTime = datetime.datetime.now()
-        p = LifeTips.objects.filter(lifetips_date__gte=startTime).filter(lifetips_date__lte=endTime)
+        result = get_result(LifeTips,LifeTipsSerializer,request.GET)
+        return Response(result,status = status.HTTP_200_OK)
 
-        maxCount = int(request.GET.get('maxCount',10))
-        offset = int(request.GET.get('offset',0))
 
-        p = p[offset:offset+maxCount]
-        pa = LifeTipsSerializer(p,many=True)
-        result = {"errCode":10000,"errDesc":"get result successfully","data":pa.data}
-    elif request.method == 'POST':
-        print 'Method is POST'
-    return Response(result,status = status.HTTP_200_OK)
+@api_view(['GET','POST'])
+def notice_list(request):
+    if request.method == 'GET':
+        result = get_result(Notice, NoticeSerializer,request.GET)
+        return Response(result,status = status.HTTP_200_OK)
 
 
 @api_view(['GET','POST'])
 # @authentication_classes((SessionAuthentication, BasicAuthentication))
 # @permission_classes((IsAuthenticated,))
+def spirit_list(request):
+    if request.method == 'GET':
+        result = get_result(Spirit, SpiritSerializer, request.GET)
+        return Response(result, status=status.HTTP_200_OK)
+
+
+@api_view(['GET','POST'])
+def policy_list(request):
+    if request.method == 'GET':
+        result = get_result(Policy, PolicySerializer, request.GET)
+        return Response(result, status=status.HTTP_200_OK)
+
+
+@api_view(['GET','POST'])
 def partywork_list(request,username):
     """
     support four parameters in request.GET
@@ -350,70 +325,6 @@ def partywork_list(request,username):
     return Response(result,status = status.HTTP_200_OK)
 
 
-@api_view(['GET','POST'])
-# @authentication_classes((SessionAuthentication, BasicAuthentication))
-# @permission_classes((IsAuthenticated,))
-def notice_list(request):
-    """
-    support four parameters in request.GET
-    startTime -- the start time of the record
-    endTime -- the end time of the record
-    maxCount -- the max number of the results
-    offset -- offset of the results
-    """
-    if request.method == 'GET':
-        startTime = time.localtime(float(request.GET.get('startTime',0)))
-        # endTime = time.localtime(float(request.GET.get('endTime',datetime.datetime.now().microsecond)))
-        startTime = datetime.datetime.fromtimestamp(time.mktime(startTime))
-        if 'endTime' in request.GET.keys():
-            endTime = time.localtime(float(request.GET.get('endTime')))
-            endTime = datetime.datetime.fromtimestamp(time.mktime(endTime))
-        else:
-            endTime = datetime.datetime.now()
-        p = Notice.objects.filter(notice_date__gte=startTime).filter(notice_date__lte=endTime)
-
-        maxCount = int(request.GET.get('maxCount',10))
-        offset = int(request.GET.get('offset',0))
-
-        p = p[offset:offset+maxCount]
-        pa = NoticeSerializer(p,many=True)
-        result = {"errCode":10000,"errDesc":"get result successfully","data":pa.data}
-    elif request.method == 'POST':
-        print 'Method is POST'
-    return Response(result,status = status.HTTP_200_OK)
-
-
-@api_view(['GET','POST'])
-# @authentication_classes((SessionAuthentication, BasicAuthentication))
-# @permission_classes((IsAuthenticated,))
-def spirit_list(request):
-    """
-    support four parameters in request.GET
-    startTime -- the start time of the record
-    endTime -- the end time of the record
-    maxCount -- the max number of the results
-    offset -- offset of the results
-    """
-    if request.method == 'GET':
-        startTime = time.localtime(float(request.GET.get('startTime',0)))
-        # endTime = time.localtime(float(request.GET.get('endTime',datetime.datetime.now().microsecond)))
-        startTime = datetime.datetime.fromtimestamp(time.mktime(startTime))
-        if 'endTime' in request.GET.keys():
-            endTime = time.localtime(float(request.GET.get('endTime')))
-            endTime = datetime.datetime.fromtimestamp(time.mktime(endTime))
-        else:
-            endTime = datetime.datetime.now()
-        p = Spirit.objects.filter(spirit_date__gte=startTime).filter(spirit_date__lte=endTime)
-
-        maxCount = int(request.GET.get('maxCount',10))
-        offset = int(request.GET.get('offset',0))
-
-        p = p[offset:offset+maxCount]
-        pa = SpiritSerializer(p,many=True)
-        result = {"errCode":10000,"errDesc":"get result successfully","data":pa.data}
-    elif request.method == 'POST':
-        print 'Method is POST'
-    return Response(result,status = status.HTTP_200_OK)
 
 @api_view(['GET','POST'])
 # @authentication_classes((SessionAuthentication, BasicAuthentication))
@@ -436,7 +347,7 @@ def process_list(request):
             endTime = datetime.datetime.fromtimestamp(time.mktime(endTime))
         else:
             endTime = datetime.datetime.now()
-        p = BusinessProcess.objects.filter(process_date__gte=startTime).filter(process_date__lte=endTime)
+        p = BusinessProcess.objects.filter(date__gte=startTime).filter(date__lte=endTime)
         if process_type:
             p = p.filter(process_type=process_type)
 
@@ -451,37 +362,6 @@ def process_list(request):
         print 'Method is POST'
     return Response(result,status = status.HTTP_200_OK)
 
-@api_view(['GET','POST'])
-# @authentication_classes((SessionAuthentication, BasicAuthentication))
-# @permission_classes((IsAuthenticated,))
-def policy_list(request):
-    """
-    support four parameters in request.GET
-    startTime -- the start time of the record
-    endTime -- the end time of the record
-    maxCount -- the max number of the results
-    offset -- offset of the results
-    """
-    if request.method == 'GET':
-        startTime = time.localtime(float(request.GET.get('startTime',0)))
-        # endTime = time.localtime(float(request.GET.get('endTime',datetime.datetime.now().microsecond)))
-        startTime = datetime.datetime.fromtimestamp(time.mktime(startTime))
-        if 'endTime' in request.GET.keys():
-            endTime = time.localtime(float(request.GET.get('endTime')))
-            endTime = datetime.datetime.fromtimestamp(time.mktime(endTime))
-        else:
-            endTime = datetime.datetime.now()
-        p = Policy.objects.filter(policy_date__gte=startTime).filter(policy_date__lte=endTime)
-
-        maxCount = int(request.GET.get('maxCount',10))
-        offset = int(request.GET.get('offset',0))
-
-        p = p[offset:offset+maxCount]
-        pa = PolicySerializer(p,many=True)
-        result = {"errCode":10000,"errDesc":"get result successfully","data":pa.data}
-    elif request.method == 'POST':
-        print 'Method is POST'
-    return Response(result,status = status.HTTP_200_OK)
 
 
 @api_view(['GET'])

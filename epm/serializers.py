@@ -43,7 +43,7 @@ class PioneerSerializer(serializers.ModelSerializer):
     # image_url = serializers.SerializerMethodField('get_image_url')
     class Meta:
         model = Pioneer
-        fields = ['pioneer_title','pioneer_date','pioneer_author']
+        fields = ['title', 'date', 'author', 'content']
 
 
     # def get_image_url(self,obj):
@@ -53,31 +53,31 @@ class PioneerSerializer(serializers.ModelSerializer):
 class LifeTipsSerializer(serializers.ModelSerializer):
     class Meta:
         model = LifeTips
-        fields = ['lifetips_title','lifetips_date','lifetips_author']
+        fields = ['title', 'date', 'author', 'content']
 
 
 class PartyWorkSerializer(serializers.ModelSerializer):
     class Meta:
         model = PartyWork
-        fields = ['partywork_title', 'partywork_date', 'partywork_author']
+        fields = ['title', 'date', 'author', 'content']
 
 
 class NoticeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Notice
-        fields = ['notice_title','notice_date','notice_author']
+        fields = ['title', 'date', 'author', 'content']
 
 
 class SpiritSerializer(serializers.ModelSerializer):
     class Meta:
         model = Spirit
-        fields = ['spirit_title','spirit_date','spirit_author']
+        fields = ['title', 'date', 'author', 'content']
 
 
 class PolicySerializer(serializers.ModelSerializer):
     class Meta:
         model = Policy
-        fields = ['policy_title','policy_date','policy_author']
+        fields = ['title', 'date', 'author', 'content']
 
 
 class QuestionSerializer(serializers.ModelSerializer):
@@ -88,4 +88,4 @@ class QuestionSerializer(serializers.ModelSerializer):
 class ProcessSerializer(serializers.ModelSerializer):
     class Meta:
         model = BusinessProcess
-        fields = ['process_title','process_date','process_type','process_author','process_content']
+        fields = ['title', 'date', 'author', 'content']

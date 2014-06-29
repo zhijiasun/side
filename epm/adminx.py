@@ -13,6 +13,8 @@ from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 
 from django import forms
+from django.db import models
+from django.forms import Textarea
 
 # class JasonForm(forms.ModelForm):
 #     class Meta:
@@ -69,40 +71,42 @@ class PioneerImageAdmin(object):
     extra = 1
 
 class PioneerAdmin(object):
-    list_display = ('pioneer_title','pioneer_date','pioneer_author','pioneer_content')
-    list_filter = ('pioneer_title','pioneer_date','pioneer_author','pioneer_content')
+    list_display = ('title','date','author','content')
+    list_filter = ('title','date','author','content')
     inlines = [PioneerImageAdmin]
-    reversion_enable = True
+    # reversion_enable = True
 
 
 class LifeTipsAdmin(object):
-    list_display = ('lifetips_title','lifetips_date','lifetips_author','lifetips_content')
-    list_filter = ('lifetips_title','lifetips_date','lifetips_author','lifetips_content')
+    list_display = ('title','date','author','content')
+    list_filter = ('title','date','author','content')
     # reversion_enable = True
 
+    formfield_overrides = {models.TextField:{'widget':Textarea(attrs={'rows':4,'cols':40})},}
+
 class PartyWorkAdmin(object):
-    list_display = ('partywork_id','partywork_title','partywork_date','partywork_author','partywork_content')
-    list_filter = ('partywork_id','partywork_title','partywork_date','partywork_author','partywork_content')
+    list_display = ('title','date','author','content')
+    list_filter = ('title','date','author','content')
 
     # reversion_enable = True
 
 
 class NoticeAdmin(object):
-    list_display = ('notice_id','notice_title','notice_date','notice_author','notice_content')
-    list_filter = ('notice_id','notice_title','notice_date','notice_author','notice_content')
+    list_display = ('title','date','author','content')
+    list_filter = ('title','date','author','content')
 
     # reversion_enable = True
 
 
 class SpiritAdmin(object):
-    list_display = ('spirit_id','spirit_title','spirit_date','spirit_author','spirit_content')
-    list_filter = ('spirit_id','spirit_title','spirit_date','spirit_author','spirit_content')
+    list_display = ('title','date','author','content')
+    list_filter = ('title','date','author','content')
 
     # reversion_enable = True
 
 class PolicyAdmin(object):
-    list_display = ('policy_id','policy_title','policy_date','policy_author','policy_content')
-    list_filter = ('policy_id','policy_title','policy_date','policy_author','policy_content')
+    list_display = ('title','date','author','content')
+    list_filter = ('title','date','author','content')
 
     # reversion_enable = True
     

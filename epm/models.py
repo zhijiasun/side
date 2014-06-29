@@ -183,10 +183,10 @@ class UserProfile(models.Model):
 
 class Pioneer(models.Model):
     pioneer_id = models.AutoField(primary_key=True,auto_created=True)
-    pioneer_title = models.CharField(u'标题',max_length=10)
-    pioneer_date = models.DateTimeField(u'创建日期',auto_now_add=True)
-    pioneer_author = models.CharField(u'作者',max_length=30)
-    pioneer_content = models.TextField(u'内容')
+    title = models.CharField(u'标题',max_length=10)
+    date = models.DateTimeField(u'创建日期',auto_now_add=True)
+    author = models.CharField(u'作者',max_length=30)
+    content = models.TextField(u'内容')
     # pioneer_pic = models.ImageField(upload_to='upload/',blank=True,verbose_name=u"图片")
 
     class Meta:
@@ -194,7 +194,7 @@ class Pioneer(models.Model):
         verbose_name_plural = u'党务先锋'
 
     def __unicode__(self):
-        return self.pioneer_title
+        return self.title
 
 
 class PioneerImage(models.Model):
@@ -208,69 +208,69 @@ class PioneerImage(models.Model):
 
 class LifeTips(models.Model):
     lifetips_id = models.AutoField(primary_key=True,auto_created=True)
-    lifetips_title = models.CharField(u'标题',max_length=10)
-    lifetips_date = models.DateTimeField(u'创建日期',auto_now_add=True)
-    lifetips_author = models.CharField(u'作者',max_length=30)
-    lifetips_content = models.TextField(u'内容')
+    title = models.CharField(u'标题',max_length=10)
+    date = models.DateTimeField(u'创建日期',auto_now_add=True)
+    author = models.CharField(u'作者',max_length=30)
+    content = models.TextField(u'内容')
 
     class Meta:
         verbose_name = u'生活小贴士'
         verbose_name_plural = u'生活小贴士'
 
     def __unicode__(self):
-        return self.lifetips_title
+        return self.title
 
 
 class PartyWork(models.Model):
     partywork_id = models.AutoField(primary_key=True,auto_created=True)
-    partywork_title = models.CharField(u'标题',max_length=10)
+    title = models.CharField(u'标题',max_length=10)
     specified_person = models.ForeignKey(User,verbose_name=u'针对特定党员', blank=True,null=True)
     specified_party = models.ForeignKey(party,verbose_name=u'针对特定党组织', blank=True,null=True)
-    partywork_date = models.DateTimeField(u'创建日期',auto_now_add=True)
-    partywork_author = models.CharField(u'作者',max_length=30)
-    partywork_content = models.TextField(u'内容',)
+    date = models.DateTimeField(u'创建日期',auto_now_add=True)
+    author = models.CharField(u'作者',max_length=30)
+    content = models.TextField(u'内容',)
 
     class Meta:
         verbose_name = u'党务提醒信息'
         verbose_name_plural = u'党务提醒信息'
 
     def __unicode__(self):
-        return self.partywork_title
+        return self.title
 
 class Notice(models.Model):
     notice_id = models.AutoField(primary_key=True,auto_created=True)
-    notice_title = models.CharField(u'标题',max_length=10)
-    notice_date = models.DateTimeField(u'创建日期',auto_now_add=True)
-    notice_author = models.CharField(u'作者',max_length=30)
-    notice_content = models.TextField(u'内容')
+    title = models.CharField(u'标题',max_length=10)
+    date = models.DateTimeField(u'创建日期',auto_now_add=True)
+    author = models.CharField(u'作者',max_length=30)
+    content = models.TextField(u'内容')
 
     class Meta:
         verbose_name = u'公告活动信息'
         verbose_name_plural = u'公告活动信息'
 
     def __unicode__(self):
-        return self.notice_title
+        return self.title
 
 class Spirit(models.Model):
     spirit_id = models.AutoField(primary_key=True,auto_created=True)
-    spirit_title = models.CharField(u'标题',max_length=10)
-    spirit_date = models.DateTimeField(u'创建日期',auto_now_add=True)
-    spirit_author = models.CharField(u'作者',max_length=30)
-    spirit_content = models.TextField(u'内容')
+    title = models.CharField(u'标题',max_length=10)
+    date = models.DateTimeField(u'创建日期',auto_now_add=True)
+    author = models.CharField(u'作者',max_length=30)
+    content = models.TextField(u'内容')
 
     class Meta:
         verbose_name = u'上级精神'
         verbose_name_plural = u'上级精神'
 
     def __unicode__(self):
-        return self.spirit_title
+        return self.title
 
 class Policy(models.Model):
     policy_id = models.AutoField(primary_key=True,auto_created=True)
-    policy_title = models.CharField(u'标题',max_length=10)
-    policy_date = models.DateTimeField(u'创建日期',auto_now_add=True)
-    policy_author = models.CharField(u'作者',max_length=30)
-    policy_content = models.TextField(u'内容')
+    title = models.CharField(u'标题',max_length=10)
+    date = models.DateTimeField(u'创建日期',auto_now_add=True)
+    author = models.CharField(u'作者',max_length=30)
+    content = models.TextField(u'内容')
 
     class Meta:
         verbose_name = u'惠企政策'
@@ -281,11 +281,11 @@ class Policy(models.Model):
 
 class BusinessProcess(models.Model):
     process_id = models.AutoField(primary_key=True,auto_created=True)
-    process_title = models.CharField(u'标题',max_length=10)
-    process_date = models.DateTimeField(u'创建日期',auto_now_add=True)
+    title = models.CharField(u'标题',max_length=10)
+    date = models.DateTimeField(u'创建日期',auto_now_add=True)
     process_type = models.IntegerField(u'流程类型',choices =PROCESS_TYPE)
-    process_author = models.CharField(u'作者',max_length=30)
-    process_content = models.TextField(u'内容')
+    author = models.CharField(u'作者',max_length=30)
+    content = models.TextField(u'内容')
     process_file = models.FileField(upload_to='upload/',blank=True,null=True,verbose_name=u'附件')
 
     class Meta:
@@ -293,7 +293,7 @@ class BusinessProcess(models.Model):
         verbose_name_plural = u'业务办理流程'
 
     def __unicode__(self):
-        return self.process_title
+        return self.title
 
 class Question(models.Model):
     question_id = models.AutoField(primary_key=True,auto_created=True)
