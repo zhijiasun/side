@@ -200,6 +200,11 @@ class Pioneer(models.Model):
     def __unicode__(self):
         return self.pioneer_title
 
+    def content_thumb(self):
+        if self.pioneer_content:
+            return self.pioneer_content[0:20]
+    content_thumb.short_description = u'内容缩略'
+
 
 class PioneerImage(models.Model):
     pioneer = models.ForeignKey(Pioneer,related_name='img_list', verbose_name=u"附图")
