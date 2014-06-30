@@ -208,7 +208,7 @@ def member_info(request, username):
             if appuser[0].is_verified:
                 m = member.objects.filter(id_card = appuser[0].real_idcard, member_name = appuser[0].real_name)
                 ms = MemberSerializer(m)
-                result = {"errCode":10000, "errDesc":"successfully get member info","data":ms.data}
+                result = {"errCode":10000, "errDesc":"successfully get member info","data":ms.data[0]}
                 return Response(result,status = status.HTTP_200_OK)
         result = {"errCode":10009, "errDesc":"failed to get member info"}
         return Response(result,status = status.HTTP_400_BAD_REQUEST)
