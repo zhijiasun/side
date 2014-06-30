@@ -41,9 +41,10 @@ class TestSerializer(serializers.HyperlinkedModelSerializer):
 
 class PioneerSerializer(serializers.ModelSerializer):
     # image_url = serializers.SerializerMethodField('get_image_url')
+    img_list = serializers.RelatedField(many=True)
     class Meta:
         model = Pioneer
-        fields = ['pioneer_title','pioneer_date','pioneer_author']
+        fields = ['pioneer_title','pioneer_date','pioneer_author','img_list']
 
 
     # def get_image_url(self,obj):

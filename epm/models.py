@@ -198,13 +198,26 @@ class Pioneer(models.Model):
 
 
 class PioneerImage(models.Model):
-    pioneer = models.ForeignKey(Pioneer,related_name='pioneer_images', verbose_name=u"附图")
-    pic = models.ImageField(upload_to='upload/',blank=True,verbose_name=u"图片")
+    pioneer = models.ForeignKey(Pioneer,related_name='img_list', verbose_name=u"附图")
+    pic = models.ImageField(upload_to='upload/%Y_%m_%d/',blank=True,verbose_name=u"图片")
 
     class Meta:
         verbose_name = u'党务先锋附图'
         verbose_name_plural = u'党务先锋附图'
 
+    def __unicode__(self):
+        base, ext = os.path.splitext(os.path.basename(self.pic.url))
+        base_url = os.path.dirname(self.pic.url)
+        return os.path.join(base_url + '/' + base + '_thumb' + ext)
+
+    def save(self):
+        super(PioneerImage, self).save()
+        base, ext = os.path.splitext(os.path.basename(self.pic.path))
+        directory = os.path.dirname(self.pic.path)
+        thumb_path = os.path.join(directory + '/' + base + '_thumb' + ext)
+        thumb_pixbuf = make_thumb(self.pic.path)
+        thumb_pixbuf.save(thumb_path)
+        super(PioneerImage, self).save()
 
 class LifeTips(models.Model):
     lifetips_id = models.AutoField(primary_key=True,auto_created=True)
