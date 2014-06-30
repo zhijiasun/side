@@ -8,6 +8,7 @@ from django.core.files import File
 from django.core.files.storage import default_storage
 from epm.utils import *
 from django.core.exceptions import ValidationError
+from django.core.validators import RegexValidator
 import os
 from PIL import Image
 from side.settings import MEDIA_ROOT
@@ -16,6 +17,9 @@ from django.contrib.auth.models import User
 from adaptor.model import CsvDbModel
 import datetime
 
+telephone_validator = RegexValidator(regex = '^(1(([35][0-9])|(47)|[8][01236789]))\d{8}$'
+        ,message = 'Invalid phone number'
+        ,code = 'invalid_telephone')
 
 def make_thumb(path,size = 480):
     pixbuf = Image.open(path)
@@ -35,7 +39,7 @@ class party(models.Model):
     party_attribute = models.IntegerField(u'党组织属性',default=1,choices=PARTY_ATTRIBUTE)
     member_number = models.IntegerField(u'党员人数',blank=True)
     secretary_name = models.CharField(u'书记姓名',max_length = 50)
-    secretary_phone = models.CharField(u'书记电话',max_length = 30)
+    secretary_phone = models.CharField(u'书记电话',max_length = 30,validators=[telephone_validator,])
     responsible_name = models.CharField(u'党务负责人姓名',max_length=50)
     responsible_phone = models.IntegerField(u'党务负责人电话')
     qq = models.CharField(u'QQ号',max_length=20,blank=True)
@@ -95,7 +99,7 @@ class enterprise(models.Model):
     legal_person = models.CharField(u'法人姓名',max_length=50)
     legal_email = models.EmailField(u'法人邮箱')
     enter_email = models.EmailField(u'企业邮箱', blank=True)
-    legal_phone = models.CharField(u'负责人手机',max_length=50)
+    legal_phone = models.CharField(u'负责人手机',max_length=50,validators=[telephone_validator,])
     fixed_phone = models.CharField(u'固定电话',max_length=50,blank=True)
     """
     blank=True, null=True can make ForeignKey is optional.
@@ -138,7 +142,7 @@ class member(models.Model):
     birth_address = models.CharField(u'出生地',max_length=100,blank=True,null=True)
     home_address = models.CharField(u'家庭住址',max_length=100,blank=True,null=True)
     living_address = models.CharField(u'现居住地址',max_length=100,blank=True,null=True)
-    member_phone = models.CharField(u'手机号',max_length=11)
+    member_phone = models.CharField(u'手机号',max_length=11,validators=[telephone_validator,])
     member_email = models.EmailField(u'电子邮箱',max_length=50)
     qq = models.CharField(u'QQ号',max_length=15,blank=True,null=True)
     weixin = models.CharField(u'微信号',max_length=20,blank=True,null=True)
@@ -208,6 +212,7 @@ class PioneerImage(models.Model):
     def __unicode__(self):
         base, ext = os.path.splitext(os.path.basename(self.pic.url))
         base_url = os.path.dirname(self.pic.url)
+        # return {self.id: os.path.join(base_url + '/' + base + '_thumb' + ext)}
         return os.path.join(base_url + '/' + base + '_thumb' + ext)
 
     def save(self):
