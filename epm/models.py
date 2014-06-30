@@ -201,8 +201,8 @@ class Pioneer(models.Model):
         return self.title
 
     def content_thumb(self):
-        if self.pioneer_content:
-            return self.pioneer_content[0:20]
+        if self.content:
+            return self.content[0:20]
     content_thumb.short_description = u'内容缩略'
 
 
@@ -300,7 +300,7 @@ class Policy(models.Model):
         verbose_name_plural = u'惠企政策'
 
     def __unicode__(self):
-        return self.policy_title
+        return self.title
 
 class BusinessProcess(models.Model):
     process_id = models.AutoField(primary_key=True,auto_created=True)

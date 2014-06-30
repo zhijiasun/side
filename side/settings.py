@@ -101,7 +101,7 @@ MEDIA_URL = '/media/'
 
 REST_FRAMEWORK = {
     #'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAdminUser',),
-    'DEFAULT_RENDERER_CLASSES':('rest_framework.renderers.UnicodeJSONRenderer',),
+    'DEFAULT_RENDERER_CLASSES':('rest_framework.renderers.JSONRenderer',),
     # 'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAuthenticatedOrReadOnly',),
     # 'DEFAULT_AUTHENTICATION_CLASSES':('rest_framework.authentication.SessionAuthentication',),
     'PAGINATE_BY': 10

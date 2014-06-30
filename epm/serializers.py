@@ -44,12 +44,7 @@ class PioneerSerializer(serializers.ModelSerializer):
     # img_list = serializers.RelatedField(many=True)
     class Meta:
         model = Pioneer
-<<<<<<< HEAD
-        fields = ['title', 'date', 'author', 'content']
-=======
-        fields = ['pioneer_title','pioneer_date','pioneer_author','img_list']
->>>>>>> 1f2af3e8d80f39e973780000a0cfa35bbaaecf8c
-
+        fields = ['title', 'date', 'author', 'img_list']
 
     def construct_images(self,obj):
         images = obj.img_list.all()

@@ -104,6 +104,8 @@ def party_verify(request, username):
             idcard = request.DATA.get('real_idcard','')
             organization = request.DATA.get('party_name','')
 
+            print '$$$$$$$$$$$$$$$$$$$'
+            print name.decode('utf-8'),organization
             if name and idcard and organization:
                 u = UserProfile.objects.get(user=users[0])
                 u.real_name = name
@@ -126,17 +128,20 @@ def member_verify(request, username):
         if users:
             name = request.DATA.get('real_name','')
             idcard = request.DATA.get('real_idcard','')
+            print '$$$$$$$$$$$$$$'
+            print name,idcard
             if name and idcard:
                 m = member.objects.filter(id_card=idcard,member_name=name)
                 if len(m) is 1:
-                    u = UserProfile.objects.get(user=users[0])
-                    u.is_verified = True
-                    u.real_name = name
-                    u.real_idcard = idcard
-                    u.save()
-                    result['errCode']=10000
-                    result['errDesc']='verifiy ok'
-                    return Response(result,status = status.HTTP_200_OK)
+                    u = UserProfile.objects.filter(user=users[0])
+                    if u:
+                        u[0].is_verified = True
+                        u[0].real_name = name
+                        u[0].real_idcard = idcard
+                        u[0].save()
+                        result['errCode']=10000
+                        result['errDesc']='verifiy ok'
+                        return Response(result,status = status.HTTP_200_OK)
 
             result['errCode']=10005
             result['errDesc']='invalid member info'
@@ -159,7 +164,8 @@ def user_info(request, username):
             if len(ups) is 1:
                 result['errCode'] = 10000
                 result['errDesc'] = 'successfully get member info'
-                result['data'] = {'is_verified':ups[0].is_verified, 'is_manager': ups[0].is_manager}
+                result['data'] = {'is_verified':ups[0].is_verified, 'is_manager': ups[0].is_manager,'real_name':ups[0].real_name,
+                        'real_idcard':ups[0].real_idcard,'real_organization':ups[0].real_organization}
                 return Response(result,status = status.HTTP_200_OK)
         return Response(result,status=status.HTTP_400_BAD_REQUEST)
 

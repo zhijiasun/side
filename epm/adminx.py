@@ -71,13 +71,8 @@ class PioneerImageAdmin(object):
     extra = 1
 
 class PioneerAdmin(object):
-<<<<<<< HEAD
-    list_display = ('title','date','author','content')
+    list_display = ('title','date','author','content_thumb')
     list_filter = ('title','date','author','content')
-=======
-    list_display = ('pioneer_title','pioneer_date','pioneer_author','content_thumb')
-    list_filter = ('pioneer_title','pioneer_date','pioneer_author','pioneer_content')
->>>>>>> 1f2af3e8d80f39e973780000a0cfa35bbaaecf8c
     inlines = [PioneerImageAdmin]
     # reversion_enable = True
 
@@ -116,9 +111,8 @@ class PolicyAdmin(object):
     # reversion_enable = True
     
 class BusinessProcessAdmin(object):
-    list_display = ('process_id','process_title','process_date','process_author','process_content','process_type')
-    list_filter = ('process_id','process_title','process_date','process_author','process_content','process_type')
-
+    list_display = ('title','date','author','content','process_type')
+    list_filter = ('title','date','author','content','process_type')
     # reversion_enable = True
 
 class QuestionAdmin(object):
