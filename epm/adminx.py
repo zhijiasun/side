@@ -32,7 +32,7 @@ class TestAdmin(CommAdminView):
     #     super(JasonAdmin,self).save_models()
     #     print 'ok'
 
-xadmin.site.register(Test,TestAdmin)
+# xadmin.site.register(Test,TestAdmin)
 
 
 class MyAction(BaseActionView):
@@ -173,7 +173,7 @@ xadmin.site.register(Spirit,SpiritAdmin)
 xadmin.site.register(Policy,PolicyAdmin)
 xadmin.site.register(BusinessProcess,BusinessProcessAdmin)
 xadmin.site.register(Question,QuestionAdmin)
-site.register_plugin(MyPlugin,ListAdminView)
+# site.register_plugin(MyPlugin,ListAdminView)
 # site.register_plugin(ImportPlugin,ListAdminView)
-xadmin.site.register(Article, ArticleAdmin)
-xadmin.site.register(Category, CategoryAdmin)
+# xadmin.site.register(Article, ArticleAdmin)
+# xadmin.site.register(Category, CategoryAdmin)

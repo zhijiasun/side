@@ -169,7 +169,7 @@ class member(models.Model):
 
 
 class UserProfile(models.Model):
-    user = models.ForeignKey(User, unique=True, related_name='app_user')
+    user = models.ForeignKey(User, unique=True, related_name='app_user', verbose_name=u'用户名')
     # member_info = models.OneToOneField(member,blank=True,null=True)
     # need to consider what is content of the table ?
     # real_name and real_idcard is the field that user should commit
@@ -181,8 +181,8 @@ class UserProfile(models.Model):
     is_manager = models.IntegerField(u'是否是党组织管理员', default=0,choices=VERIFY_PROCESS)
 
     class Meta:
-        verbose_name = u'APP用户'
-        verbose_name_plural = u'APP用户'
+        verbose_name = u'终端用户认证'
+        verbose_name_plural = u'终端用户认证'
 
 
 class Pioneer(models.Model):
