@@ -71,8 +71,13 @@ class PioneerImageAdmin(object):
     extra = 1
 
 class PioneerAdmin(object):
+<<<<<<< HEAD
     list_display = ('title','date','author','content')
     list_filter = ('title','date','author','content')
+=======
+    list_display = ('pioneer_title','pioneer_date','pioneer_author','content_thumb')
+    list_filter = ('pioneer_title','pioneer_date','pioneer_author','pioneer_content')
+>>>>>>> 1f2af3e8d80f39e973780000a0cfa35bbaaecf8c
     inlines = [PioneerImageAdmin]
     # reversion_enable = True
 
