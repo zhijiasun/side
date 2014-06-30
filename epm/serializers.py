@@ -32,7 +32,10 @@ class PartySerializer(serializers.HyperlinkedModelSerializer):
 class MemberSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = member
-        fields = ['member_name','member_gender','member_nation','member_worktime']
+        fields = ['member_name','member_gender','member_nation','member_education','member_birth',
+                'member_worktime','join_party_time','formal_member_time','now_party_time','birth_address',
+                'home_address','living_address','member_phone','member_email','qq','weixin','school','id_card',
+                'member_party','member_enter']
 
 class TestSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
