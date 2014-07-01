@@ -127,7 +127,8 @@ ACCOUNT_ACTIVATION_DAYS = 7 # One-week activation window; you may, of course, us
 LOGIN_REDIRECT_URL = '/xadmin/'
 
 #log configuration
-LOG_FILE = '/tmp/blog.log'
+LOG_FILE = '/tmp/epm.log'
+LOG_DJANGO = '/tmp/django.log'
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': True,
@@ -142,7 +143,8 @@ LOGGING = {
             'format': '[%(levelname)s] %(module)s : %(message)s'
         },
         'verbose': {
-            'format': '[%(asctime)s] [%(levelname)s] %(module)s : %(message)s'
+            'format': "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s",
+            'datefmt': "%d/%b/%Y %H:%M:%S"
         }
     },
 
@@ -157,10 +159,17 @@ LOGGING = {
             'formatter': 'verbose'
         },
         'file': {
-            'level': 'INFO',
+            'level': 'DEBUG',
             'class': 'logging.FileHandler',
             'formatter': 'verbose',
             'filename': LOG_FILE,
+            'mode': 'a',
+        },
+        'django_log': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'formatter': 'verbose',
+            'filename': LOG_DJANGO,
             'mode': 'a',
         },
         'mail_admins': {
@@ -170,21 +179,29 @@ LOGGING = {
         }
     },
     'loggers': {
-        '': {
-            'handlers': ['file', 'console'],
-            'level': 'INFO',
-            'propagate': True,
-        },
+        # '': {
+        #     'handlers': ['file', 'console'],
+        #     'level': 'INFO',
+        #     'propagate': True,
+        # },
         'django': {
-            'handlers': ['file', 'console'],
+            'handlers': ['django_log'],
             'level': 'DEBUG',
             'propagate': True,
         },
-        'django.request': {
-            'handlers': ['mail_admins', 'console'],
-            'level': 'ERROR',
-            'propagate': True,
+        'epm': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
         },
+        'rest_auth': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+        },
+        # 'django.request': {
+        #     'handlers': ['mail_admins', 'console'],
+        #     'level': 'ERROR',
+        #     'propagate': True,
+        # },
     }
 }
 EMAIL_HOST='smtp.163.com'

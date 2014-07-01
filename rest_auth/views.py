@@ -30,6 +30,8 @@ from .serializers import TokenSerializer, UserDetailsSerializer, \
     UserProfileUpdateSerializer, SetPasswordSerializer, \
     PasswordResetSerializer
 
+import logging
+logger = logging.getLogger(__name__)
 
 # Get the UserProfile model from the setting value
 user_profile_model = _resolve_model(
@@ -75,6 +77,7 @@ class Login(LoggedOutRESTAPIView, GenericAPIView):
         # Create a serializer with request.DATA
         serializer = self.serializer_class(data=request.DATA)
         result = {}
+        logger.debug('request.DATA is:%s', request.DATA)
 
         if serializer.is_valid():
             # Authenticate the credentials by grabbing Django User object
@@ -103,6 +106,7 @@ class Login(LoggedOutRESTAPIView, GenericAPIView):
                 result['errDesc'] = 'Invalid Username or Password.'
                 return Response(result, status=status.HTTP_401_UNAUTHORIZED)
         else:
+            logger.debug('serializer errors:%s', serializer.errors)
             result['errCode'] = 10004
             result['errDesc'] = 'Unknow errors!'
             return Response(result, status=status.HTTP_400_BAD_REQUEST)
@@ -149,6 +153,7 @@ class Register(LoggedOutRESTAPIView, GenericAPIView):
         profile_serializer = self.profile_serializer_class(
             data=request.DATA)
         result = {}
+        logger.debug('request.DATA is:%s', request.DATA)
 
         if serializer.is_valid() and profile_serializer.is_valid():
             # Change the password key to password1 so that RESTRegistrationView
@@ -169,6 +174,7 @@ class Register(LoggedOutRESTAPIView, GenericAPIView):
             return Response(result, status=status.HTTP_201_CREATED)
 
         else:
+            logger.debug('serializer error:%s,%s', serializer.errors, profile_serializer.errors)
             result['errCode'] = 10001
             result['errDesc'] = 'Invalid post.'
             return Response(result, status=status.HTTP_400_BAD_REQUEST)

@@ -26,6 +26,8 @@ from rest_framework.serializers import _resolve_model
 from django.contrib.auth import authenticate,login
 from django.core.exceptions import ObjectDoesNotExist
 import csv
+import logging
+logger = logging.getLogger(__name__)
 
 # Create your views here.
 
@@ -103,9 +105,8 @@ def party_verify(request, username):
             name = request.DATA.get('real_name','')
             idcard = request.DATA.get('real_idcard','')
             organization = request.DATA.get('party_name','')
+            logger.debug('name:%s,idcard:%d,organization:%s', name, idcard, organization)
 
-            print '$$$$$$$$$$$$$$$$$$$'
-            print name.decode('utf-8'),organization
             if name and idcard and organization:
                 u = UserProfile.objects.get(user=users[0])
                 u.real_name = name
@@ -117,6 +118,8 @@ def party_verify(request, username):
                 result['errCode']=10000
                 result['errDesc']='verifiy ok'
                 return Response(result,status = status.HTTP_200_OK)
+        else:
+            logger.debug('user is not exist,username is: %s', username)
 
         return Response(result, status = status.HTTP_400_BAD_REQUEST)
 
@@ -128,8 +131,6 @@ def member_verify(request, username):
         if users:
             name = request.DATA.get('real_name','')
             idcard = request.DATA.get('real_idcard','')
-            print '$$$$$$$$$$$$$$'
-            print name,idcard
             if name and idcard:
                 m = member.objects.filter(id_card=idcard,member_name=name)
                 if len(m) is 1:
@@ -143,10 +144,12 @@ def member_verify(request, username):
                         result['errDesc']='verifiy ok'
                         return Response(result,status = status.HTTP_200_OK)
 
+            logger.debug('name and idcard is:%s,%s', name, idcard)
             result['errCode']=10005
             result['errDesc']='invalid member info'
 
         else:
+            logger.debug('user is not exist,username is: %s', username)
             result['errCode']=10006
             result['errDesc']='username:%s does not exist' % username
         return Response(result,status=status.HTTP_400_BAD_REQUEST)
@@ -435,22 +438,6 @@ def create_user(request):
         return Response(serialized._errors,status = status.HTTP_400_BAD_REQUEST)
 
 
-#method 1, use #api_view decoractor
-@api_view(['GET','POST'])
-def party_list(request):
-    print("IP Address for debug-toolbar: " + request.META['REMOTE_ADDR'])
-    p = party.objects.all()
-    serilizer = PartySerializer(p,many=True)
-    return Response(serilizer.data)
-
-
-#method 2,inherit from the APIView class
-class PartyList(APIView):
-	def get(self,request):
-		pass
-	def delete(self,request,pk):
-		pass	
-
 from xadmin.sites import site
 from xadmin.views import BaseAdminView,CommAdminView
 from django.template.response import TemplateResponse
@@ -462,13 +449,16 @@ class MyAdminView(BaseAdminView):
 # class MyCommView(CommAdminView):
 #     site_title = 'me_comm'
 
+
 site.register_view(r'^me_test/$',MyAdminView,name='my_test')
 # site.register_view(r'^me_comm/$',MyCommView,name='my_comm')
-class ImportForm(forms.Form):
-    import_file = forms.FileField(label = u'选择输入的文件')
 
-    def __init__(self,*args,**kwargs):
-        super(ImportForm,self).__init__(*args,**kwargs)
+
+class ImportForm(forms.Form):
+    import_file = forms.FileField(label=u'选择输入的文件')
+
+    def __init__(self, *args, **kwargs):
+        super(ImportForm, self).__init__(*args,**kwargs)
         self.helper = FormHelper()
         self.helper.add_input(Submit('submit','Submit'))
     
