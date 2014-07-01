@@ -217,8 +217,8 @@ class PioneerImage(models.Model):
     def __unicode__(self):
         base, ext = os.path.splitext(os.path.basename(self.pic.url))
         base_url = os.path.dirname(self.pic.url)
-        # return {self.id: os.path.join(base_url + '/' + base + '_thumb' + ext)}
-        return os.path.join(base_url + '/' + base + '_thumb' + ext)
+        # return os.path.join(base_url + '/' + base + '_thumb' + ext)
+        return self.pic.url
 
     def save(self):
         super(PioneerImage, self).save()

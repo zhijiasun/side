@@ -43,11 +43,12 @@ class TestSerializer(serializers.HyperlinkedModelSerializer):
         fields = ['party_id','party_name','member_number','contact_info']
 
 class PioneerSerializer(serializers.ModelSerializer):
-    img_list = serializers.SerializerMethodField('construct_images')
+    pictureurl = serializers.SerializerMethodField('construct_images2')
     # img_list = serializers.RelatedField(many=True)
+    img_size = ['default','148*111','400*300','640*480']
     class Meta:
         model = Pioneer
-        fields = ['title', 'date', 'author', 'img_list']
+        fields = ['title', 'date', 'author', 'pictureurl']
 
     def construct_images(self,obj):
         images = obj.img_list.all()
@@ -58,6 +59,32 @@ class PioneerSerializer(serializers.ModelSerializer):
             result['image'+str(i)]= im
         return result
 
+    def construct_images2(self,obj):
+        images = obj.img_list.all()
+        result = {}
+        result['dl']='http://115.28.79.151:8081'
+        result['imageList'] = []
+        tmp_list = []
+        tmp_dict = {}
+        for im in images:
+            base, ext = os.path.splitext(os.path.basename(im.pic.url))
+            base_url = os.path.dirname(im.pic.url)
+            for i in self.img_size:
+                if not cmp(i,'default'):
+                    tmp_dict['objectId']= os.path.join(base_url+'/'+base+'_default'+ext)
+                    tmp_dict['size']=i
+                    tmp_dict['type']='original'
+                else:
+                    tmp_dict['objectId']=os.path.join(base_url+'/'+base+'_'+i+ext)
+                    tmp_dict['size']=i
+                    tmp_dict['type']='thumbnail'
+                tmp_list.append(tmp_dict)
+                tmp_dict = {}
+            result['imageList'].append(tmp_list)
+            tmp_list = []
+            tmp_dict = {}
+
+        return result
 
 
 class LifeTipsSerializer(serializers.ModelSerializer):
