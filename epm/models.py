@@ -327,8 +327,10 @@ class Question(models.Model):
     question_type = models.IntegerField(u'问题类型', default=1, choices=QUESTION_TYPE)
     question_content = models.TextField(u'咨询内容')
     question_answer = models.TextField(u'咨询回复',blank=True,null=True,default=u'未回复')
+    #don't know how to add permission to this field only
+    #a workaround is to define a new model which named Published have a OneToOneField relation with Question
+    #then we can add permission to this Published Model
     is_published = models.BooleanField(default=False)
-
     class Meta:
         verbose_name = u'咨询服务'
         verbose_name_plural = u'咨询服务'
