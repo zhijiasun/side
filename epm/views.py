@@ -210,9 +210,10 @@ def member_info(request, username):
             appuser = users[0].app_user.all()
             if appuser[0].is_verified:
                 m = member.objects.filter(id_card = appuser[0].real_idcard, member_name = appuser[0].real_name)
-                ms = MemberSerializer(m)
-                result = {"errCode":10000, "errDesc":"successfully get member info","data":ms.data[0]}
-                return Response(result,status = status.HTTP_200_OK)
+                if m:
+                    ms = MemberSerializer(m[0])
+                    result = {"errCode":10000, "errDesc":"successfully get member info","data":ms.data}
+                    return Response(result,status = status.HTTP_200_OK)
         result = {"errCode":10009, "errDesc":"failed to get member info"}
         return Response(result,status = status.HTTP_400_BAD_REQUEST)
 
@@ -335,41 +336,26 @@ def partywork_list(request,username):
 
 
 
-@api_view(['GET','POST'])
-# @authentication_classes((SessionAuthentication, BasicAuthentication))
-# @permission_classes((IsAuthenticated,))
+@api_view(['GET'])
 def process_list(request):
-    """
-    support four parameters in request.GET
-    startTime -- the start time of the record
-    endTime -- the end time of the record
-    maxCount -- the max number of the results
-    offset -- offset of the results
-    """
     if request.method == 'GET':
         process_type = request.GET.get('type','')
-        startTime = time.localtime(float(request.GET.get('startTime',0)))
-        # endTime = time.localtime(float(request.GET.get('endTime',datetime.datetime.now().microsecond)))
-        startTime = datetime.datetime.fromtimestamp(time.mktime(startTime))
-        if 'endTime' in request.GET.keys():
-            endTime = time.localtime(float(request.GET.get('endTime')))
-            endTime = datetime.datetime.fromtimestamp(time.mktime(endTime))
-        else:
-            endTime = datetime.datetime.now()
-        p = BusinessProcess.objects.filter(date__gte=startTime).filter(date__lte=endTime)
+        result = {"errCode":10000,"errDesc":"get result successfully"}
         if process_type:
-            p = p.filter(process_type=process_type)
-
-        maxCount = int(request.GET.get('maxCount',10))
-        offset = int(request.GET.get('offset',0))
-
-        p = p[offset:offset+maxCount]
-        pa = ProcessSerializer(p,many=True)
-        result = {"errCode":10000,"errDesc":"get result successfully","data":pa.data}
-
-    elif request.method == 'POST':
-        print 'Method is POST'
-    return Response(result,status = status.HTTP_200_OK)
+            p = BusinessProcess.objects.filter(process_type=process_type)
+            if p:
+                ps = ProcessSerializer(p[0])
+                result['data']=ps.data
+                return Response(result,status = status.HTTP_200_OK)
+            else:
+                result['errCode']=10009
+                result['errDesc']='specified type not existed'
+                logger.debug('specify type not existed:%s',process_type)
+        else:
+            result['errCode']=10009
+            result['errDesc']='type is null'
+            logger.debug('type is null, please specify a type')
+    return Response(result,status = status.HTTP_400_BAD_REQUEST)
 
 
 

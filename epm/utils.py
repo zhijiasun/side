@@ -1,4 +1,17 @@
 #coding:utf-8
+GENDER = (
+        (0,u'男'),
+        (1,u'女'),
+        )
+
+EDUCATION = (
+        (0,u'本科'),
+        (1,u'研究生'),
+        )
+NATION = (
+        (0,u'汉族'),
+        (1,u'藏族'),
+        )
 VERIFY_PROCESS = (
         (0,u'未申请认证'),
         (1,u'正在审核'),
@@ -13,9 +26,9 @@ QUESTION_TYPE = (
         (5,u'专精特新企业培育'),
         )
 PROCESS_TYPE = (
-        (1,u'我要入党'),
-        (2,u'我要成立党支部'),
-        (3,u'民主生活评议备案'),
+        ('join',u'我要入党'),
+        ('setup',u'我要成立党支部'),
+        ('record',u'民主生活评议备案'),
         )
 PARTY_ATTRIBUTE = (
         (1,u'党委'),        

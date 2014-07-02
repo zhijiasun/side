@@ -131,9 +131,9 @@ class enterprise(models.Model):
 
 class member(models.Model):
     member_name = models.CharField(verbose_name=u'党员姓名',max_length=80)
-    member_gender = models.IntegerField(u'性别',default=1,choices=((1,u'男'),(2,u'女')))
-    member_nation = models.IntegerField(u'民族',default=1,choices=((1,u'汉族'),(2,u'藏族')))
-    member_education = models.IntegerField(u'学历',default=1,choices=((1,u'本科'),(2,u'研究生')))
+    member_gender = models.IntegerField(u'性别',default=0,choices=GENDER)
+    member_nation = models.IntegerField(u'民族',default=0,choices=NATION)
+    member_education = models.IntegerField(u'学历',default=0,choices=EDUCATION)
     member_birth = models.DateField(u'出生日期',blank=True,null=True)
     member_worktime = models.DateField(u'参加工作时间')
     join_party_time = models.DateField(u'入党时间')
@@ -306,7 +306,7 @@ class BusinessProcess(models.Model):
     process_id = models.AutoField(primary_key=True,auto_created=True)
     title = models.CharField(u'标题',max_length=10)
     date = models.DateTimeField(u'创建日期',auto_now_add=True)
-    process_type = models.IntegerField(u'流程类型',choices =PROCESS_TYPE)
+    process_type = models.CharField(u'流程类型',max_length=10,default='join',choices =PROCESS_TYPE)
     author = models.CharField(u'作者',max_length=30)
     content = models.TextField(u'内容')
     process_file = models.FileField(upload_to='upload/',blank=True,null=True,verbose_name=u'附件')
