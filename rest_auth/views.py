@@ -30,6 +30,8 @@ from .serializers import TokenSerializer, UserDetailsSerializer, \
     UserProfileUpdateSerializer, SetPasswordSerializer, \
     PasswordResetSerializer
 
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate
 import logging
 logger = logging.getLogger(__name__)
 
@@ -352,7 +354,7 @@ class VerifyEmail(LoggedOutRESTAPIView, GenericAPIView):
             return Response({"errors": ret_msg}, status=status.HTTP_400_BAD_REQUEST)
 
 
-class PasswordChange(LoggedInRESTAPIView, GenericAPIView):
+class PasswordChange(GenericAPIView):
 
     """
     Calls Django Auth SetPasswordForm save method.
@@ -363,25 +365,31 @@ class PasswordChange(LoggedInRESTAPIView, GenericAPIView):
 
     serializer_class = SetPasswordSerializer
 
-    def post(self, request):
+    def post(self, request,username):
         # Create a serializer with request.DATA
         serializer = self.serializer_class(data=request.DATA)
+        old_password = request.DATA.get('old_password','')
+        user = authenticate(username=username, password=old_password)
+        result = {}
+        result['errCode'] = 10000
+        result['errDesc'] = 'invalid username or password'
+        if user is None:
+            result['errCode'] = 10003
+            return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
         if serializer.is_valid():
             # Construct the SetPasswordForm instance
-            form = SetPasswordForm(user=request.user, data=serializer.data)
+            form = SetPasswordForm(user=user, data=serializer.data)
 
             if form.is_valid():
                 form.save()
+                result['errDesc'] = 'New password has been saved'
 
                 # Return the success message with OK HTTP status
-                return Response({"success": "New password has been saved."},
-                                status=status.HTTP_200_OK)
+                return Response(result, status=status.HTTP_200_OK)
 
             else:
-                return Response(form._errors,
-                                status=status.HTTP_400_BAD_REQUEST)
+                return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
         else:
-            return Response(serializer.errors,
-                            status=status.HTTP_400_BAD_REQUEST)
+            return Response(result, status=status.HTTP_400_BAD_REQUEST)

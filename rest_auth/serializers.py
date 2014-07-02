@@ -115,6 +115,7 @@ class SetPasswordSerializer(serializers.Serializer):
     Serializer for changing Django User password.
     """
 
+    old_password = serializers.CharField(max_length=128)
     new_password1 = serializers.CharField(max_length=128)
     new_password2 = serializers.CharField(max_length=128)
 

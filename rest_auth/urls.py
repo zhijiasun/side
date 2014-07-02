@@ -23,7 +23,7 @@ urlpatterns = patterns('rest_auth.views',
                        url(r'^logout/$', Logout.as_view(), name='rest_logout'),
                        url(r'^user/$', UserDetails.as_view(),
                            name='rest_user_details'),
-                       url(r'^password/change/$', PasswordChange.as_view(),
+                       url(r'^(?P<username>.*)/password/change/$', PasswordChange.as_view(),
                            name='rest_password_change'),
                        )
 
