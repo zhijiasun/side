@@ -36,7 +36,7 @@ class MemberSerializer(serializers.HyperlinkedModelSerializer):
     member_nation = serializers.SerializerMethodField('str_nation')
     member_education = serializers.SerializerMethodField('str_education')
     member_party = serializers.SerializerMethodField('str_member_party')
-    member_enter = serializers.SerializerMethodField('str_education')
+    member_enter = serializers.SerializerMethodField('str_member_enter')
 
     class Meta:
         model = member
@@ -57,10 +57,14 @@ class MemberSerializer(serializers.HyperlinkedModelSerializer):
     def str_member_party(self,obj):
         if obj.member_party:
             return obj.member_party.party_name
+        else:
+            return ''
 
     def str_member_enter(self,obj):
         if obj.member_enter:
             return obj.member_enter.enter_name
+        else:
+            return ''
 
 class TestSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
@@ -182,7 +186,7 @@ class QuestionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Question
-        fields = ['question_title','create_time','reply_time','question_author','question_content','question_answer','is_published']
+        fields = ['question_id','question_title','create_time','reply_time','question_author','question_content','question_answer']
 
     def create_to_timestamp(self, obj):
         if obj.create_time:

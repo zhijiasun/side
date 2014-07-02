@@ -218,15 +218,31 @@ def member_info(request, username):
         return Response(result,status = status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET','POST'])
-def party_info(request,partyname):
+def party_info(request,username):
     if request.method == 'GET':
-        parties = party.objects.filter(party_name=partyname)
-        if parties:
-            m = parties[0].memberAtParty.all()
-            ms = MemberSerializer(m,many=True)
-            result = {"errCode":10000, "errDesc":"successfully get member info","data":ms.data}
-            return Response(result,status = status.HTTP_200_OK)
-        result = {"errCode":10009, "errDesc":"failed to get member info"}
+        users = User.objects.filter(username=username)
+        result = {}
+        if users:
+            up = users[0].app_user.all()
+            if up:
+                party_name = up[0].real_organization
+                parties = party.objects.filter(party_name=party_name)
+                if parties:
+                    m = parties[0].membersAtParty.all()
+                    ms = MemberSerializer(m,many=True)
+                    result = {"errCode":10000, "errDesc":"successfully get member info","data":ms.data}
+                    return Response(result,status = status.HTTP_200_OK)
+                else:
+                    result['errCode']=10009
+                    result['errDesc']='not found party'
+
+            else:
+                result['errCode']=10009
+                result['errDesc']='not found username'
+        else:
+            result['errCode']=10009
+            result['errDesc']='not found username'
+
         return Response(result,status = status.HTTP_400_BAD_REQUEST)
 
 
@@ -348,9 +364,10 @@ def process_list(request):
                 result['data']=ps.data
                 return Response(result,status = status.HTTP_200_OK)
             else:
-                result['errCode']=10009
-                result['errDesc']='specified type not existed'
+                result['errCode']=10010
+                result['errDesc']='specified process type is not existed'
                 logger.debug('specify type not existed:%s',process_type)
+                return Response(result,status = status.HTTP_200_OK)
         else:
             result['errCode']=10009
             result['errDesc']='type is null'
@@ -372,7 +389,7 @@ def question_list(request,username):
     """
     if request.method == 'GET':
         users = User.objects.filter(username=username)
-        result = {"result":10000,"message":"successfully get questions","data":[]}
+        result = {"errCode":10000,"errDesc":"successfully get questions","data":[]}
         if users:
             startTime = time.localtime(float(request.GET.get('startTime',0)))
             # endTime = time.localtime(float(request.GET.get('endTime',datetime.datetime.now().microsecond)))
@@ -382,7 +399,7 @@ def question_list(request,username):
                 endTime = datetime.datetime.fromtimestamp(time.mktime(endTime))
             else:
                 endTime = datetime.datetime.now()
-            p = Question.objects.filter(question_author=users[0]).filter(reply_time__gte=startTime).filter(reply_time__lte=endTime)
+            p = Question.objects.filter(question_author=users[0]).filter(reply_time__gte=startTime).filter(reply_time__lte=endTime).filter(is_published=True)
 
             maxCount = int(request.GET.get('maxCount',10))
             offset = int(request.GET.get('offset',0))
