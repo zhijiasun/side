@@ -21,7 +21,9 @@ telephone_validator = RegexValidator(regex = '^(1(([35][0-9])|(47)|[8][01236789]
         ,message = 'Invalid phone number'
         ,code = 'invalid_telephone')
 
-def make_thumb(path,size = 480):
+img_size = [(148,111),(400,300),(640,480)]
+
+def make_thumb(path,size = (640,480)):
     pixbuf = Image.open(path)
     width, height = pixbuf.size
 
@@ -224,9 +226,13 @@ class PioneerImage(models.Model):
         super(PioneerImage, self).save()
         base, ext = os.path.splitext(os.path.basename(self.pic.path))
         directory = os.path.dirname(self.pic.path)
-        thumb_path = os.path.join(directory + '/' + base + '_thumb' + ext)
-        thumb_pixbuf = make_thumb(self.pic.path)
-        thumb_pixbuf.save(thumb_path)
+        picture = Image.open(self.pic.path)
+        actual_size = picture.size
+        for size in img_size:
+            if size < actual_size:
+                thumb = picture.resize(size,Image.ANTIALIAS)
+                thumb_path = os.path.join(directory + '/' + base + '_thumb_' +str(size[0])+'_'+str(size[1])+ ext)
+                thumb.save(thumb_path)
         super(PioneerImage, self).save()
 
 class LifeTips(models.Model):

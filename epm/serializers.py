@@ -76,7 +76,8 @@ class PioneerSerializer(serializers.ModelSerializer):
     pictureurl = serializers.SerializerMethodField('construct_images2')
     date = serializers.SerializerMethodField('date_to_timestamp')
     # img_list = serializers.RelatedField(many=True)
-    img_size = ['default','148*111','400*300','640*480']
+    img_size2 = ['default','148*111','400*300','640*480']
+    img_size = ['default',(148,111),(400,300),(640,480)]
 
     class Meta:
         model = Pioneer
@@ -111,7 +112,7 @@ class PioneerSerializer(serializers.ModelSerializer):
                     tmp_dict['size']=i
                     tmp_dict['type']='original'
                 else:
-                    tmp_dict['objectId']=os.path.join(base_url+'/'+base+'_'+i+ext)
+                    tmp_dict['objectId']=os.path.join(base_url+'/'+base+'_thumb_'+str(i[0])+'_'+str(i[1])+ext)
                     tmp_dict['size']=i
                     tmp_dict['type']='thumbnail'
                 tmp_list.append(tmp_dict)
