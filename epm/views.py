@@ -95,6 +95,25 @@ class TestViewSet(viewsets.ModelViewSet):
 
 
 @api_view(['POST'])
+def email_change(request, username):
+    if request.method == 'POST':
+        result = {'errCode':10000,'errDesc':'email change successfully'}
+        old_email = request.DATA.get('old_email','')
+        new_email = request.DATA.get('new_email','')
+        users = User.objects.filter(username=username,email=old_email)
+        if users:
+            logger.debug('input new email is:%s',new_email)
+            users[0].email=new_email
+            users[0].save()
+            return Response(result,status = status.HTTP_200_OK)
+        else:
+            result['errCode']=10011
+            result['errDesc']='invalid username or email'
+            logger.debug('input invalid username or email:%s,%s',username,old_email)
+            return Response(result,status = status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
 def party_verify(request, username):
     if request.method == 'POST':
         result = {}

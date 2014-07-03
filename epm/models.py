@@ -324,7 +324,7 @@ class Question(models.Model):
     create_time = models.DateTimeField(u'创建日期',auto_now_add=True)
     reply_time = models.DateTimeField(u'回复时间', auto_now_add=True)
     question_author = models.ForeignKey(User,unique=True,verbose_name=u'提问者',related_name='user_questions')
-    question_type = models.IntegerField(u'问题类型', default=1, choices=QUESTION_TYPE)
+    question_type = models.CharField(u'问题类型', max_length=10,default='enter', choices=QUESTION_TYPE)
     question_content = models.TextField(u'咨询内容')
     question_answer = models.TextField(u'咨询回复',blank=True,null=True,default=u'未回复')
     #don't know how to add permission to this field only
