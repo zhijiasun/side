@@ -37,6 +37,11 @@ class MemberSerializer(serializers.HyperlinkedModelSerializer):
     member_education = serializers.SerializerMethodField('str_education')
     member_party = serializers.SerializerMethodField('str_member_party')
     member_enter = serializers.SerializerMethodField('str_member_enter')
+    member_birth = serializers.SerializerMethodField('str_member_birth')
+    member_worktime = serializers.SerializerMethodField('str_member_worktime')
+    join_party_time = serializers.SerializerMethodField('str_member_jointime')
+    formal_member_time = serializers.SerializerMethodField('str_member_formaltime')
+    now_party_time = serializers.SerializerMethodField('str_now_party_time')
 
     class Meta:
         model = member
@@ -44,6 +49,36 @@ class MemberSerializer(serializers.HyperlinkedModelSerializer):
                 'member_worktime','join_party_time','formal_member_time','now_party_time','birth_address',
                 'home_address','living_address','member_phone','member_email','qq','weixin','school','id_card',
                 'member_party','member_enter']
+
+    def str_member_birth(self, obj):
+        if not obj.member_birth:
+            return ''
+        else:
+            return obj.member_birth
+
+    def str_member_worktime(self, obj):
+        if obj.member_worktime:
+            return obj.member_worktime
+        else:
+            return ''
+
+    def str_member_jointime(self, obj):
+        if obj.join_party_time:
+            return obj.join_party_time
+        else:
+            return ''
+
+    def str_member_formaltime(self, obj):
+        if obj.formal_member_time:
+            return obj.formal_member_time
+        else:
+            return ''
+
+    def str_now_party_time(self, obj):
+        if obj.now_party_time:
+            return obj.now_party_time
+        else:
+            return ''
 
     def str_gender(self,obj):
         return GENDER[obj.member_gender][1] 
