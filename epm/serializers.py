@@ -99,21 +99,22 @@ class PioneerSerializer(serializers.ModelSerializer):
     def construct_images2(self,obj):
         images = obj.img_list.all()
         result = {}
-        result['dl']='http://115.28.79.151:8081'
+        result['dl']='http://115.28.79.151:8081/media/upload'
         result['imageList'] = []
         tmp_list = []
         tmp_dict = {}
         for im in images:
             base, ext = os.path.splitext(os.path.basename(im.pic.url))
             base_url = os.path.dirname(im.pic.url)
+            base_name = os.path.basename(base_url)
             for i in self.img_size:
                 if not cmp(i,'default'):
-                    tmp_dict['objectId']= os.path.join(base_url+'/'+base+'_default'+ext)
+                    tmp_dict['objectId']= os.path.join('/'+base_name+'/'+base+'_default'+ext)
                     tmp_dict['size']=i
                     tmp_dict['type']='original'
                 else:
-                    tmp_dict['objectId']=os.path.join(base_url+'/'+base+'_thumb_'+str(i[0])+'_'+str(i[1])+ext)
-                    tmp_dict['size']=i
+                    tmp_dict['objectId']=os.path.join('/'+base_name+'/'+base+'_thumb_'+str(i[0])+'_'+str(i[1])+ext)
+                    tmp_dict['size']=str(i[0])+'*'+str(i[1])
                     tmp_dict['type']='thumbnail'
                 tmp_list.append(tmp_dict)
                 tmp_dict = {}
