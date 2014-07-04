@@ -2,6 +2,7 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User,Group
 from django.db.models import Q
+from django.db.models.query import QuerySet
 from django.http import HttpResponseRedirect
 from rest_framework import viewsets
 from rest_framework import permissions
@@ -358,6 +359,7 @@ def partywork_list(request,username):
     if request.method == 'GET':
         result = {"errCode":10000,"errDesc":"get result successfully","data":[]}
         users = User.objects.filter(username=username)
+        objs = QuerySet()
         if users:
             ups = users[0].app_user.all()
             if ups and ups[0].is_verified:
@@ -365,9 +367,9 @@ def partywork_list(request,username):
                 if members:
                     print ups[0].is_manager
                     if ups[0].is_manager is 2:
-                        objs = PartyWork.objects.filter((Q(is_all=True)) | (Q(specified_party=True)) | (Q(specified_person=members[0])))
+                        objs = PartyWork.objects.filter((Q(specified=1)) | (Q(specified=2)) | (Q(specified_person=members[0])))
                     else:
-                        objs = PartyWork.objects.filter((Q(is_all=True)) | (Q(specified_person=members[0])))
+                        objs = PartyWork.objects.filter((Q(specified=1)) | (Q(specified_person=members[0])))
 
         if objs.exists():
             startTime = time.localtime(float(request.GET.get('startTime',0)))
