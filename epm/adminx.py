@@ -115,10 +115,18 @@ class BusinessProcessAdmin(object):
     list_filter = ('title','date','author','content','process_type')
     # reversion_enable = True
 
+
+class PublishedAdmin(object):
+    model = Published
+    extra=1
+    max_num = 1
+
+
 class QuestionAdmin(object):
     list_display = ('question_id','question_title','create_time','reply_time','question_author','question_content')
     list_filter = ('question_id','question_title','create_time','reply_time','question_author','question_content')
 
+    inlines = [PublishedAdmin]
     # reversion_enable = True
 
 class ListSetting(object):

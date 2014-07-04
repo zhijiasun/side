@@ -16,6 +16,7 @@ from django.db.models.fields.files import ImageFieldFile
 from django.contrib.auth.models import User
 from adaptor.model import CsvDbModel
 import datetime
+from django.db.models.signals import post_save
 
 telephone_validator = RegexValidator(regex = '^(1(([35][0-9])|(47)|[8][01236789]))\d{8}$'
         ,message = 'Invalid phone number'
@@ -55,6 +56,10 @@ class party(models.Model):
 
     def __unicode__(self):
         return self.party_name
+
+    def save(self,*args,**kwargs):
+        self.member_number = len(self.membersAtParty.all())
+        super(party,self).save(*args,**kwargs)
 
     def related_enter(self):
         # enters = enterprise.objects.filter(party_status=self)
@@ -125,6 +130,9 @@ class enterprise(models.Model):
     def __unicode__(self):
         return self.enter_name
 
+    def save(self,*args,**kwargs):
+        pass
+
     def related_party_status(self):
         return PARTY_ATTRIBUTE[self.related_party.party_attribute - 1][1]
 
@@ -149,7 +157,7 @@ class member(models.Model):
     qq = models.CharField(u'QQ号',max_length=15,blank=True,null=True)
     weixin = models.CharField(u'微信号',max_length=20,blank=True,null=True)
     school = models.CharField(u'毕业院校',max_length=80,blank=True,null=True)
-    id_card = models.CharField(u'身份证号',max_length=30)
+    id_card = models.CharField(u'身份证号',unique=True, max_length=30)
     member_party = models.ForeignKey(party,verbose_name=u'隶属党组织',blank=True,null=True,on_delete=models.SET_NULL,related_name='membersAtParty')
     member_enter = models.ForeignKey(enterprise,verbose_name=u'隶属企业',blank=True,null=True,on_delete=models.SET_NULL,related_name='membersAtEnter')
 
@@ -168,6 +176,14 @@ class member(models.Model):
     def member_party_name(self):
         return self.member_party.party_name
     member_party_name.short_description = u'隶属党组织'
+
+
+def update_member_number(sender,**kwargs):
+    obj = kwargs['instance']
+    if obj and obj.member_party:
+        obj.member_party.save()
+
+post_save.connect(update_member_number, sender=member)
 
 
 class UserProfile(models.Model):
@@ -253,8 +269,8 @@ class LifeTips(models.Model):
 class PartyWork(models.Model):
     partywork_id = models.AutoField(primary_key=True,auto_created=True)
     title = models.CharField(u'标题',max_length=10)
-    specified_person = models.ForeignKey(User,verbose_name=u'针对特定党员', blank=True,null=True)
-    specified_party = models.ForeignKey(party,verbose_name=u'针对特定党组织', blank=True,null=True)
+    specified_person = models.ManyToManyField(member,verbose_name=u'针对特定党员', blank=True,null=True)
+    specified_party = models.BooleanField(verbose_name=u'针对所有党组织管理员', default=False)
     date = models.DateTimeField(u'创建日期',auto_now_add=True)
     author = models.CharField(u'作者',max_length=30)
     content = models.TextField(u'内容',)
@@ -324,19 +340,20 @@ class BusinessProcess(models.Model):
     def __unicode__(self):
         return self.title
 
+
 class Question(models.Model):
     question_id = models.AutoField(primary_key=True,auto_created=True)
     question_title = models.CharField(u'标题',max_length=10,default=u'问题咨询')
     create_time = models.DateTimeField(u'创建日期',auto_now_add=True)
     reply_time = models.DateTimeField(u'回复时间', auto_now_add=True)
-    question_author = models.ForeignKey(User,unique=True,verbose_name=u'提问者',related_name='user_questions')
-    question_type = models.CharField(u'问题类型', max_length=10,default='enter', choices=QUESTION_TYPE)
+    # question_author = models.ManyToManyField(User, verbose_name=u'提问者',related_name='user_questions')
+    question_author = models.CharField(verbose_name=u'提问者', max_length='40')
+    question_type = models.IntegerField(u'问题类型',default=0, choices=QUESTION_TYPE)
     question_content = models.TextField(u'咨询内容')
     question_answer = models.TextField(u'咨询回复',blank=True,null=True,default=u'未回复')
     #don't know how to add permission to this field only
     #a workaround is to define a new model which named Published have a OneToOneField relation with Question
     #then we can add permission to this Published Model
-    is_published = models.BooleanField(default=False)
     class Meta:
         verbose_name = u'咨询服务'
         verbose_name_plural = u'咨询服务'
@@ -344,15 +361,34 @@ class Question(models.Model):
     def __unicode__(self):
         return self.question_title
 
-    def save(self,*args,**kwargs):
-        """
-        reply_time equals to the time that when the is_published set to true.
-        Otherwise reply_time equals to create_time
-        """
-        if self.is_published:
-            self.reply_time = datetime.datetime.now()
+    # def save(self,*args,**kwargs):
+    #     """
+    #     reply_time equals to the time that when the is_published set to true.
+    #     Otherwise reply_time equals to create_time
+    #     """
+    #     print self.published.all()
+    #     print type(self.published)
+    #     if self.published.all() and self.published.all()[0].is_published:
+    #         print 'xxxx'
+    #         self.reply_time = datetime.datetime.now()
             
-        super(Question,self).save(*args,**kwargs)
+    #     super(Question,self).save(*args,**kwargs)
+
+
+class Published(models.Model):
+    related_question = models.ForeignKey(Question,verbose_name=u'是否发布',related_name='published')
+    is_published = models.BooleanField(u'是否发布',default=False)
+    # is_published = models.IntegerField(u'是否发布',default=0,choices=((0,u'不发布'),(1,u'发布')))
+
+    class Meta:
+        verbose_name = u'管理发布'
+        verbose_name_plural = u'管理发布'
+
+    def save(self,*args,**kwargs):
+        if self.is_published:
+            self.related_question.reply_time = datetime.datetime.now()
+            self.related_question.save()
+        super(Published, self).save(*args,**kwargs)
 
 class Test(models.Model):
     party_id = models.AutoField(primary_key=True,auto_created=True)
