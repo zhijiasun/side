@@ -2,6 +2,7 @@ from django.contrib.auth.models import User,Group
 from rest_framework import serializers
 from models import *
 from epm.utils import *
+from side import settings
 import time
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -148,7 +149,11 @@ class PioneerSerializer(serializers.ModelSerializer):
                     tmp_dict['size']=i
                     tmp_dict['type']='original'
                 else:
+                    #should have a judge whether the file existed
                     tmp_dict['objectId']=os.path.join('/'+base_name+'/'+base+'_thumb_'+str(i[0])+'_'+str(i[1])+ext)
+                    # print settings.BASE_DIR + tmp_dict['objectId']
+                    # if os.path.exist(settings.BASE_DIR + tmp_dict['objectId']):
+                    #     print 'ok'
                     tmp_dict['size']=str(i[0])+'*'+str(i[1])
                     tmp_dict['type']='thumbnail'
                 tmp_list.append(tmp_dict)

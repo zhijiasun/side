@@ -271,6 +271,7 @@ class PartyWork(models.Model):
     title = models.CharField(u'标题',max_length=10)
     specified_person = models.ManyToManyField(member,verbose_name=u'针对特定党员', blank=True,null=True)
     specified_party = models.BooleanField(verbose_name=u'针对所有党组织管理员', default=False)
+    is_all = models.BooleanField(verbose_name=u'针对所有人',blank=True,default=False)
     date = models.DateTimeField(u'创建日期',auto_now_add=True)
     author = models.CharField(u'作者',max_length=30)
     content = models.TextField(u'内容',)

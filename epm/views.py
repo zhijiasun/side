@@ -1,6 +1,7 @@
 #coding:utf-8
 from django.shortcuts import render
 from django.contrib.auth.models import User,Group
+from django.db.models import Q
 from django.http import HttpResponseRedirect
 from rest_framework import viewsets
 from rest_framework import permissions
@@ -355,33 +356,34 @@ def partywork_list(request,username):
         return objects.filter
     """
     if request.method == 'GET':
+        result = {"errCode":10000,"errDesc":"get result successfully","data":[]}
         users = User.objects.filter(username=username)
         if users:
             ups = users[0].app_user.all()
             if ups and ups[0].is_verified:
                 members = member.objects.filter(id_card=ups[0].real_idcard)
                 if members:
-                    if ups[0].is_manager:
+                    print ups[0].is_manager
+                    if ups[0].is_manager is 2:
                         objs = PartyWork.objects.filter((Q(is_all=True)) | (Q(specified_party=True)) | (Q(specified_person=members[0])))
                     else:
                         objs = PartyWork.objects.filter((Q(is_all=True)) | (Q(specified_person=members[0])))
 
         if objs.exists():
             startTime = time.localtime(float(request.GET.get('startTime',0)))
-        # endTime = time.localtime(float(request.GET.get('endTime',datetime.datetime.now().microsecond)))
             startTime = datetime.datetime.fromtimestamp(time.mktime(startTime))
             if 'endTime' in request.GET.keys():
                 endTime = time.localtime(float(request.GET.get('endTime')))
                 endTime = datetime.datetime.fromtimestamp(time.mktime(endTime))
             else:
                 endTime = datetime.datetime.now()
-                p = LifeTips.objects.filter(lifetips_date__gte=startTime).filter(lifetips_date__lte=endTime)
+                p = objs.filter(date__gte=startTime).filter(date__lte=endTime)
 
                 maxCount = int(request.GET.get('maxCount',10))
                 offset = int(request.GET.get('offset',0))
 
                 p = p[offset:offset+maxCount]
-                pa = LifeTipsSerializer(p,many=True)
+                pa = PartyWorkSerializer(p,many=True)
                 result = {"errCode":10000,"errDesc":"get result successfully","data":pa.data}
     elif request.method == 'POST':
                print 'Method is POST'
