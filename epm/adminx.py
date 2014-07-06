@@ -78,36 +78,68 @@ class PioneerAdmin(object):
     # reversion_enable = True
 
 
+class LifeTipsImageAdmin(object):
+    model = LifeTipsImage
+    extra = 1
+
+
 class LifeTipsAdmin(object):
     list_display = ('title','date','author','content')
     list_filter = ('title','date','author','content')
+    inlines = [LifeTipsImageAdmin]
     # reversion_enable = True
 
     formfield_overrides = {models.TextField:{'widget':Textarea(attrs={'rows':4,'cols':40})},}
 
+
+class PartyWorkImageAdmin(object):
+    model = PartyWorkImage
+    extra = 1
+
+
 class PartyWorkAdmin(object):
     list_display = ('title','date','author','content')
     list_filter = ('title','date','author','content')
+    inlines = [PartyWorkImageAdmin]
 
     # reversion_enable = True
+
+
+class NoticeImageAdmin(object):
+    model = NoticeImage
+    extra = 1
 
 
 class NoticeAdmin(object):
     list_display = ('title','date','author','content')
     list_filter = ('title','date','author','content')
+    inlines = [NoticeImageAdmin]
 
     # reversion_enable = True
+
+
+class SpiritImageAdmin(object):
+    model = SpiritImage
+    extra = 1
 
 
 class SpiritAdmin(object):
     list_display = ('title','date','author','content')
     list_filter = ('title','date','author','content')
+    inlines = [SpiritImageAdmin]
 
     # reversion_enable = True
+
+
+class PolicyImageAdmin(object):
+    model = PolicyImage
+    extra = 1
+
 
 class PolicyAdmin(object):
     list_display = ('title','date','author','content')
     list_filter = ('title','date','author','content')
+    inlines = [PolicyImageAdmin]
 
     # reversion_enable = True
     

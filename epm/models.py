@@ -263,6 +263,34 @@ class LifeTips(models.Model):
         return self.title
 
 
+class LifeTipsImage(models.Model):
+    lifetips = models.ForeignKey(LifeTips,related_name='img_list', verbose_name=u"附图")
+    pic = models.ImageField(upload_to='upload/%Y_%m_%d/',blank=True,verbose_name=u"图片")
+
+    class Meta:
+        verbose_name = u'生活小贴士附图'
+        verbose_name_plural = u'生活小贴士附图'
+
+    def __unicode__(self):
+        base, ext = os.path.splitext(os.path.basename(self.pic.url))
+        base_url = os.path.dirname(self.pic.url)
+        # return os.path.join(base_url + '/' + base + '_thumb' + ext)
+        return self.pic.url
+
+    def save(self):
+        super(LifeTipsImage, self).save()
+        base, ext = os.path.splitext(os.path.basename(self.pic.path))
+        directory = os.path.dirname(self.pic.path)
+        picture = Image.open(self.pic.path)
+        actual_size = picture.size
+        for size in img_size:
+            if size < actual_size:
+                thumb = picture.resize(size,Image.ANTIALIAS)
+                thumb_path = os.path.join(directory + '/' + base + '_thumb_' +str(size[0])+'_'+str(size[1])+ ext)
+                thumb.save(thumb_path)
+        super(LifeTipsImage, self).save()
+
+
 class PartyWork(models.Model):
     partywork_id = models.AutoField(primary_key=True,auto_created=True)
     title = models.CharField(u'标题',max_length=10)
@@ -281,6 +309,35 @@ class PartyWork(models.Model):
     def __unicode__(self):
         return self.title
 
+
+class PartyWorkImage(models.Model):
+    partywork = models.ForeignKey(PartyWork,related_name='img_list', verbose_name=u"附图")
+    pic = models.ImageField(upload_to='upload/%Y_%m_%d/',blank=True,verbose_name=u"图片")
+
+    class Meta:
+        verbose_name = u'党务提醒附图'
+        verbose_name_plural = u'党务提醒附图'
+
+    def __unicode__(self):
+        base, ext = os.path.splitext(os.path.basename(self.pic.url))
+        base_url = os.path.dirname(self.pic.url)
+        # return os.path.join(base_url + '/' + base + '_thumb' + ext)
+        return self.pic.url
+
+    def save(self):
+        super(PartyWorkImage, self).save()
+        base, ext = os.path.splitext(os.path.basename(self.pic.path))
+        directory = os.path.dirname(self.pic.path)
+        picture = Image.open(self.pic.path)
+        actual_size = picture.size
+        for size in img_size:
+            if size < actual_size:
+                thumb = picture.resize(size,Image.ANTIALIAS)
+                thumb_path = os.path.join(directory + '/' + base + '_thumb_' +str(size[0])+'_'+str(size[1])+ ext)
+                thumb.save(thumb_path)
+        super(PartyWorkImage, self).save()
+
+
 class Notice(models.Model):
     notice_id = models.AutoField(primary_key=True,auto_created=True)
     title = models.CharField(u'标题',max_length=10)
@@ -294,6 +351,35 @@ class Notice(models.Model):
 
     def __unicode__(self):
         return self.title
+
+
+class NoticeImage(models.Model):
+    notice = models.ForeignKey(Notice,related_name='img_list', verbose_name=u"附图")
+    pic = models.ImageField(upload_to='upload/%Y_%m_%d/',blank=True,verbose_name=u"图片")
+
+    class Meta:
+        verbose_name = u'公告活动附图'
+        verbose_name_plural = u'公告活动附图'
+
+    def __unicode__(self):
+        base, ext = os.path.splitext(os.path.basename(self.pic.url))
+        base_url = os.path.dirname(self.pic.url)
+        # return os.path.join(base_url + '/' + base + '_thumb' + ext)
+        return self.pic.url
+
+    def save(self):
+        super(NoticeImage, self).save()
+        base, ext = os.path.splitext(os.path.basename(self.pic.path))
+        directory = os.path.dirname(self.pic.path)
+        picture = Image.open(self.pic.path)
+        actual_size = picture.size
+        for size in img_size:
+            if size < actual_size:
+                thumb = picture.resize(size,Image.ANTIALIAS)
+                thumb_path = os.path.join(directory + '/' + base + '_thumb_' +str(size[0])+'_'+str(size[1])+ ext)
+                thumb.save(thumb_path)
+        super(NoticeImage, self).save()
+
 
 class Spirit(models.Model):
     spirit_id = models.AutoField(primary_key=True,auto_created=True)
@@ -309,6 +395,35 @@ class Spirit(models.Model):
     def __unicode__(self):
         return self.title
 
+
+class SpiritImage(models.Model):
+    spirit = models.ForeignKey(Spirit,related_name='img_list', verbose_name=u"附图")
+    pic = models.ImageField(upload_to='upload/%Y_%m_%d/',blank=True,verbose_name=u"图片")
+
+    class Meta:
+        verbose_name = u'上级精神附图'
+        verbose_name_plural = u'上级精神附图'
+
+    def __unicode__(self):
+        base, ext = os.path.splitext(os.path.basename(self.pic.url))
+        base_url = os.path.dirname(self.pic.url)
+        # return os.path.join(base_url + '/' + base + '_thumb' + ext)
+        return self.pic.url
+
+    def save(self):
+        super(SpiritImage, self).save()
+        base, ext = os.path.splitext(os.path.basename(self.pic.path))
+        directory = os.path.dirname(self.pic.path)
+        picture = Image.open(self.pic.path)
+        actual_size = picture.size
+        for size in img_size:
+            if size < actual_size:
+                thumb = picture.resize(size,Image.ANTIALIAS)
+                thumb_path = os.path.join(directory + '/' + base + '_thumb_' +str(size[0])+'_'+str(size[1])+ ext)
+                thumb.save(thumb_path)
+        super(SpiritImage, self).save()
+
+
 class Policy(models.Model):
     policy_id = models.AutoField(primary_key=True,auto_created=True)
     title = models.CharField(u'标题',max_length=10)
@@ -322,6 +437,35 @@ class Policy(models.Model):
 
     def __unicode__(self):
         return self.title
+
+
+class PolicyImage(models.Model):
+    policy = models.ForeignKey(Policy,related_name='img_list', verbose_name=u"附图")
+    pic = models.ImageField(upload_to='upload/%Y_%m_%d/',blank=True,verbose_name=u"图片")
+
+    class Meta:
+        verbose_name = u'惠企政策附图'
+        verbose_name_plural = u'惠企政策附图'
+
+    def __unicode__(self):
+        base, ext = os.path.splitext(os.path.basename(self.pic.url))
+        base_url = os.path.dirname(self.pic.url)
+        # return os.path.join(base_url + '/' + base + '_thumb' + ext)
+        return self.pic.url
+
+    def save(self):
+        super(PolicyImage, self).save()
+        base, ext = os.path.splitext(os.path.basename(self.pic.path))
+        directory = os.path.dirname(self.pic.path)
+        picture = Image.open(self.pic.path)
+        actual_size = picture.size
+        for size in img_size:
+            if size < actual_size:
+                thumb = picture.resize(size,Image.ANTIALIAS)
+                thumb_path = os.path.join(directory + '/' + base + '_thumb_' +str(size[0])+'_'+str(size[1])+ ext)
+                thumb.save(thumb_path)
+        super(PolicyImage, self).save()
+
 
 class BusinessProcess(models.Model):
     process_id = models.AutoField(primary_key=True,auto_created=True)
