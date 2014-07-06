@@ -5,6 +5,7 @@ from import_export.admin import ImportExportModelAdmin
 from plugin import *
 from xadmin.sites import site
 from xadmin import views
+from xadmin.views import filter_hook
 import xadmin
 from xadmin.views import ListAdminView,ModelFormAdminView,CreateAdminView
 from xadmin.layout import Fieldset, Field
@@ -116,18 +117,18 @@ class BusinessProcessAdmin(object):
     # reversion_enable = True
 
 
-class PublishedAdmin(object):
-    model = Published
-    extra=1
-    max_num = 1
-
-
 class QuestionAdmin(object):
     list_display = ('question_id','question_title','create_time','reply_time','question_author','question_content')
     list_filter = ('question_id','question_title','create_time','reply_time','question_author','question_content')
 
-    inlines = [PublishedAdmin]
-    # reversion_enable = True
+    @filter_hook
+    def get_model_form(self,**kwargs):
+        if not self.user.has_perm('is_published'):
+            self.readonly_fields = ('is_published',)
+
+        form = super(QuestionAdmin,self).get_model_form(**kwargs)
+        return form
+
 
 class ListSetting(object):
     object_list_template = 'new.html'

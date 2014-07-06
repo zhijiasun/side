@@ -209,11 +209,10 @@ def submit_question(request,username):
         users = User.objects.filter(username=username)
         result = {'errCode':10009,'errDesc':'failed to submit question'}
         if users:
-            question_type = request.POST.get('question_type','')
+            question_type = request.POST.get('question_type',0)
             question_content = request.POST.get('question_content','')
-            print question_type,question_content
             if question_type and question_content:
-                q = Question.objects.create(question_type=question_type,question_content=question_content,question_author=users[0])
+                q = Question.objects.create(question_type=question_type,question_content=question_content,question_author=username)
                 q.save()
                 result['errCode']=10000
                 result['errDesc']='successfully submit question'
@@ -440,7 +439,7 @@ def question_list(request,username):
                 endTime = datetime.datetime.fromtimestamp(time.mktime(endTime))
             else:
                 endTime = datetime.datetime.now()
-            p = Question.objects.filter(question_author=users[0]).filter(reply_time__gte=startTime).filter(reply_time__lte=endTime).filter(is_published=True)
+            p = Question.objects.filter(question_author=username).filter(reply_time__gte=startTime).filter(reply_time__lte=endTime).filter(is_published=True)
 
             maxCount = int(request.GET.get('maxCount',10))
             offset = int(request.GET.get('offset',0))

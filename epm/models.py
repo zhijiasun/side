@@ -130,9 +130,6 @@ class enterprise(models.Model):
     def __unicode__(self):
         return self.enter_name
 
-    def save(self,*args,**kwargs):
-        pass
-
     def related_party_status(self):
         return PARTY_ATTRIBUTE[self.related_party.party_attribute - 1][1]
 
@@ -353,44 +350,26 @@ class Question(models.Model):
     question_type = models.IntegerField(u'问题类型',default=0, choices=QUESTION_TYPE)
     question_content = models.TextField(u'咨询内容')
     question_answer = models.TextField(u'咨询回复',blank=True,null=True,default=u'未回复')
-    #don't know how to add permission to this field only
-    #a workaround is to define a new model which named Published have a OneToOneField relation with Question
-    #then we can add permission to this Published Model
+    is_published = models.BooleanField(u'是否发布',default=False)
     class Meta:
         verbose_name = u'咨询服务'
         verbose_name_plural = u'咨询服务'
+        permissions = (('is_published','Can publish'),)
 
     def __unicode__(self):
         return self.question_title
 
-    # def save(self,*args,**kwargs):
-    #     """
-    #     reply_time equals to the time that when the is_published set to true.
-    #     Otherwise reply_time equals to create_time
-    #     """
-    #     print self.published.all()
-    #     print type(self.published)
-    #     if self.published.all() and self.published.all()[0].is_published:
-    #         print 'xxxx'
-    #         self.reply_time = datetime.datetime.now()
-            
-    #     super(Question,self).save(*args,**kwargs)
-
-
-class Published(models.Model):
-    related_question = models.ForeignKey(Question,verbose_name=u'是否发布',related_name='published')
-    is_published = models.BooleanField(u'是否发布',default=False)
-    # is_published = models.IntegerField(u'是否发布',default=0,choices=((0,u'不发布'),(1,u'发布')))
-
-    class Meta:
-        verbose_name = u'管理发布'
-        verbose_name_plural = u'管理发布'
-
     def save(self,*args,**kwargs):
+        """
+        reply_time equals to the time that when the is_published set to true.
+        Otherwise reply_time equals to create_time
+        """
         if self.is_published:
-            self.related_question.reply_time = datetime.datetime.now()
-            self.related_question.save()
-        super(Published, self).save(*args,**kwargs)
+            self.reply_time = datetime.datetime.now()
+            
+        super(Question,self).save(*args,**kwargs)
+
+
 
 class Test(models.Model):
     party_id = models.AutoField(primary_key=True,auto_created=True)
