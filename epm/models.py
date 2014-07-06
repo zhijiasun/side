@@ -266,10 +266,10 @@ class LifeTips(models.Model):
 class PartyWork(models.Model):
     partywork_id = models.AutoField(primary_key=True,auto_created=True)
     title = models.CharField(u'标题',max_length=10)
+    specified = models.IntegerField(u'针对',default=0,choices=((0,u'空'),(1,u'所有党员'),(2,u'所有党组织管理员')))
     specified_person = models.ManyToManyField(member,verbose_name=u'针对特定党员', blank=True,null=True)
     # specified_party = models.BooleanField(verbose_name=u'针对所有党组织管理员', default=False)
     # is_all = models.BooleanField(verbose_name=u'针对所有人',blank=True,default=False)
-    specified = models.IntegerField(u'针对',default=0,choices=((0,u'空'),(1,u'所有党员'),(2,u'所有党组织管理员')))
     date = models.DateTimeField(u'创建日期',auto_now_add=True)
     author = models.CharField(u'作者',max_length=30)
     content = models.TextField(u'内容',)
