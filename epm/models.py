@@ -354,7 +354,7 @@ class Question(models.Model):
     class Meta:
         verbose_name = u'咨询服务'
         verbose_name_plural = u'咨询服务'
-        permissions = (('is_published','Can publish'),)
+        permissions = (('is_published',u'可发布咨询回复'),)
 
     def __unicode__(self):
         return self.question_title
