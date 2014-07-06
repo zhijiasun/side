@@ -188,61 +188,84 @@ class PioneerSerializer(serializers.ModelSerializer):
 
 
 class LifeTipsSerializer(serializers.ModelSerializer):
+    pictureurl = serializers.SerializerMethodField('construct_images')
     date = serializers.SerializerMethodField('date_to_timestamp')
 
     class Meta:
         model = LifeTips
-        fields = ['title', 'date', 'author', 'content']
+        fields = ['title', 'date', 'author', 'content','pictureurl']
 
     def date_to_timestamp(self, obj):
         if obj.date:
             return time.mktime(obj.date.timetuple())
 
+    def construct_images(self,obj):
+        return return_images(obj)
+
 
 class PartyWorkSerializer(serializers.ModelSerializer):
+    pictureurl = serializers.SerializerMethodField('construct_images')
     date = serializers.SerializerMethodField('date_to_timestamp')
 
     class Meta:
         model = PartyWork
-        fields = ['title', 'date', 'author', 'content']
+        fields = ['title', 'date', 'author', 'content','pictureurl']
 
     def date_to_timestamp(self, obj):
         if obj.date:
             return time.mktime(obj.date.timetuple())
 
+    def construct_images(self,obj):
+        return return_images(obj)
+
 
 class NoticeSerializer(serializers.ModelSerializer):
+    pictureurl = serializers.SerializerMethodField('construct_images')
     date = serializers.SerializerMethodField('date_to_timestamp')
 
     class Meta:
         model = Notice
-        fields = ['title', 'date', 'author', 'content']
+        fields = ['title', 'date', 'author', 'content','pictureurl']
 
     def date_to_timestamp(self, obj):
         if obj.date:
             return time.mktime(obj.date.timetuple())
 
+    def construct_images(self, obj):
+        return return_images(obj)
+
+
 class SpiritSerializer(serializers.ModelSerializer):
+    pictureurl = serializers.SerializerMethodField('construct_images')
     date = serializers.SerializerMethodField('date_to_timestamp')
 
     class Meta:
         model = Spirit
-        fields = ['title', 'date', 'author', 'content']
+        fields = ['title', 'date', 'author', 'content', 'pictureurl']
 
     def date_to_timestamp(self, obj):
         if obj.date:
             return time.mktime(obj.date.timetuple())
 
+    def construct_images(self, obj):
+        return return_images(obj)
+
+
 class PolicySerializer(serializers.ModelSerializer):
+    pictureurl = serializers.SerializerMethodField('construct_images')
     date = serializers.SerializerMethodField('date_to_timestamp')
 
     class Meta:
         model = Policy
-        fields = ['title', 'date', 'author', 'content']
+        fields = ['title', 'date', 'author', 'content', 'pictureurl']
 
     def date_to_timestamp(self, obj):
         if obj.date:
             return time.mktime(obj.date.timetuple())
+
+    def construct_images(self, obj):
+        return return_images(obj)
+
 
 class QuestionSerializer(serializers.ModelSerializer):
     create_time = serializers.SerializerMethodField('create_to_timestamp')
