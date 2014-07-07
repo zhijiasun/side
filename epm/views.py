@@ -211,8 +211,8 @@ def submit_question(request,username):
         users = User.objects.filter(username=username)
         result = {'errCode':10009,'errDesc':'failed to submit question'}
         if users:
-            question_type = request.POST.get('question_type',0)
-            question_content = request.POST.get('question_content','')
+            question_type = request.DATA.get('question_type',0)
+            question_content = request.DATA.get('question_content','')
             if question_type and question_content:
                 q = Question.objects.create(question_type=question_type,question_content=question_content,question_author=username)
                 q.save()
