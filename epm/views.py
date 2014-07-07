@@ -546,8 +546,8 @@ class ImportAdminView(ImportMixin,CreateAdminView):
         print 'mycsv:',mycsv
         datareader = csv.reader(ft)
         print 'datareader',datareader
-        line = f.readline()
-        print line
+        # line = f.readline()
+        # print line
         for row in datareader:
             print row
         return HttpResponseRedirect('/xadmin/')
