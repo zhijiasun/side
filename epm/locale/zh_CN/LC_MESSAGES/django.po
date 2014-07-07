@@ -21,3 +21,6 @@ msgstr "可修改 %s"
 
 msgid "Can delete %s"
 msgstr "可删除 %s"
+
+msgid "Columns"
+msgstr "列"

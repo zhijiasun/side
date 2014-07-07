@@ -21,7 +21,7 @@ router.register(r'groups',views.GroupViewSet)
 router.register(r'enterprise',views.EnterpriseViewSet)
 router.register(r'party',views.PartyViewSet)
 router.register(r'member',views.MemberViewSet)
-router.register(r'test',views.TestViewSet)
+# router.register(r'test',views.TestViewSet)
 
 urlpatterns = patterns('',
     # Examples:

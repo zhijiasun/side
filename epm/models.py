@@ -515,55 +515,55 @@ class Question(models.Model):
 
 
 
-class Test(models.Model):
-    party_id = models.AutoField(primary_key=True,auto_created=True)
-    party_name = models.CharField(u'党支部名称',max_length=100)
-    member_number = models.IntegerField(u'党员人数')
-    contact_info = models.CharField(u'联系方式',max_length=300)
-    attachment = models.FileField(upload_to='upload/',blank=True)
-    pic = models.ImageField(upload_to='upload/',blank=True)
-    thumb = models.ImageField(upload_to='thumb/',blank=True)
+# class Test(models.Model):
+#     party_id = models.AutoField(primary_key=True,auto_created=True)
+#     party_name = models.CharField(u'党支部名称',max_length=100)
+#     member_number = models.IntegerField(u'党员人数')
+#     contact_info = models.CharField(u'联系方式',max_length=300)
+#     attachment = models.FileField(upload_to='upload/',blank=True)
+#     pic = models.ImageField(upload_to='upload/',blank=True)
+#     thumb = models.ImageField(upload_to='thumb/',blank=True)
 
-    class Meta:
-        verbose_name = u'测试'
-        verbose_name_plural = u'测试'
-
-
-    def __unicode__(self):
-        return self.party_name
-
-    def save(self):
-        super(Test,self).save()
-        base, ext = os.path.splitext(os.path.basename(self.pic.path))
-        thumb_path = os.path.join(MEDIA_ROOT, base + '_thumb' + ext)
-        thumb_path1 = os.path.join(base + '_thumb' + ext)
-        thumb_pixbuf = make_thumb(self.pic.path)
-        thumb_pixbuf.save(thumb_path)
-        self.thumb = ImageFieldFile(self,self.thumb,thumb_path1)
-        super(Test,self).save()
+#     class Meta:
+#         verbose_name = u'测试'
+#         verbose_name_plural = u'测试'
 
 
-class Category(models.Model):
-    name = models.CharField(u"名称", max_length=64)
-    parent = models.ForeignKey('self', verbose_name=u'父类别', related_name='children', null=True, blank=True)
+#     def __unicode__(self):
+#         return self.party_name
 
-    class Meta:
-        verbose_name=u'类别'
-        verbose_name_plural = verbose_name
+#     def save(self):
+#         super(Test,self).save()
+#         base, ext = os.path.splitext(os.path.basename(self.pic.path))
+#         thumb_path = os.path.join(MEDIA_ROOT, base + '_thumb' + ext)
+#         thumb_path1 = os.path.join(base + '_thumb' + ext)
+#         thumb_pixbuf = make_thumb(self.pic.path)
+#         thumb_pixbuf.save(thumb_path)
+#         self.thumb = ImageFieldFile(self,self.thumb,thumb_path1)
+#         super(Test,self).save()
 
-    def __unicode__(self):
-        return self.name
 
-class Article(models.Model):
-    title = models.CharField(u"标题", max_length=200)
-    date = models.DateField(u"发布时间")
-    content = models.TextField(u"内容", null=True, blank=True)
-    attachment = models.FileField(u'附件',upload_to='/home/jasonsun/svn_repo/',blank=True)
-    categories = models.ManyToManyField('Category', null=True, blank=True)
+# class Category(models.Model):
+#     name = models.CharField(u"名称", max_length=64)
+#     parent = models.ForeignKey('self', verbose_name=u'父类别', related_name='children', null=True, blank=True)
 
-    class Meta:
-        verbose_name=u'文章'
-        verbose_name_plural = verbose_name
+#     class Meta:
+#         verbose_name=u'类别'
+#         verbose_name_plural = verbose_name
 
-    def __unicode__(self):
-        return self.title
+#     def __unicode__(self):
+#         return self.name
+
+# class Article(models.Model):
+#     title = models.CharField(u"标题", max_length=200)
+#     date = models.DateField(u"发布时间")
+#     content = models.TextField(u"内容", null=True, blank=True)
+#     attachment = models.FileField(u'附件',upload_to='/home/jasonsun/svn_repo/',blank=True)
+#     categories = models.ManyToManyField('Category', null=True, blank=True)
+
+#     class Meta:
+#         verbose_name=u'文章'
+#         verbose_name_plural = verbose_name
+
+#     def __unicode__(self):
+#         return self.title

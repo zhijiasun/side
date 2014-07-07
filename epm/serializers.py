@@ -102,10 +102,10 @@ class MemberSerializer(serializers.HyperlinkedModelSerializer):
         else:
             return ''
 
-class TestSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = Test
-        fields = ['party_id','party_name','member_number','contact_info']
+# class TestSerializer(serializers.HyperlinkedModelSerializer):
+#     class Meta:
+#         model = Test
+#         fields = ['party_id','party_name','member_number','contact_info']
 
 
 img_size = ['default',(148,111),(400,300),(640,480)]

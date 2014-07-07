@@ -84,16 +84,16 @@ class PartyViewSet(viewsets.ModelViewSet):
     serializer_class = PartySerializer
 
 
-class TestViewSet(viewsets.ModelViewSet):
-    queryset = Test.objects.all()
-    serializer_class = TestSerializer
+# class TestViewSet(viewsets.ModelViewSet):
+#     queryset = Test.objects.all()
+#     serializer_class = TestSerializer
 
-    @link()
-    def get_bynumber(self,request,pk=None):
-        print pk
-        tests = Test.objects.filter(member_number=pk)
-        tserializer = TestSerializer(tests,many=True)
-        return Response(tserializer.data)
+#     @link()
+#     def get_bynumber(self,request,pk=None):
+#         print pk
+#         tests = Test.objects.filter(member_number=pk)
+#         tserializer = TestSerializer(tests,many=True)
+#         return Response(tserializer.data)
 
 
 @api_view(['POST'])

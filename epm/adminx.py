@@ -21,9 +21,9 @@ from django.forms import Textarea
 #     class Meta:
 #         model = Jason
 
-class TestAdmin(CommAdminView):
-    list_display = ('party_name','member_number','contact_info','attachment','pic','thumb')
-    list_filter = ('party_name','member_number','contact_info')
+# class TestAdmin(CommAdminView):
+#     list_display = ('party_name','member_number','contact_info','attachment','pic','thumb')
+#     list_filter = ('party_name','member_number','contact_info')
 
     # def save_models(self):
     #     print 'In Jason Admin'
@@ -166,41 +166,41 @@ class ListSetting(object):
     object_list_template = 'new.html'
 
 class GolbeSetting(object):
-    globe_search_models = [Article, ]
+    # globe_search_models = [Article, ]
     # menu_template = 'test.html'
     site_title = (u'崂山党建管理系统')
     site_footer = (u'www.centling.com')
-    globe_models_icon = {
-        Article: 'file', Category: 'cloud'
-    }
+    # globe_models_icon = {
+    #     Article: 'file', Category: 'cloud'
+    # }
 xadmin.site.register(CommAdminView, GolbeSetting)
 # xadmin.site.register(ListAdminView,ListSetting)
 
-class ArticleAdmin(object):
-    list_display = ('title', 'categories', 'date')
-    list_display_links = ('title',)
+# class ArticleAdmin(object):
+#     list_display = ('title', 'categories', 'date')
+#     list_display_links = ('title',)
 
-    search_fields = ('title', 'content')
-    list_editable = ('date',)
-    list_filter = ('categories', 'date')
+#     search_fields = ('title', 'content')
+#     list_editable = ('date',)
+#     list_filter = ('categories', 'date')
 
-    form_layout = (
-        Fieldset(u'基本信息',
-            'title', 'date'
-        ),
-        Fieldset(u'文章内容',
-            Field('content', template="xcms/content_field.html")
-        ),
-    )
-    style_fields = {'content': 'wysi_ck', 'categories':'m2m_tree'}
+#     form_layout = (
+#         Fieldset(u'基本信息',
+#             'title', 'date'
+#         ),
+#         Fieldset(u'文章内容',
+#             Field('content', template="xcms/content_field.html")
+#         ),
+#     )
+#     style_fields = {'content': 'wysi_ck', 'categories':'m2m_tree'}
 
-class CategoryAdmin(object):
-    list_display = ('name', 'parent')
-    list_display_links = ('id', 'name',)
+# class CategoryAdmin(object):
+#     list_display = ('name', 'parent')
+#     list_display_links = ('id', 'name',)
 
-    search_fields = ('name', )
-    list_editable = ('name', )
-    list_filter = ('parent', )
+#     search_fields = ('name', )
+#     list_editable = ('name', )
+#     list_filter = ('parent', )
 
 xadmin.site.register(enterprise,EnterpriseAdmin)
 xadmin.site.register(party,PartyAdmin)
