@@ -24,3 +24,18 @@ msgstr "可删除 %s"
 
 msgid "Columns"
 msgstr "列"
+
+msgid "Epm"
+msgstr "业务管理"
+
+msgid "Auth"
+msgstr "系统管理"
+
+msgid "Ams"
+msgstr "APP"
+
+msgid "Search %s"
+msgstr "搜索 %s"
+
+msgid "Search%s"
+msgstr "搜索 %s"

@@ -202,7 +202,7 @@ class UserProfile(models.Model):
 
 class Pioneer(models.Model):
     pioneer_id = models.AutoField(primary_key=True,auto_created=True)
-    title = models.CharField(u'标题',max_length=10)
+    title = models.CharField(u'标题',max_length=30)
     date = models.DateTimeField(u'创建日期',auto_now_add=True)
     author = models.CharField(u'作者',max_length=30)
     content = models.TextField(u'内容')
@@ -250,7 +250,7 @@ class PioneerImage(models.Model):
 
 class LifeTips(models.Model):
     lifetips_id = models.AutoField(primary_key=True,auto_created=True)
-    title = models.CharField(u'标题',max_length=10)
+    title = models.CharField(u'标题',max_length=30)
     date = models.DateTimeField(u'创建日期',auto_now_add=True)
     author = models.CharField(u'作者',max_length=30)
     content = models.TextField(u'内容')
@@ -293,7 +293,7 @@ class LifeTipsImage(models.Model):
 
 class PartyWork(models.Model):
     partywork_id = models.AutoField(primary_key=True,auto_created=True)
-    title = models.CharField(u'标题',max_length=10)
+    title = models.CharField(u'标题',max_length=30)
     specified = models.IntegerField(u'针对',default=0,choices=((0,u'请选择'),(1,u'所有党员'),(2,u'所有党组织管理员')))
     specified_person = models.ManyToManyField(member,verbose_name=u'针对特定党员', blank=True,null=True)
     # specified_party = models.BooleanField(verbose_name=u'针对所有党组织管理员', default=False)
@@ -340,7 +340,7 @@ class PartyWorkImage(models.Model):
 
 class Notice(models.Model):
     notice_id = models.AutoField(primary_key=True,auto_created=True)
-    title = models.CharField(u'标题',max_length=10)
+    title = models.CharField(u'标题',max_length=30)
     date = models.DateTimeField(u'创建日期',auto_now_add=True)
     author = models.CharField(u'作者',max_length=30)
     content = models.TextField(u'内容')
@@ -383,7 +383,7 @@ class NoticeImage(models.Model):
 
 class Spirit(models.Model):
     spirit_id = models.AutoField(primary_key=True,auto_created=True)
-    title = models.CharField(u'标题',max_length=10)
+    title = models.CharField(u'标题',max_length=30)
     date = models.DateTimeField(u'创建日期',auto_now_add=True)
     author = models.CharField(u'作者',max_length=30)
     content = models.TextField(u'内容')
@@ -426,7 +426,7 @@ class SpiritImage(models.Model):
 
 class Policy(models.Model):
     policy_id = models.AutoField(primary_key=True,auto_created=True)
-    title = models.CharField(u'标题',max_length=10)
+    title = models.CharField(u'标题',max_length=30)
     date = models.DateTimeField(u'创建日期',auto_now_add=True)
     author = models.CharField(u'作者',max_length=30)
     content = models.TextField(u'内容')
@@ -469,12 +469,12 @@ class PolicyImage(models.Model):
 
 class BusinessProcess(models.Model):
     process_id = models.AutoField(primary_key=True,auto_created=True)
-    title = models.CharField(u'标题',max_length=10)
+    title = models.CharField(u'标题',max_length=30)
     date = models.DateTimeField(u'创建日期',auto_now_add=True)
     process_type = models.CharField(u'流程类型',max_length=10,default='join',choices =PROCESS_TYPE)
     author = models.CharField(u'作者',max_length=30)
     content = models.TextField(u'内容')
-    process_file = models.FileField(upload_to='upload/',blank=True,null=True,verbose_name=u'附件')
+    # process_file = models.FileField(upload_to='upload/',blank=True,null=True,verbose_name=u'附件')
 
     class Meta:
         verbose_name = u'业务办理流程'
@@ -486,7 +486,7 @@ class BusinessProcess(models.Model):
 
 class Question(models.Model):
     question_id = models.AutoField(primary_key=True,auto_created=True)
-    question_title = models.CharField(u'标题',max_length=10,default=u'问题咨询')
+    question_title = models.CharField(u'标题',max_length=30,default=u'问题咨询')
     create_time = models.DateTimeField(u'创建日期',auto_now_add=True)
     reply_time = models.DateTimeField(u'回复时间', auto_now_add=True)
     # question_author = models.ManyToManyField(User, verbose_name=u'提问者',related_name='user_questions')
