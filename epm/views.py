@@ -27,6 +27,8 @@ from registration import signals
 from rest_framework.serializers import _resolve_model
 from django.contrib.auth import authenticate,login
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
 import csv
 import logging
 logger = logging.getLogger(__name__)
@@ -532,15 +534,18 @@ class ImportAdminView(ImportMixin,CreateAdminView):
         """
         here we can process the imported file,we can easily get the related model
         """
-        print '############'
         print self.model
-        print '############'
         print request.FILES
-        f = request.FILES['import_file']
-        mycsv = PartyModel.import_data(f)
-        print mycsv
-        datareader = csv.reader(f)
-        print datareader
+        data = request.FILES['import_file']
+        path = default_storage.save('temp.csv', ContentFile(data.read()))
+        tmp_file = os.path.join(settings.MEDIA_ROOT, path)
+        ft = open(tmp_file,'r')
+        ft.seek(3)
+        ft.tell()
+        mycsv = PartyModel.import_data(ft)
+        print 'mycsv:',mycsv
+        datareader = csv.reader(ft)
+        print 'datareader',datareader
         line = f.readline()
         print line
         for row in datareader:

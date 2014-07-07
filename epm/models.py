@@ -42,9 +42,9 @@ class party(models.Model):
     party_attribute = models.IntegerField(u'党组织属性',default=1,choices=PARTY_ATTRIBUTE)
     member_number = models.IntegerField(u'党员人数',blank=True)
     secretary_name = models.CharField(u'书记姓名',max_length = 50)
-    secretary_phone = models.CharField(u'书记电话',max_length = 30,validators=[telephone_validator,])
+    secretary_phone = models.CharField(u'书记电话',max_length = 15,validators=[telephone_validator,])
     responsible_name = models.CharField(u'党务负责人姓名',max_length=50)
-    responsible_phone = models.IntegerField(u'党务负责人电话')
+    responsible_phone = models.CharField(u'党务负责人电话',max_length=15)
     qq = models.CharField(u'QQ号',max_length=20,blank=True)
     weixin = models.CharField(u'微信号',max_length=20,blank=True)
     party_email = models.EmailField(u'党组织邮箱',blank=True)
@@ -84,8 +84,10 @@ class party(models.Model):
 
 class PartyModel(CsvDbModel):
     class Meta:
+        exclue=['party_id',]
         dbModel = party
         delimiter = ","
+        has_header = True
 
 
 class enterprise(models.Model):
