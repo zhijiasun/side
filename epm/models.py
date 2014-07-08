@@ -1,7 +1,8 @@
 #coding:utf-8
 import os
 import sys
-print sys.getdefaultencoding()
+reload(sys)
+sys.setdefaultencoding("utf-8") 
 from django.db import models
 from django.core.files.base import ContentFile
 from django.core.files import File
@@ -84,9 +85,9 @@ class party(models.Model):
 
 class PartyModel(CsvDbModel):
     class Meta:
-        exclue=['party_id',]
         dbModel = party
         delimiter = ","
+        exclude=['party_id',]
         has_header = True
 
 

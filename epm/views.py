@@ -29,6 +29,7 @@ from django.contrib.auth import authenticate,login
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
+from epm.tools import *
 import csv
 import logging
 logger = logging.getLogger(__name__)
@@ -534,22 +535,32 @@ class ImportAdminView(ImportMixin,CreateAdminView):
         """
         here we can process the imported file,we can easily get the related model
         """
-        print self.model
-        print request.FILES
         data = request.FILES['import_file']
-        path = default_storage.save('temp.csv', ContentFile(data.read()))
-        tmp_file = os.path.join(settings.MEDIA_ROOT, path)
-        ft = open(tmp_file,'r')
-        ft.seek(3)
-        ft.tell()
-        mycsv = PartyModel.import_data(ft)
-        print 'mycsv:',mycsv
-        datareader = csv.reader(ft)
-        print 'datareader',datareader
-        # line = f.readline()
-        # print line
-        for row in datareader:
-            print row
+        tmp_file = os.path.join(settings.MEDIA_ROOT, 'temp.csv')
+        default_storage.save(tmp_file, ContentFile(data.read()))
+        # tmp_file = os.path.join(settings.MEDIA_ROOT, path)
+        convertFile(tmp_file)
+        if os.path.isfile(outputDir) and os.path.getsize(outputDir) > 0:
+            print os.path.getsize(outputDir)
+            ft = open(outputDir,'r')
+            ft.seek(3)
+            ft.tell()
+            mycsv = PartyModel.import_data(ft)
+
+        default_storage.delete(tmp_file)
+        print default_storage.exists(tmp_file)
+
+        # ft = open(tmp_file,'r')
+        # ft.seek(3)
+        # ft.tell()
+        # mycsv = PartyModel.import_data(ft)
+        # print 'mycsv:',mycsv
+        # datareader = csv.reader(ft)
+        # print 'datareader',datareader
+        # # line = f.readline()
+        # # print line
+        # for row in datareader:
+        #     print row
         return HttpResponseRedirect('/xadmin/')
 
 
