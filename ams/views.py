@@ -27,7 +27,14 @@ def submit_comment(request):
 
 @api_view(['GET'])
 def get_version(request):
-    version = VersionManager.objects.latest('version_id')
-    vs = VersionManagerSerializer(version)
-    result = {'errCode':10000,'errDesc':'retrive version successfully','data':vs.data}
+    result = {'errCode':10012, 'errDesc':'no version info exist', 'data':{}}
+    try:
+        version = VersionManager.objects.latest('version_id')
+        if version:
+            vs = VersionManagerSerializer(version)
+            result = {'errCode':10000,'errDesc':'retrive version successfully','data':vs.data}
+    except:
+        print('version info not exist')
+        logger.debug('version info not exist')
+
     return Response(result, status=status.HTTP_200_OK)

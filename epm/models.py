@@ -87,7 +87,7 @@ class PartyModel(CsvDbModel):
     class Meta:
         dbModel = party
         delimiter = ","
-        exclude=['party_id',]
+        # exclude=['party_id',]
         has_header = True
 
 

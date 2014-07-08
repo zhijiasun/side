@@ -537,6 +537,9 @@ class ImportAdminView(ImportMixin,CreateAdminView):
         """
         data = request.FILES['import_file']
         tmp_file = os.path.join(settings.MEDIA_ROOT, 'temp.csv')
+        if os.path.isfile(tmp_file):
+            print 'remove the file firstly'
+            os.remove(tmp_file)
         default_storage.save(tmp_file, ContentFile(data.read()))
         # tmp_file = os.path.join(settings.MEDIA_ROOT, path)
         convertFile(tmp_file)
