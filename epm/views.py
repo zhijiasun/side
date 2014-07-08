@@ -548,7 +548,8 @@ class ImportAdminView(ImportMixin,CreateAdminView):
             ft = open(outputDir,'r')
             ft.seek(3)
             ft.tell()
-            mycsv = PartyModel.import_data(ft)
+            # mycsv = PartyModel.import_data(ft)
+            mycsv = EnterpriseModel.import_data(ft)
 
         default_storage.delete(tmp_file)
         print default_storage.exists(tmp_file)

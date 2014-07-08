@@ -87,7 +87,7 @@ class PartyModel(CsvDbModel):
     class Meta:
         dbModel = party
         delimiter = ","
-        # exclude=['party_id',]
+        exclude = ['party_id','member_number']
         has_header = True
 
 
@@ -139,6 +139,14 @@ class enterprise(models.Model):
     related_party_status.short_description = u'党组织属性'
 
 
+class EnterpriseModel(CsvDbModel):
+    class Meta:
+        dbModel = enterprise
+        delimiter = ","
+        exclude = ['enter_id','related_party',]
+        has_header = True
+
+
 class member(models.Model):
     member_name = models.CharField(verbose_name=u'党员姓名',max_length=80)
     member_gender = models.IntegerField(u'性别',default=0,choices=GENDER)
@@ -184,6 +192,14 @@ def update_member_number(sender,**kwargs):
         obj.member_party.save()
 
 post_save.connect(update_member_number, sender=member)
+
+
+class MemberModel(CsvDbModel):
+    class Meta:
+        dbModel = member
+        delimiter = ","
+        # exclude = 'party_id','member_number'
+        has_header = True
 
 
 class UserProfile(models.Model):
