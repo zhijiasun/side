@@ -23,7 +23,7 @@ telephone_validator = RegexValidator(regex = '^(1(([35][0-9])|(47)|[8][01236789]
         ,message = 'Invalid phone number'
         ,code = 'invalid_telephone')
 
-img_size = [(148,111),(400,300),(640,480)]
+img_size = [(266,300),(400,300),(800,300)]
 
 def make_thumb(path,size = (640,480)):
     pixbuf = Image.open(path)

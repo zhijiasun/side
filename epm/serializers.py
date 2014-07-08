@@ -108,7 +108,8 @@ class MemberSerializer(serializers.HyperlinkedModelSerializer):
 #         fields = ['party_id','party_name','member_number','contact_info']
 
 
-img_size = ['default',(148,111),(400,300),(640,480)]
+# img_size = ['default',(148,111),(400,300),(640,480)]
+img_size = ['default',(266,300),(400,300),(800,300)]
 BASE_DL = 'http://115.28.79.151:8081/media/upload'
 
 def return_images(obj):
@@ -131,8 +132,10 @@ def return_images(obj):
                 #should have a judge whether the file existed
                 tmp_dict['objectId']=os.path.join('/'+base_name+'/'+base+'_thumb_'+str(i[0])+'_'+str(i[1])+ext)
                 # print settings.BASE_DIR + tmp_dict['objectId']
-                # if os.path.exist(settings.BASE_DIR + tmp_dict['objectId']):
-                #     print 'ok'
+                if os.path.isfile(settings.BASE_DIR + '/media/upload' + tmp_dict['objectId']):
+                    print 'file exist'
+                else:
+                    tmp_dict['objectId'] = ''
                 tmp_dict['size']=str(i[0])+'*'+str(i[1])
                 tmp_dict['type']='thumbnail'
             tmp_list.append(tmp_dict)
