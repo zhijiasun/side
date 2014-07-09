@@ -15,7 +15,8 @@ from PIL import Image
 from side.settings import MEDIA_ROOT
 from django.db.models.fields.files import ImageFieldFile
 from django.contrib.auth.models import User
-from adaptor.model import CsvDbModel
+from adaptor.model import CsvDbModel,CsvModel
+from adaptor.fields import *
 import datetime
 from django.db.models.signals import post_save
 
@@ -139,11 +140,43 @@ class enterprise(models.Model):
     related_party_status.short_description = u'党组织属性'
 
 
-class EnterpriseModel(CsvDbModel):
+# class EnterpriseModel(CsvDbModel):
+#     class Meta:
+#         dbModel = enterprise
+#         delimiter = ","
+#         exclude = ['enter_id',]
+#         has_header = True
+
+
+class EnterModel(CsvModel):
+
+    def transform_enter_attribute(value):
+        print 'call transform_enter_attribute'
+        print value
+        for attribute in NATURE_CHOICES:
+            if attribute[1] == value:
+                print attribute[0]
+                return attribute[0]
+        return 0
+
+    enter_name = CharField()
+    enter_address = CharField()
+    enter_attribute = IntegerField(prepare=transform_enter_attribute)
+    industry_type = IntegerField()
+    industry_nature = IntegerField()
+    enter_scale = IntegerField()
+    total_assets = IntegerField()
+    legal_person = CharField()
+    legal_email = CharField()
+    enter_email = CharField()
+    legal_phone = CharField()
+    fixed_phone = CharField()
+    related_party = DjangoModelField(party,pk='party_name')
+
+
     class Meta:
         dbModel = enterprise
         delimiter = ","
-        exclude = ['enter_id','related_party',]
         has_header = True
 
 

@@ -149,7 +149,6 @@ def return_images(obj):
 class PioneerSerializer(serializers.ModelSerializer):
     pictureurl = serializers.SerializerMethodField('construct_images')
     date = serializers.SerializerMethodField('date_to_timestamp')
-    img_size = ['default',(148,111),(400,300),(640,480)]
 
     class Meta:
         model = Pioneer

@@ -519,7 +519,7 @@ class ImportAdminView(ImportMixin,CreateAdminView):
         re-implement import_action()
         '''
         resource = self.get_import_resource_class()()
-        icontext = {}
+        context = {}
         print resource
         fileform = ImportForm
         fileform.helper = self.get_form_helper()
@@ -535,6 +535,15 @@ class ImportAdminView(ImportMixin,CreateAdminView):
         """
         here we can process the imported file,we can easily get the related model
         """
+        print self.module_name
+        print self.model
+        if self.module_name == 'enterprise':
+            CsvModel = EnterModel
+        elif self.module_name == 'party':
+            CsvModel = PartyModel
+        elif self.module_name == 'member':
+            CsvModel = MemberModel
+
         data = request.FILES['import_file']
         tmp_file = os.path.join(settings.MEDIA_ROOT, 'temp.csv')
         if os.path.isfile(tmp_file):
@@ -549,7 +558,11 @@ class ImportAdminView(ImportMixin,CreateAdminView):
             ft.seek(3)
             ft.tell()
             # mycsv = PartyModel.import_data(ft)
-            mycsv = EnterpriseModel.import_data(ft)
+            # mycsv = EnterpriseModel.import_data(ft)
+            mycsv = CsvModel.import_data(ft)
+            print 'ssss'
+            print mycsv
+            print 'ssss'
 
         default_storage.delete(tmp_file)
         print default_storage.exists(tmp_file)
