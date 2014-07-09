@@ -159,6 +159,18 @@ class EnterModel(CsvModel):
                 return attribute[0]
         return 0
 
+    def transform_industry_type(value):
+        pass
+
+    def transform_industry_nature(value):
+        pass
+
+    def transform_enter_scale(value):
+        pass
+
+    def transform_total_assets(value):
+        pass
+
     enter_name = CharField()
     enter_address = CharField()
     enter_attribute = IntegerField(prepare=transform_enter_attribute)
@@ -171,7 +183,7 @@ class EnterModel(CsvModel):
     enter_email = CharField()
     legal_phone = CharField()
     fixed_phone = CharField()
-    related_party = DjangoModelField(party,pk='party_name')
+    related_party = DjangoModelField(party,pk='party_name')### here we can add default parameter
 
 
     class Meta:
@@ -227,7 +239,27 @@ def update_member_number(sender,**kwargs):
 post_save.connect(update_member_number, sender=member)
 
 
-class MemberModel(CsvDbModel):
+class MemberModel(CsvModel):
+    member_name = CharField()
+    member_gender = IntegerField()
+    member_nation = IntegerField()
+    member_education = IntegerField()
+    member_birth = DateField(format="%Y/%m/%d")
+    member_worktime = DateField(format="%Y/%m/%d")
+    join_party_time = DateField(format="%Y/%m/%d")
+    formal_member_time = DateField(format="%Y/%m/%d")
+    now_party_time = DateField(format="%Y/%m/%d")
+    birth_address = CharField()
+    home_address = CharField()
+    living_address = CharField()
+    member_phone = CharField()
+    member_email = CharField()
+    qq = CharField()
+    weixin = CharField()
+    school = CharField()
+    id_card = CharField()
+    # member_party = models.ForeignKey(party,verbose_name=u'隶属党组织',blank=True,null=True,on_delete=models.SET_NULL,related_name='membersAtParty')
+    # member_enter = models.ForeignKey(enterprise,verbose_name=u'隶属企业',blank=True,null=True,on_delete=models.SET_NULL,related_name='membersAtEnter')
     class Meta:
         dbModel = member
         delimiter = ","
