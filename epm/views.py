@@ -520,11 +520,9 @@ class ImportAdminView(ImportMixin,CreateAdminView):
         '''
         resource = self.get_import_resource_class()()
         context = {}
-        print resource
         fileform = ImportForm
         fileform.helper = self.get_form_helper()
         if fileform.helper:
-            print 'add input'
             fileform.helper.add_input(Submit('submit', 'Submit'))
         new_context = {'import_title':('从文件导入 %s') % force_unicode(self.opts.verbose_name),'fileform':fileform}
         context = super(CreateAdminView, self).get_context()
@@ -535,8 +533,7 @@ class ImportAdminView(ImportMixin,CreateAdminView):
         """
         here we can process the imported file,we can easily get the related model
         """
-        print self.module_name
-        print self.model
+        context = {"msg":"xxxx"}
         if self.module_name == 'enterprise':
             CsvModel = EnterModel
         elif self.module_name == 'party':
@@ -544,28 +541,30 @@ class ImportAdminView(ImportMixin,CreateAdminView):
         elif self.module_name == 'member':
             CsvModel = MemberModel
 
-        data = request.FILES['import_file']
+        print self.model_admin_url('import')
+
         tmp_file = os.path.join(settings.MEDIA_ROOT, 'temp.csv')
         if os.path.isfile(tmp_file):
-            print 'remove the file firstly'
             os.remove(tmp_file)
-        default_storage.save(tmp_file, ContentFile(data.read()))
-        # tmp_file = os.path.join(settings.MEDIA_ROOT, path)
-        convertFile(tmp_file)
+
+        try:
+            data = request.FILES['import_file']
+            default_storage.save(tmp_file, ContentFile(data.read()))
+            convertFile(tmp_file)
+        except Exception, e:
+            print Exception,str(e)
+
         if os.path.isfile(outputDir) and os.path.getsize(outputDir) > 0:
-            print os.path.getsize(outputDir)
-            ft = open(outputDir,'r')
-            ft.seek(3)
-            ft.tell()
-            # mycsv = PartyModel.import_data(ft)
-            # mycsv = EnterpriseModel.import_data(ft)
-            mycsv = CsvModel.import_data(ft)
-            print 'ssss'
-            print mycsv
-            print 'ssss'
+            try:
+                ft = open(outputDir,'r')
+                ft.seek(3)
+                ft.tell()
+                mycsv = CsvModel.import_data(ft)
+                os.remove(outputDir)
+            except Exception, e:
+                print e
 
         default_storage.delete(tmp_file)
-        print default_storage.exists(tmp_file)
 
         # ft = open(tmp_file,'r')
         # ft.seek(3)
@@ -578,7 +577,10 @@ class ImportAdminView(ImportMixin,CreateAdminView):
         # # print line
         # for row in datareader:
         #     print row
-        return HttpResponseRedirect('/xadmin/')
+        if context['msg']:
+            return self.get(request,*args,**context)
+        else:
+            return HttpResponseRedirect('/xadmin/')
 
 
 site.register_modelview(r'^import/$',ImportAdminView,name='%s_%s_import')

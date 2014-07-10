@@ -12,10 +12,15 @@ class EnterpriseResource(resources.ModelResource):
         model = enterprise
 
 class MyPlugin(BaseAdminPlugin):
-    flag = True
 
     def init_request(self,*args,**kwargs):
-        return bool(self.flag)
+        """
+            only member,party,enterprise model have the import function
+        """
+        if self.model.__name__ == 'party' or self.model.__name__ == 'member' or self.model.__name__ == 'enterprise':
+            return True
+        else:
+            return False
 
     def get_form_datas(*args,**kwargs):
         super(MyPlugin,self).get_form_datas(*args,**kwargs)

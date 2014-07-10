@@ -14,7 +14,6 @@ outputDir = settings.MEDIA_ROOT + 'converted/temp.csv'
 
 
 def convertFile(fileName):
-    print("Converting '" + fileName + "'...")
     for format in sourceFormats:
         try:
             with codecs.open(fileName, 'rU', format) as sourceFile:
