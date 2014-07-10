@@ -151,25 +151,34 @@ class enterprise(models.Model):
 class EnterModel(CsvModel):
 
     def transform_enter_attribute(value):
-        print 'call transform_enter_attribute'
-        print value
         for attribute in NATURE_CHOICES:
             if attribute[1] == value:
-                print attribute[0]
                 return attribute[0]
         return 0
 
     def transform_industry_type(value):
-        pass
+        for attribute in INDUSTRY_TYPE:
+            if attribute[1] == value:
+                return attribute[0]
+        return 0
 
     def transform_industry_nature(value):
-        pass
+        for attribute in INDUSTRY_NATURE:
+            if attribute[1] == value:
+                return attribute[0]
+        return 0
 
     def transform_enter_scale(value):
-        pass
+        for attribute in ENTER_SCALE:
+            if attribute[1] == value:
+                return attribute[0]
+        return 0
 
     def transform_total_assets(value):
-        pass
+        for attribute in TOTAL_ASSETS:
+            if attribute[1] == value:
+                return attribute[0]
+        return 0
 
     enter_name = CharField()
     enter_address = CharField()
