@@ -513,6 +513,8 @@ class ImportForm(forms.Form):
 class ImportAdminView(ImportMixin,CreateAdminView):
     add_form_template = 'model_form.html'
     import_template_name = 'model_form.html'
+    new_context = {'msg':''}
+
 
     def get_context(self):
         '''
@@ -524,16 +526,15 @@ class ImportAdminView(ImportMixin,CreateAdminView):
         fileform.helper = self.get_form_helper()
         if fileform.helper:
             fileform.helper.add_input(Submit('submit', 'Submit'))
-        new_context = {'import_title':('从文件导入 %s') % force_unicode(self.opts.verbose_name),'fileform':fileform}
+        self.new_context.update( {'import_title':('从文件导入 %s') % force_unicode(self.opts.verbose_name),'fileform':fileform})
         context = super(CreateAdminView, self).get_context()
-        context.update(new_context)
+        context.update(self.new_context)
         return context
 
     def post(self,request,*args,**kwargs):
         """
         here we can process the imported file,we can easily get the related model
         """
-        context = {"msg":"xxxx"}
         if self.module_name == 'enterprise':
             CsvModel = EnterModel
         elif self.module_name == 'party':
@@ -552,6 +553,7 @@ class ImportAdminView(ImportMixin,CreateAdminView):
             default_storage.save(tmp_file, ContentFile(data.read()))
             convertFile(tmp_file)
         except Exception, e:
+            self.new_context['msg']=str(e)
             print Exception,str(e)
 
         if os.path.isfile(outputDir) and os.path.getsize(outputDir) > 0:
@@ -562,6 +564,7 @@ class ImportAdminView(ImportMixin,CreateAdminView):
                 mycsv = CsvModel.import_data(ft)
                 os.remove(outputDir)
             except Exception, e:
+                self.new_context['msg']=str(e)
                 print e
 
         default_storage.delete(tmp_file)
@@ -577,8 +580,8 @@ class ImportAdminView(ImportMixin,CreateAdminView):
         # # print line
         # for row in datareader:
         #     print row
-        if context['msg']:
-            return self.get(request,*args,**context)
+        if self.new_context['msg']:
+            return self.get(request,*args,**kwargs)
         else:
             return HttpResponseRedirect('/xadmin/')
 
