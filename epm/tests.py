@@ -1,8 +1,9 @@
 from django.test import TestCase
 from django.test.client import Client
-from epm.models import Pioneer
+from epm.models import Pioneer, member, UserProfile
 from datetime import datetime
 from django.contrib.auth.models import User
+from django_dynamic_fixture import G
 import json
 
 # Create your tests here.
@@ -159,3 +160,53 @@ class GetUserInfoTestCase(TestCase):
         self.assertEquals(response.status_code,200)
         self.assertEquals(result['errCode'],10006)
         self.assertTrue('data' not in result.keys())
+
+
+class MemberVerifyTestCase(TestCase):
+
+    def test_member_verify_with_valid_info(self):
+        #initialize the needed data
+        m = G(member,member_name='test_name',id_card='123456789012345678')
+        user = G(User,username='testMember',password='123456')
+        up = G(UserProfile, user=user)
+
+        data = {'real_name':'test_name','real_idcard':'123456789012345678'}
+        c = Client()
+        response = c.post('/dangjian/laoshanparty/v1/testMember/member/verify/', data)
+        result = json.loads(response.content)
+
+        self.assertEquals(response.status_code,200)
+        self.assertEquals(result['errCode'],10000)
+
+    def test_member_verify_with_invliad_info(self):
+        m = G(member,member_name='test_name',id_card='123456789012345678')
+        user = G(User,username='testMember',password='123456')
+        up = G(UserProfile, user=user)
+
+        #with invliad real_name
+        data = {'real_name':'test_invliad_name','real_idcard':'123456789012345678'}
+        c = Client()
+        response = c.post('/dangjian/laoshanparty/v1/testMember/member/verify/', data)
+        result = json.loads(response.content)
+
+        self.assertEquals(response.status_code,200)
+        self.assertEquals(result['errCode'],10005)
+
+        #with invliad real_idcard
+        data1 = {'real_name':'test_name','real_idcard':'223456789012345678'}
+        c = Client()
+        response = c.post('/dangjian/laoshanparty/v1/testMember/member/verify/', data1)
+        result = json.loads(response.content)
+
+        self.assertEquals(response.status_code,200)
+        self.assertEquals(result['errCode'],10005)
+
+
+        #with invliad username in api
+        data2 = {'real_name':'test_name','real_idcard':'123456789012345678'}
+        c = Client()
+        response = c.post('/dangjian/laoshanparty/v1/invalid_name/member/verify/', data)
+        result = json.loads(response.content)
+
+        self.assertEquals(response.status_code,200)
+        self.assertEquals(result['errCode'],10006)
