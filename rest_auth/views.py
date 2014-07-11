@@ -32,6 +32,7 @@ from .serializers import TokenSerializer, UserDetailsSerializer, \
 
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
+from epm.error import errMsg
 import logging
 logger = logging.getLogger(__name__)
 
@@ -96,22 +97,22 @@ class Login(LoggedOutRESTAPIView, GenericAPIView):
                     # Return REST Token object with OK HTTP status
                     token, created = self.token_model.objects.get_or_create(user=user)
                     result['errCode'] = 10000
-                    result['errDesc'] = 'successfully login'
+                    result['errDesc'] = errMsg[10000]
                     result['data'] = {'is_verified': user.app_user.all()[0].is_verified}
                     return Response(result, status=status.HTTP_200_OK)
                 else:
                     result['errCode'] = 10002
-                    result['errDesc'] = 'This account is disabled.'
-                    return Response(result, status=status.HTTP_401_UNAUTHORIZED)
+                    result['errDesc'] = errMsg[10002]
+                    return Response(result, status=status.HTTP_200_OK)
             else:
                 result['errCode'] = 10003
-                result['errDesc'] = 'Invalid Username or Password.'
-                return Response(result, status=status.HTTP_401_UNAUTHORIZED)
+                result['errDesc'] = errMsg[10003]
+                return Response(result, status=status.HTTP_200_OK)
         else:
             logger.debug('serializer errors:%s', serializer.errors)
             result['errCode'] = 10004
-            result['errDesc'] = 'Unknow errors!'
-            return Response(result, status=status.HTTP_400_BAD_REQUEST)
+            result['errDesc'] = errMsg[10004]
+            return Response(result, status=status.HTTP_200_OK)
 
 
 class Logout(LoggedInRESTAPIView):
@@ -167,19 +168,23 @@ class Register(LoggedOutRESTAPIView, GenericAPIView):
             # and UserProfile models
             data = serializer.data.copy()
             data.update(profile_serializer.data)
-
             RESTRegistrationView().register(request, **data)
 
             # Return the User object with Created HTTP status
             result['errCode'] = 10000
-            result['errDesc'] = 'successfully register'
-            return Response(result, status=status.HTTP_201_CREATED)
+            result['errDesc'] = errMsg[10000]
+            return Response(result, status=status.HTTP_200_OK)
 
         else:
-            logger.debug('serializer error:%s,%s', serializer.errors, profile_serializer.errors)
-            result['errCode'] = 10001
-            result['errDesc'] = 'Invalid post.'
-            return Response(result, status=status.HTTP_400_BAD_REQUEST)
+            if not request.DATA.get('username','') or not request.DATA.get('password',''): 
+                logger.debug('serializer error:%s,%s', serializer.errors, profile_serializer.errors)
+                result['errCode'] = 10016
+                result['errDesc'] = errMsg[10016]
+            else:
+                logger.debug('serializer error:%s,%s', serializer.errors, profile_serializer.errors)
+                result['errCode'] = 10001
+                result['errDesc'] = errMsg[10001]
+            return Response(result, status=status.HTTP_200_OK)
 
 
 class UserDetails(LoggedInRESTAPIView, GenericAPIView):
@@ -239,6 +244,7 @@ class PasswordReset(LoggedOutRESTAPIView, GenericAPIView):
     def post(self, request):
         # Create a serializer with request.DATA
         serializer = self.serializer_class(data=request.DATA)
+        result = {'errCode':10000,'errDesc':errMsg[10000]}
 
         if serializer.is_valid():
             # Create PasswordResetForm with the serializer
@@ -255,17 +261,15 @@ class PasswordReset(LoggedOutRESTAPIView, GenericAPIView):
                 reset_form.save(**opts)
 
                 # Return the success message with OK HTTP status
-                return Response(
-                    {"success": "Password reset e-mail has been sent."},
-                    status=status.HTTP_200_OK)
+                return Response(result, status=status.HTTP_200_OK)
 
             else:
-                return Response(reset_form._errors,
-                                status=status.HTTP_400_BAD_REQUEST)
+                logger.debug(reset_form._errors)
 
-        else:
-            return Response(serializer.errors,
-                            status=status.HTTP_400_BAD_REQUEST)
+        logger.debug(serializer.errors)
+        result['errCode']=10009
+        result['errDesc']=errMsg[10009]
+        return Response(result, status=status.HTTP_200_OK)
 
 
 class PasswordResetConfirm(LoggedOutRESTAPIView, GenericAPIView):
@@ -372,10 +376,11 @@ class PasswordChange(GenericAPIView):
         user = authenticate(username=username, password=old_password)
         result = {}
         result['errCode'] = 10000
-        result['errDesc'] = 'invalid username or password'
+        result['errDesc'] = errMsg[10000]
         if user is None:
             result['errCode'] = 10003
-            return Response(result, status=status.HTTP_400_BAD_REQUEST)
+            result['errDesc'] = errMsg[10003]
+            return Response(result, status=status.HTTP_200_OK)
 
         if serializer.is_valid():
             # Construct the SetPasswordForm instance
@@ -383,13 +388,10 @@ class PasswordChange(GenericAPIView):
 
             if form.is_valid():
                 form.save()
-                result['errDesc'] = 'New password has been saved'
 
                 # Return the success message with OK HTTP status
                 return Response(result, status=status.HTTP_200_OK)
 
-            else:
-                return Response(result, status=status.HTTP_400_BAD_REQUEST)
-
-        else:
-            return Response(result, status=status.HTTP_400_BAD_REQUEST)
+        result['errCode'] = 10004
+        result['errDesc'] = errMsg[10004]
+        return Response(result, status=status.HTTP_200_OK)

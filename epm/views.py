@@ -30,6 +30,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 from epm.tools import *
+from epm.error import errMsg
 import csv
 import logging
 logger = logging.getLogger(__name__)
@@ -39,7 +40,6 @@ logger = logging.getLogger(__name__)
 
 class RegistrationView(BaseRegistrationView):
     def register(self,request,**cleaned_data):
-        print cleaned_data
         username,email,password = cleaned_data['username'],cleaned_data['email'],cleaned_data['password1']
         u = User.objects.create_user(username, email, password)
         # u.is_staff = True
@@ -47,8 +47,7 @@ class RegistrationView(BaseRegistrationView):
         # new_user = authenticate(username=username, password=password)
         # login(request, new_user)
 
-        signals.user_registered.send(sender=self.__class__,
-            user=u, request=request)
+        signals.user_registered.send(sender=self.__class__, user=u, request=request)
         
         # user_profile_model = _resolve_model
         # new_user.is_staff=True
@@ -102,7 +101,7 @@ class PartyViewSet(viewsets.ModelViewSet):
 @api_view(['POST'])
 def email_change(request, username):
     if request.method == 'POST':
-        result = {'errCode':10000,'errDesc':'email change successfully'}
+        result = {'errCode':10000,'errDesc':errMsg[10000]}
         old_email = request.DATA.get('old_email','')
         new_email = request.DATA.get('new_email','')
         users = User.objects.filter(username=username,email=old_email)
@@ -112,18 +111,18 @@ def email_change(request, username):
             users[0].save()
             return Response(result,status = status.HTTP_200_OK)
         else:
-            result['errCode']=10011
-            result['errDesc']='invalid username or email'
+            result['errCode']=10008
+            result['errDesc']=errMsg[10008]
             logger.debug('input invalid username or email:%s,%s',username,old_email)
-            return Response(result,status = status.HTTP_400_BAD_REQUEST)
+            return Response(result,status = status.HTTP_200_OK)
 
 
 @api_view(['POST'])
 def party_verify(request, username):
     if request.method == 'POST':
         result = {}
-        result['errCode']=10007
-        result['errDesc']='submit invalid info'
+        result['errCode']=10006
+        result['errDesc']=errMsg[10006]
         users = User.objects.filter(username=username)
         if users:
             name = request.DATA.get('real_name','')
@@ -140,12 +139,12 @@ def party_verify(request, username):
                     u.is_manager = 1
                 u.save()
                 result['errCode']=10000
-                result['errDesc']='verifiy ok'
+                result['errDesc']=errMsg[10000]
                 return Response(result,status = status.HTTP_200_OK)
         else:
             logger.debug('user is not exist,username is: %s', username)
 
-        return Response(result, status = status.HTTP_400_BAD_REQUEST)
+        return Response(result, status = status.HTTP_200_OK)
 
 @api_view(['POST'])
 def member_verify(request, username):
@@ -165,36 +164,36 @@ def member_verify(request, username):
                         u[0].real_idcard = idcard
                         u[0].save()
                         result['errCode']=10000
-                        result['errDesc']='verifiy ok'
+                        result['errDesc'] = errMsg[10000]
                         return Response(result,status = status.HTTP_200_OK)
 
             logger.debug('name and idcard is:%s,%s', name, idcard)
-            result['errCode']=10005
-            result['errDesc']='invalid member info'
+            result['errCode'] = 10005
+            result['errDesc'] = errMsg[10005]
 
         else:
             logger.debug('user is not exist,username is: %s', username)
             result['errCode']=10006
-            result['errDesc']='username:%s does not exist' % username
-        return Response(result,status=status.HTTP_400_BAD_REQUEST)
+            result['errDesc']=errMsg[10006]
+        return Response(result,status=status.HTTP_200_OK)
 
 
 @api_view(['GET'])
 def user_info(request, username):
     if request.method == 'GET':
         result = {}
-        result['errCode'] = 10008
-        result['errDesc'] = 'get member info error'
+        result['errCode'] = 10006
+        result['errDesc'] = errMsg[10006]
         users = User.objects.filter(username=username)
         if users:
             ups = users[0].app_user.all()
             if len(ups) is 1:
                 result['errCode'] = 10000
-                result['errDesc'] = 'successfully get member info'
+                result['errDesc'] = errMsg[10000]
                 result['data'] = {'is_verified':ups[0].is_verified, 'is_manager': ups[0].is_manager,'real_name':ups[0].real_name,
                         'real_idcard':ups[0].real_idcard,'real_organization':ups[0].real_organization}
                 return Response(result,status = status.HTTP_200_OK)
-        return Response(result,status=status.HTTP_400_BAD_REQUEST)
+        return Response(result,status=status.HTTP_200_OK)
 
 
 
@@ -210,7 +209,7 @@ def enter_list(request):
 def submit_question(request,username):
     if request.method == 'POST':
         users = User.objects.filter(username=username)
-        result = {'errCode':10009,'errDesc':'failed to submit question'}
+        result = {'errCode':10004,'errDesc':errMsg[10004]}
         if users:
             question_type = request.DATA.get('question_type',0)
             question_content = request.DATA.get('question_content','')
@@ -218,9 +217,16 @@ def submit_question(request,username):
                 q = Question.objects.create(question_type=question_type,question_content=question_content,question_author=username)
                 q.save()
                 result['errCode']=10000
-                result['errDesc']='successfully submit question'
+                result['errDesc']=errMsg[10000]
                 return Response(result,status = status.HTTP_200_OK)
-        return Response(result,status = status.HTTP_400_BAD_REQUEST)
+            else:
+                result['errCode']=10007
+                result['errDesc']=errMsg[10007]
+
+        else:
+            result[errCode]=10006
+            result['errDesc']=errMsg[10006]
+        return Response(result,status = status.HTTP_200_OK)
 
 
 @api_view(['GET'])
@@ -235,10 +241,13 @@ def member_info(request, username):
                 m = member.objects.filter(id_card = appuser[0].real_idcard, member_name = appuser[0].real_name)
                 if m:
                     ms = MemberSerializer(m[0])
-                    result = {"errCode":10000, "errDesc":"successfully get member info","data":ms.data}
+                    result = {"errCode":10000, "errDesc":errMsg[10000],"data":ms.data}
                     return Response(result,status = status.HTTP_200_OK)
-        result = {"errCode":10009, "errDesc":"failed to get member info"}
-        return Response(result,status = status.HTTP_400_BAD_REQUEST)
+                else:
+                    result = {"errCode":10012, "errDesc":errMsg[10012]}
+        else:
+            result = {"errCode":10006, "errDesc":errMsg[10006]}
+        return Response(result,status = status.HTTP_200_OK)
 
 @api_view(['GET','POST'])
 def party_info(request,username):
@@ -253,20 +262,20 @@ def party_info(request,username):
                 if parties:
                     m = parties[0].membersAtParty.all()
                     ms = MemberSerializer(m,many=True)
-                    result = {"errCode":10000, "errDesc":"successfully get member info","data":ms.data}
+                    result = {"errCode":10000, "errDesc":errMsg[10000],"data":ms.data}
                     return Response(result,status = status.HTTP_200_OK)
                 else:
-                    result['errCode']=10009
-                    result['errDesc']='not found party'
+                    result['errCode']=10013
+                    result['errDesc']=errMsg[10013]
 
             else:
-                result['errCode']=10009
-                result['errDesc']='not found username'
+                result['errCode']=10006
+                result['errDesc']=errMsg[10006]
         else:
-            result['errCode']=10009
-            result['errDesc']='not found username'
+            result['errCode']=10006
+            result['errDesc']=errMsg[10006]
 
-        return Response(result,status = status.HTTP_400_BAD_REQUEST)
+        return Response(result,status = status.HTTP_200_OK)
 
 
 def get_result(model, modelSerializer,kwargs):
@@ -292,7 +301,7 @@ def get_result(model, modelSerializer,kwargs):
 
     obj = obj[offset:offset+maxCount]
     objs = modelSerializer(obj,many=True)
-    result = {"errCode":10000,"errDesc":"get result successfully","data":objs.data}
+    result = {"errCode":10000,"errDesc":errMsg[10000],"data":objs.data}
     # if objs.is_valid():
     #     result = {"result":"0000","message":"Successfully get content","data":objs.data}
     #     print result
@@ -359,7 +368,7 @@ def partywork_list(request,username):
         return objects.filter
     """
     if request.method == 'GET':
-        result = {"errCode":10000,"errDesc":"get result successfully","data":[]}
+        result = {"errCode":10000,"errDesc":errMsg[10000],"data":[]}
         users = User.objects.filter(username=username)
         objs = QuerySet()
         if users:
@@ -372,6 +381,19 @@ def partywork_list(request,username):
                         objs = PartyWork.objects.filter((Q(specified=1)) | (Q(specified=2)) | (Q(specified_person=members[0])))
                     else:
                         objs = PartyWork.objects.filter((Q(specified=1)) | (Q(specified_person=members[0])))
+                else:
+                    result['errCode']=10012
+                    result['errDesc']=errMsg[10012]
+                    return Response(result,status = status.HTTP_200_OK)
+            else:
+                result['errCode']=10014
+                result['errDesc']=errMsg[10014]
+                return Response(result,status = status.HTTP_200_OK)
+        else:
+            result['errCode']=10006
+            result['errDesc']=errMsg[10006]
+            return Response(result,status = status.HTTP_200_OK)
+
 
         if objs.exists():
             startTime = time.localtime(float(request.GET.get('startTime',0)))
@@ -388,7 +410,7 @@ def partywork_list(request,username):
 
                 p = p[offset:offset+maxCount]
                 pa = PartyWorkSerializer(p,many=True)
-                result = {"errCode":10000,"errDesc":"get result successfully","data":pa.data}
+                result = {"errCode":10000,"errDesc":errMsg[10000],"data":pa.data}
     elif request.method == 'POST':
                print 'Method is POST'
     return Response(result,status = status.HTTP_200_OK)
@@ -399,8 +421,12 @@ def partywork_list(request,username):
 def process_list(request):
     if request.method == 'GET':
         process_type = request.GET.get('type','')
-        result = {"errCode":10000,"errDesc":"get result successfully"}
+        result = {"errCode":10000,"errDesc":errMsg[10000],'data':{}}
         if process_type:
+            if process_type not in ['join', 'setup', 'record']:
+                result['errCode']=10015
+                result['errDesc']=errMsg[10015]
+                return Response(result,status = status.HTTP_200_OK)
             p = BusinessProcess.objects.filter(process_type=process_type)
             if p:
                 ps = ProcessSerializer(p[0])
@@ -408,14 +434,14 @@ def process_list(request):
                 return Response(result,status = status.HTTP_200_OK)
             else:
                 result['errCode']=10010
-                result['errDesc']='specified process type is not existed'
+                result['errDesc']=errMsg[10010]
                 logger.debug('specify type not existed:%s',process_type)
                 return Response(result,status = status.HTTP_200_OK)
         else:
-            result['errCode']=10009
-            result['errDesc']='type is null'
+            result['errCode']=10011
+            result['errDesc']=errMsg[10011]
             logger.debug('type is null, please specify a type')
-    return Response(result,status = status.HTTP_400_BAD_REQUEST)
+    return Response(result,status = status.HTTP_200_OK)
 
 
 
@@ -432,7 +458,7 @@ def question_list(request,username):
     """
     if request.method == 'GET':
         users = User.objects.filter(username=username)
-        result = {"errCode":10000,"errDesc":"successfully get questions","data":[]}
+        result = {"errCode":10000,"errDesc":errMsg[10000],"data":[]}
         if users:
             startTime = time.localtime(float(request.GET.get('startTime',0)))
             # endTime = time.localtime(float(request.GET.get('endTime',datetime.datetime.now().microsecond)))
