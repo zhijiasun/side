@@ -205,7 +205,7 @@ class MemberVerifyTestCase(TestCase):
         #with invliad username in api
         data2 = {'real_name':'test_name','real_idcard':'123456789012345678'}
         c = Client()
-        response = c.post('/dangjian/laoshanparty/v1/invalid_name/member/verify/', data)
+        response = c.post('/dangjian/laoshanparty/v1/invalid_name/member/verify/', data2)
         result = json.loads(response.content)
 
         self.assertEquals(response.status_code,200)
