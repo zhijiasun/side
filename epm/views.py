@@ -278,6 +278,25 @@ def party_info(request,username):
         return Response(result,status = status.HTTP_200_OK)
 
 
+def post_result(model, kwargs):
+    title = kwargs.get('title', '')
+    author = kwargs.get('author', '')
+    content = kwargs.get('content', '')
+    result = {'errCode':10000, 'errDesc':errMsg[10000]}
+
+    if title and author and content:
+        try:
+            obj = model(title=title, author=author, content=content)
+            obj.save()
+        except Excepiton:
+            result = {'errCode':10004, 'errDesc':errMsg[10004]}
+    else:
+        result['errCode']=10007
+        result['errMsg']=errMsg[10007]
+
+    return result
+
+
 def get_result(model, modelSerializer,kwargs):
     """
     support four parameters in request.GET
@@ -322,11 +341,14 @@ def pioneer_list(request):
         return Response(result, status = status.HTTP_200_OK)
 
 
-@api_view(['GET'])
+@api_view(['GET','POST'])
 def lifetips_list(request):
     if request.method == 'GET':
         result = get_result(LifeTips,LifeTipsSerializer,request.GET)
         return Response(result,status = status.HTTP_200_OK)
+    elif request.method == 'POST':
+        result = post_result(LifeTips, request.DATA)
+        return Response(result, status=status.HTTP_200_OK)
 
 
 @api_view(['GET','POST'])
@@ -334,6 +356,9 @@ def notice_list(request):
     if request.method == 'GET':
         result = get_result(Notice, NoticeSerializer,request.GET)
         return Response(result,status = status.HTTP_200_OK)
+    elif request.method == 'POST':
+        result = post_result(Notice, request.DATA)
+        return Response(result, status=status.HTTP_200_OK)
 
 
 @api_view(['GET','POST'])
@@ -343,12 +368,19 @@ def spirit_list(request):
     if request.method == 'GET':
         result = get_result(Spirit, SpiritSerializer, request.GET)
         return Response(result, status=status.HTTP_200_OK)
+    elif request.method == 'POST':
+        result = post_result(Spirit, request.DATA)
+        return Response(result, status=status.HTTP_200_OK)
+
 
 
 @api_view(['GET','POST'])
 def policy_list(request):
     if request.method == 'GET':
         result = get_result(Policy, PolicySerializer, request.GET)
+        return Response(result, status=status.HTTP_200_OK)
+    elif request.method == 'POST':
+        result = post_result(Policy, request.DATA)
         return Response(result, status=status.HTTP_200_OK)
 
 
