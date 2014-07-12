@@ -67,6 +67,11 @@ class MemberAdmin(object):
 class UserProfileAdmin(object):
     list_display = ('user','is_verified')
 
+
+class WorkUserProfileAdmin(object):
+    list_display = ('user','has_published')
+
+
 class PioneerImageAdmin(object):
     model = PioneerImage
     extra = 1
@@ -206,6 +211,7 @@ xadmin.site.register(enterprise,EnterpriseAdmin)
 xadmin.site.register(party,PartyAdmin)
 xadmin.site.register(member,MemberAdmin)
 xadmin.site.register(UserProfile,UserProfileAdmin)
+xadmin.site.register(WorkUserProfile,WorkUserProfileAdmin)
 xadmin.site.register(Pioneer,PioneerAdmin)
 xadmin.site.register(LifeTips,LifeTipsAdmin)
 xadmin.site.register(PartyWork,PartyWorkAdmin)

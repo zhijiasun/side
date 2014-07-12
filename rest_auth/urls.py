@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.conf.urls import patterns, url, include
 
-from rest_auth.views import Login, Logout, Register, UserDetails, \
+from rest_auth.views import Login, lsp_login, Logout, Register, UserDetails, \
     PasswordChange, PasswordReset, VerifyEmail, PasswordResetConfirm
 
 
@@ -15,6 +15,7 @@ urlpatterns = patterns('rest_auth.views',
                            PasswordResetConfirm.as_view(
                            ), name='rest_password_reset_confirm'),
                        url(r'^login/$', Login.as_view(), name='rest_login'),
+                       url(r'^v1/login/$', lsp_login.as_view(), name='rest_lsplogin'),
                        url(r'^verify-email/(?P<activation_key>\w+)/$',
                            VerifyEmail.as_view(), name='verify_email'),
 

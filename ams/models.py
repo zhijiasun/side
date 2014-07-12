@@ -5,7 +5,9 @@ from django.db import models
 
 
 class AppComment(models.Model):
-    app_content = models.TextField(u'意见')
+    app_version = models.CharField(u'app版本号',max_length=30)
+    phone_info = models.CharField(u'手机信息',max_length=40)
+    comment = models.TextField(u'意见')
 
     class Meta:
         verbose_name = u'意见反馈'

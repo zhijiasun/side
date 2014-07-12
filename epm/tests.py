@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.test.client import Client
-from epm.models import Pioneer, member, UserProfile
+from epm.models import Pioneer, member, UserProfile, WorkUserProfile
 from datetime import datetime
 from django.contrib.auth.models import User
 from django_dynamic_fixture import G
@@ -88,6 +88,30 @@ class PorcessListTestCase(TestCase):
         result = json.loads(response.content)
         
         self.assertEquals(result['errCode'],10015)
+
+
+class WorkUserRegisterTestCase(TestCase):
+    def setUp(self):
+        pass
+        # user = G(User,username='testUser', password='123456')
+        # up = G(UserProfile, user=user)
+        # user2 = G(User, username='testWorker', password='123456')
+        # worker = G(WorkUserProfile, user=user2)
+        # print 'set up ********************'
+
+    def test_worker_register_ok(self):
+        user = G(User,username='testUser', password='123456')
+        up = G(UserProfile, user=user)
+        user2 = G(User, username='testWorker', password='123456')
+        worker = G(WorkUserProfile, user=user2)
+
+        c = Client()
+        data = {'username':'testWorker', 'password':'123456'}
+        response = c.post('/dangjian/lspmanager/v1/login/',data)
+        print response.content
+        result = json.loads(response.content)
+        self.assertEquals(result['errCode'],10000)
+
 
 
 class UserRegisterTestCase(TestCase):

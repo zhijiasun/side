@@ -33,6 +33,7 @@ from .serializers import TokenSerializer, UserDetailsSerializer, \
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from epm.error import errMsg
+from epm.models import WorkUserProfile
 import logging
 logger = logging.getLogger(__name__)
 
@@ -58,6 +59,57 @@ class LoggedInRESTAPIView(APIView):
 
 class LoggedOutRESTAPIView(APIView):
     permission_classes = ((AllowAny,))
+
+
+class lsp_login(LoggedOutRESTAPIView, GenericAPIView):
+    serializer_class = LoginSerializer
+    # token_model = Token
+    # token_serializer = TokenSerializer
+
+    def post(self, request):
+        # Create a serializer with request.DATA
+        serializer = self.serializer_class(data=request.DATA)
+        result = {}
+        logger.debug('request.DATA is:%s', request.DATA)
+
+        if serializer.is_valid():
+            # Authenticate the credentials by grabbing Django User object
+            user = authenticate(username=serializer.data['username'],
+                                password=serializer.data['password'])
+
+
+            if user and user.is_authenticated():
+                if user.is_active:
+                    # TODO: be able to configure this to either be
+                    # session or token or both
+                    # right now it's both.
+                    if getattr(user,'worker').all():
+                        login(request, user)
+
+                        # Return REST Token object with OK HTTP status
+                        # token, created = self.token_model.objects.get_or_create(user=user)
+                        result['errCode'] = 10000
+                        result['errDesc'] = errMsg[10000]
+                        result['data'] = {'has_published': user.worker.all()[0].has_published}
+                        return Response(result, status=status.HTTP_200_OK)
+                    else:
+                        result['errCode'] = 10006
+                        result['errDesc'] = errMsg[10006]
+                        return Response(result, status=status.HTTP_200_OK)
+
+                else:
+                    result['errCode'] = 10002
+                    result['errDesc'] = errMsg[10002]
+                    return Response(result, status=status.HTTP_200_OK)
+            else:
+                result['errCode'] = 10003
+                result['errDesc'] = errMsg[10003]
+                return Response(result, status=status.HTTP_200_OK)
+        else:
+            logger.debug('serializer errors:%s', serializer.errors)
+            result['errCode'] = 10004
+            result['errDesc'] = errMsg[10004]
+            return Response(result, status=status.HTTP_200_OK)
 
 
 class Login(LoggedOutRESTAPIView, GenericAPIView):

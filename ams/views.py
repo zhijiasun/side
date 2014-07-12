@@ -14,9 +14,11 @@ logger = logging.getLogger(__name__)
 def submit_comment(request):
     if request.method == 'POST':
         result = {'errCode':10000,'errDesc':errMsg[10000]}
-        content = request.DATA.get('comment', '')
-        if content:
-            c = AppComment.objects.create(app_content=content)
+        comment = request.DATA.get('comment', '')
+        version = request.DATA.get('app_version', '')
+        info = request.DATA.get('phone_info', '')
+        if comment and version and info:
+            c = AppComment.objects.create(comment=comment, app_version=version, phone_info = info)
             c.save()
             return Response(result, status=status.HTTP_200_OK)
         else:

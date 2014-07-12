@@ -1,6 +1,7 @@
 from django.conf.urls import patterns, include, url
 from rest_framework import routers
 from epm import views
+from rest_auth import views
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -16,11 +17,11 @@ xversion.register_models()
 
 
 router = routers.DefaultRouter()
-router.register(r'users',views.UserViewSet)
-router.register(r'groups',views.GroupViewSet)
-router.register(r'enterprise',views.EnterpriseViewSet)
-router.register(r'party',views.PartyViewSet)
-router.register(r'member',views.MemberViewSet)
+# router.register(r'users',views.UserViewSet)
+# router.register(r'groups',views.GroupViewSet)
+# router.register(r'enterprise',views.EnterpriseViewSet)
+# router.register(r'party',views.PartyViewSet)
+# router.register(r'member',views.MemberViewSet)
 # router.register(r'test',views.TestViewSet)
 
 urlpatterns = patterns('',
@@ -38,6 +39,7 @@ urlpatterns = patterns('',
     url(r'accounts/',include('registration.backends.default.urls')),
     # url(r'^rest-auth/', include('rest_auth.urls')),
     url(r'^dangjian/laoshanparty/v1/', include('rest_auth.urls')),
+    url(r'^dangjian/lspmanager/', include('rest_auth.urls')),
 )
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

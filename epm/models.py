@@ -293,6 +293,15 @@ class UserProfile(models.Model):
         verbose_name_plural = u'终端用户认证'
 
 
+class WorkUserProfile(models.Model):
+    user = models.ForeignKey(User, unique=True, related_name='worker', verbose_name = u'用户名')
+    has_published = models.IntegerField(u'是否具有发布权限', default=0, choices=((0,u'不具有'),(1,u'具有')))
+
+    class Meta:
+        verbose_name = u'工作人员用户'
+        verbose_name_plural = u'工作人员用户'
+
+
 class Pioneer(models.Model):
     pioneer_id = models.AutoField(primary_key=True,auto_created=True)
     title = models.CharField(u'标题',max_length=30)
