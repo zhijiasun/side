@@ -4,7 +4,7 @@ from ams.models import AppComment, VersionManager
 
 
 class AppCommentAdmin(object):
-    list_display = ('app_content',)
+    list_display = ('app_version','phone_info','comment')
 
 
 class VersionManagerAdmin(object):
