@@ -500,14 +500,20 @@ def question_list(request,username):
                 endTime = datetime.datetime.fromtimestamp(time.mktime(endTime))
             else:
                 endTime = datetime.datetime.now()
-            p = Question.objects.filter(question_author=username).filter(reply_time__gte=startTime).filter(reply_time__lte=endTime).filter(is_published=True)
+            p = Question.objects.filter(question_author=username).filter(reply_time__gte=startTime).filter(reply_time__lte=endTime)#.filter(is_published=True)
 
             maxCount = int(request.GET.get('maxCount',10))
             offset = int(request.GET.get('offset',0))
 
             p = p[offset:offset+maxCount]
             pa = QuestionSerializer(p,many=True)
-            result['data']=pa.data
+            temp_data = []
+            for temp in pa.data:
+                if not temp['is_published']:
+                    temp['question_answer'] = ''
+
+                temp_data.append(temp)
+            result['data']=temp_data
     elif request.method == 'POST':
         print 'Method is POST'
     return Response(result,status = status.HTTP_200_OK)

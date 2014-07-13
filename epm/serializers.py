@@ -275,7 +275,7 @@ class QuestionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Question
-        fields = ['question_id','question_title','create_time','reply_time','question_author','question_content','question_answer']
+        fields = ['question_id','question_title','create_time','reply_time','question_author','question_content','question_answer','is_published']
 
     def create_to_timestamp(self, obj):
         if obj.create_time:
