@@ -18,6 +18,7 @@ from django.contrib.auth.models import User
 from adaptor.model import CsvDbModel,CsvModel
 from adaptor.fields import *
 import datetime
+from datetime import date
 from django.db.models.signals import post_save
 
 telephone_validator = RegexValidator(regex = '^(1(([35][0-9])|(47)|[8][01236789]))\d{8}$'
@@ -238,6 +239,11 @@ class member(models.Model):
     def member_party_name(self):
         return self.member_party.party_name
     member_party_name.short_description = u'隶属党组织'
+
+    def save(self,*args, **kwargs):
+        if self.id_card:
+            self.member_birth = date(int(self.id_card[6:10]),int(self.id_card[10:12]),int(self.id_card[12:14]))
+        super(member,self).save(*args, **kwargs)
 
 
 def update_member_number(sender,**kwargs):
