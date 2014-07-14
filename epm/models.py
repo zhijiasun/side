@@ -415,8 +415,7 @@ class LifeTips(models.Model):
         return self.title
 
     def save(self, *args, **kwargs):
-        if self.date:
-            self.int_date = time.mktime(self.date.timetuple())
+        self.int_date = int(time.time())
         super(LifeTips,self).save(*args,**kwargs)
 
 
@@ -468,8 +467,7 @@ class PartyWork(models.Model):
         return self.title
 
     def save(self, *args, **kwargs):
-        if self.date:
-            self.int_date = time.mktime(self.date.timetuple())
+        self.int_date = int(time.time())
         super(PartyWork,self).save(*args,**kwargs)
 
 
@@ -517,8 +515,7 @@ class Notice(models.Model):
         return self.title
 
     def save(self, *args, **kwargs):
-        if self.date:
-            self.int_date = time.mktime(self.date.timetuple())
+        self.int_date = int(time.time())
         super(Notice,self).save(*args,**kwargs)
 
 
@@ -566,9 +563,8 @@ class Spirit(models.Model):
         return self.title
 
     def save(self, *args, **kwargs):
-        if self.date:
-            self.int_date = time.mktime(self.date.timetuple())
-        super(Spirit, self).save(*args,**kwargs)
+        self.int_date = int(time.time())
+        super(Spirit,self).save(*args,**kwargs)
 
 
 class SpiritImage(models.Model):
@@ -615,9 +611,9 @@ class Policy(models.Model):
         return self.title
 
     def save(self, *args, **kwargs):
-        if self.date:
-            self.int_date = time.mktime(self.date.timetuple())
-        super(Policy, self).save(*args,**kwargs)
+        self.int_date = int(time.time())
+        super(Policy,self).save(*args,**kwargs)
+
 
 class PolicyImage(models.Model):
     policy = models.ForeignKey(Policy,related_name='img_list', verbose_name=u"附图")
@@ -669,6 +665,8 @@ class Question(models.Model):
     question_title = models.CharField(u'标题',max_length=30,default=u'问题咨询')
     create_time = models.DateTimeField(u'创建日期',auto_now_add=True)
     reply_time = models.DateTimeField(u'回复时间', auto_now_add=True)
+    create_int = models.IntegerField(blank=True, null=True)
+    reply_int = models.IntegerField(blank=True, null=True)
     # question_author = models.ManyToManyField(User, verbose_name=u'提问者',related_name='user_questions')
     question_author = models.CharField(verbose_name=u'提问者', max_length='40')
     question_type = models.IntegerField(u'问题类型',default=0, choices=QUESTION_TYPE)
@@ -690,7 +688,10 @@ class Question(models.Model):
         """
         if self.is_published:
             self.reply_time = datetime.datetime.now()
-            
+            self.int_date = int(time.time())
+        else:
+            self.create_int = self.reply_int = int(time.time())
+
         super(Question,self).save(*args,**kwargs)
 
 

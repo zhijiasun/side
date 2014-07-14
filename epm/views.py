@@ -293,7 +293,7 @@ def post_result(model, kwargs):
             result = {'errCode':10004, 'errDesc':errMsg[10004]}
     else:
         result['errCode']=10007
-        result['errMsg']=errMsg[10007]
+        result['errDesc']=errMsg[10007]
 
     return result
 
@@ -502,15 +502,13 @@ def question_list(request,username):
         users = User.objects.filter(username=username)
         result = {"errCode":10000,"errDesc":errMsg[10000],"data":[]}
         if users:
-            startTime = time.localtime(float(request.GET.get('startTime',0)))
+            startTime = request.GET.get('startTime',0)
             # endTime = time.localtime(float(request.GET.get('endTime',datetime.datetime.now().microsecond)))
-            startTime = datetime.datetime.fromtimestamp(time.mktime(startTime))
             if 'endTime' in request.GET.keys():
-                endTime = time.localtime(float(request.GET.get('endTime')))
-                endTime = datetime.datetime.fromtimestamp(time.mktime(endTime))
+                endTime = request.GET.get('endTime')
             else:
-                endTime = datetime.datetime.now()
-            p = Question.objects.filter(question_author=username).filter(reply_time__gte=startTime).filter(reply_time__lte=endTime)#.filter(is_published=True)
+                endTime = int(time.time())
+            p = Question.objects.filter(question_author=username).filter(reply_int__gte=startTime).filter(reply_int__lte=endTime).order_by('-reply_int')
 
             maxCount = int(request.GET.get('maxCount',10))
             offset = int(request.GET.get('offset',0))

@@ -278,12 +278,14 @@ class QuestionSerializer(serializers.ModelSerializer):
         fields = ['question_id','question_title','create_time','reply_time','question_author','question_content','question_answer','is_published']
 
     def create_to_timestamp(self, obj):
-        if obj.create_time:
-            return time.mktime(obj.create_time.timetuple())
+        # if obj.create_time:
+        #     return time.mktime(obj.create_time.timetuple())
+        return obj.create_int
 
     def reply_to_timestamp(self, obj):
-        if obj.reply_time:
-            return time.mktime(obj.reply_time.timetuple())
+        # if obj.reply_time:
+        #     return time.mktime(obj.reply_time.timetuple())
+        return obj.reply_int
 
 class ProcessSerializer(serializers.ModelSerializer):
     date = serializers.SerializerMethodField('date_to_timestamp')
