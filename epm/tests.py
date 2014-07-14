@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.test.client import Client
-from epm.models import Pioneer, member, UserProfile, WorkUserProfile
+from epm.models import Pioneer, member, UserProfile, WorkUserProfile,Question
 from datetime import datetime
 from django.contrib.auth.models import User
 from django_dynamic_fixture import G
@@ -8,6 +8,50 @@ import json
 
 # Create your tests here.
 
+class QuestionTestCase(TestCase):
+    def setUp(self):
+        # pass
+        u = G(User, username='test',password='123456')
+        up = G(UserProfile,user=u)
+        q = G(Question, question_title='test question', question_author='test',question_type=0,question_content='test content')
+        q1 = G(Question, question_title='test question1', question_author='test',question_type=1,question_content='test content 1')
+
+    def test_get_questions(self):
+        c = Client()
+        response = c.get('/dangjian/laoshanparty/v1/test/questions')
+        result = json.loads(response.content)
+        self.assertEquals(result['errCode'],10000)
+
+    def test_get_questions_with_param(self):
+        c = Client()
+        response = c.get('/dangjian/laoshanparty/v1/test/questions?maxCount=1')
+        result = json.loads(response.content)
+        self.assertEquals(result['errCode'],10000)
+        self.assertEquals(len(result['data']),1)
+
+    def test_post_question(self):
+        data = {"question_type":1,"question_content":"test question content"}
+        c = Client()
+        response = c.post('/dangjian/laoshanparty/v1/test/question/',data)
+        result = json.loads(response.content)
+        self.assertEquals(result['errCode'],10000)
+
+        response1 = c.get('/dangjian/laoshanparty/v1/test/questions')
+        result1 = json.loads(response1.content)
+        self.assertEquals(result1['errCode'],10000)
+        self.assertEquals(len(result1['data']),3)
+
+    def test_post_question_with_invalid_param(self):
+        data = {"question_type":1,"question_content":"test question content"}
+        c = Client()
+        response = c.post('/dangjian/laoshanparty/v1/invalid_username/question/',data)
+        result = json.loads(response.content)
+        self.assertEquals(result['errCode'],10006)
+
+        response1 = c.get('/dangjian/laoshanparty/v1/test/questions')
+        result1 = json.loads(response1.content)
+        self.assertEquals(result1['errCode'],10000)
+        self.assertEquals(len(result1['data']),2)
 
 class PioneerTestCase(TestCase):
     

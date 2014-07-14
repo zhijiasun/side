@@ -225,7 +225,7 @@ def submit_question(request,username):
                 result['errDesc']=errMsg[10007]
 
         else:
-            result[errCode]=10006
+            result['errCode']=10006
             result['errDesc']=errMsg[10006]
         return Response(result,status = status.HTTP_200_OK)
 
