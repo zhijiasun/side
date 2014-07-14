@@ -660,6 +660,7 @@ class ImportAdminView(ImportMixin,CreateAdminView):
         self.new_context.update( {'import_title':('从文件导入 %s') % force_unicode(self.opts.verbose_name),'fileform':fileform})
         context = super(CreateAdminView, self).get_context()
         context.update(self.new_context)
+        self.new_context['msg'] = ''
         return context
 
     def post(self,request,*args,**kwargs):
