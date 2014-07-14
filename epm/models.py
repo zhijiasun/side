@@ -351,6 +351,7 @@ class Pioneer(models.Model):
     date = models.DateTimeField(u'创建日期',auto_now_add=True)
     author = models.CharField(u'作者',max_length=30)
     content = models.TextField(u'内容')
+    int_date = models.IntegerField(blank=True, null=True)
     # pioneer_pic = models.ImageField(upload_to='upload/',blank=True,verbose_name=u"图片")
 
     class Meta:
@@ -364,6 +365,11 @@ class Pioneer(models.Model):
         if self.content:
             return self.content[0:20]
     content_thumb.short_description = u'内容缩略'
+
+    def save(self,*args,**kwargs):
+        if self.date:
+            self.int_date = time.mktime(self.date.timetuple())
+        super(Pioneer,self).save(*args,**kwargs)
 
 
 class PioneerImage(models.Model):

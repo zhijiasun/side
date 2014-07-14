@@ -81,6 +81,7 @@ class PioneerAdmin(object):
     list_filter = ('title','date','author','content')
     inlines = [PioneerImageAdmin]
     # reversion_enable = True
+    exclude = ('int_date',)
 
 
 class LifeTipsImageAdmin(object):
