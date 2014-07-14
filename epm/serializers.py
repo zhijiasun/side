@@ -155,8 +155,8 @@ class PioneerSerializer(serializers.ModelSerializer):
         fields = ['title', 'date', 'author', 'content', 'pictureurl']
 
     def date_to_timestamp(self, obj):
-        if obj.date:
-            return time.mktime(obj.date.timetuple())
+        if obj.int_date:
+            return obj.int_date
 
     def construct_images(self,obj):
         return return_images(obj)
@@ -198,8 +198,8 @@ class LifeTipsSerializer(serializers.ModelSerializer):
         fields = ['title', 'date', 'author', 'content','pictureurl']
 
     def date_to_timestamp(self, obj):
-        if obj.date:
-            return time.mktime(obj.date.timetuple())
+        if obj.int_date:
+            return obj.int_date
 
     def construct_images(self,obj):
         return return_images(obj)
@@ -214,8 +214,8 @@ class PartyWorkSerializer(serializers.ModelSerializer):
         fields = ['title', 'date', 'author', 'content','pictureurl']
 
     def date_to_timestamp(self, obj):
-        if obj.date:
-            return time.mktime(obj.date.timetuple())
+        if obj.int_date:
+            return obj.int_date
 
     def construct_images(self,obj):
         return return_images(obj)
@@ -230,8 +230,8 @@ class NoticeSerializer(serializers.ModelSerializer):
         fields = ['title', 'date', 'author', 'content','pictureurl']
 
     def date_to_timestamp(self, obj):
-        if obj.date:
-            return time.mktime(obj.date.timetuple())
+        if obj.int_date:
+            return obj.int_date
 
     def construct_images(self, obj):
         return return_images(obj)
@@ -246,8 +246,8 @@ class SpiritSerializer(serializers.ModelSerializer):
         fields = ['title', 'date', 'author', 'content', 'pictureurl']
 
     def date_to_timestamp(self, obj):
-        if obj.date:
-            return time.mktime(obj.date.timetuple())
+        if obj.int_date:
+            return obj.int_date
 
     def construct_images(self, obj):
         return return_images(obj)
@@ -262,8 +262,8 @@ class PolicySerializer(serializers.ModelSerializer):
         fields = ['title', 'date', 'author', 'content', 'pictureurl']
 
     def date_to_timestamp(self, obj):
-        if obj.date:
-            return time.mktime(obj.date.timetuple())
+        if obj.int_date:
+            return obj.int_date
 
     def construct_images(self, obj):
         return return_images(obj)

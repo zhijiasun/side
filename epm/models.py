@@ -18,6 +18,7 @@ from django.contrib.auth.models import User
 from adaptor.model import CsvDbModel,CsvModel
 from adaptor.fields import *
 import datetime
+import time
 from datetime import date
 from django.db.models.signals import post_save
 
@@ -367,8 +368,7 @@ class Pioneer(models.Model):
     content_thumb.short_description = u'内容缩略'
 
     def save(self,*args,**kwargs):
-        if self.date:
-            self.int_date = time.mktime(self.date.timetuple())
+        self.int_date = int(time.time())
         super(Pioneer,self).save(*args,**kwargs)
 
 
@@ -405,6 +405,7 @@ class LifeTips(models.Model):
     date = models.DateTimeField(u'创建日期',auto_now_add=True)
     author = models.CharField(u'作者',max_length=30)
     content = models.TextField(u'内容')
+    int_date = models.IntegerField(blank=True, null=True)
 
     class Meta:
         verbose_name = u'生活小贴士'
@@ -412,6 +413,11 @@ class LifeTips(models.Model):
 
     def __unicode__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        if self.date:
+            self.int_date = time.mktime(self.date.timetuple())
+        super(LifeTips,self).save(*args,**kwargs)
 
 
 class LifeTipsImage(models.Model):
@@ -452,6 +458,7 @@ class PartyWork(models.Model):
     date = models.DateTimeField(u'创建日期',auto_now_add=True)
     author = models.CharField(u'作者',max_length=30)
     content = models.TextField(u'内容',)
+    int_date = models.IntegerField(blank=True, null=True)
 
     class Meta:
         verbose_name = u'党务提醒信息'
@@ -459,6 +466,11 @@ class PartyWork(models.Model):
 
     def __unicode__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        if self.date:
+            self.int_date = time.mktime(self.date.timetuple())
+        super(PartyWork,self).save(*args,**kwargs)
 
 
 class PartyWorkImage(models.Model):
@@ -495,6 +507,7 @@ class Notice(models.Model):
     date = models.DateTimeField(u'创建日期',auto_now_add=True)
     author = models.CharField(u'作者',max_length=30)
     content = models.TextField(u'内容')
+    int_date = models.IntegerField(blank=True, null=True)
 
     class Meta:
         verbose_name = u'公告活动信息'
@@ -502,6 +515,11 @@ class Notice(models.Model):
 
     def __unicode__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        if self.date:
+            self.int_date = time.mktime(self.date.timetuple())
+        super(Notice,self).save(*args,**kwargs)
 
 
 class NoticeImage(models.Model):
@@ -538,6 +556,7 @@ class Spirit(models.Model):
     date = models.DateTimeField(u'创建日期',auto_now_add=True)
     author = models.CharField(u'作者',max_length=30)
     content = models.TextField(u'内容')
+    int_date = models.IntegerField(blank=True, null=True)
 
     class Meta:
         verbose_name = u'上级精神'
@@ -545,6 +564,11 @@ class Spirit(models.Model):
 
     def __unicode__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        if self.date:
+            self.int_date = time.mktime(self.date.timetuple())
+        super(Spirit, self).save(*args,**kwargs)
 
 
 class SpiritImage(models.Model):
@@ -581,6 +605,7 @@ class Policy(models.Model):
     date = models.DateTimeField(u'创建日期',auto_now_add=True)
     author = models.CharField(u'作者',max_length=30)
     content = models.TextField(u'内容')
+    int_date = models.IntegerField(blank=True, null=True)
 
     class Meta:
         verbose_name = u'惠企政策'
@@ -589,6 +614,10 @@ class Policy(models.Model):
     def __unicode__(self):
         return self.title
 
+    def save(self, *args, **kwargs):
+        if self.date:
+            self.int_date = time.mktime(self.date.timetuple())
+        super(Policy, self).save(*args,**kwargs)
 
 class PolicyImage(models.Model):
     policy = models.ForeignKey(Policy,related_name='img_list', verbose_name=u"附图")

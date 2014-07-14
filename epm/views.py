@@ -32,6 +32,7 @@ from django.core.files.base import ContentFile
 from epm.tools import *
 from epm.error import errMsg
 import csv
+import time
 import logging
 logger = logging.getLogger(__name__)
 
@@ -305,16 +306,25 @@ def get_result(model, modelSerializer,kwargs):
     maxCount -- the max number of the results
     offset -- offset of the results
     """
-    startTime = time.localtime(float(kwargs.get('startTime',0)))
-    startTime = datetime.datetime.fromtimestamp(time.mktime(startTime))
+    # startTime = time.localtime(float(kwargs.get('startTime',0)))
+    # startTime = datetime.datetime.fromtimestamp(time.mktime(startTime))
+
+    # if 'endTime' in kwargs.keys():
+    #     endTime = time.localtime(float(kwargs.get('endTime')))
+    #     endTime = datetime.datetime.fromtimestamp(time.mktime(endTime))
+    # else:
+    #     endTime = datetime.datetime.now()
+
+    startTime = kwargs.get('startTime', 0)
 
     if 'endTime' in kwargs.keys():
-        endTime = time.localtime(float(kwargs.get('endTime')))
-        endTime = datetime.datetime.fromtimestamp(time.mktime(endTime))
+        endTime = kwargs.get('endTime')
     else:
-        endTime = datetime.datetime.now()
+        endTime = int(time.time())
 
-    obj = model.objects.filter(date__gte=startTime).filter(date__lte=endTime)
+    a = Pioneer.objects.all()
+
+    obj = model.objects.filter(int_date__gte=startTime).filter(int_date__lte=endTime)
     maxCount = int(kwargs.get('maxCount',10))
     offset = int(kwargs.get('offset',0))
 

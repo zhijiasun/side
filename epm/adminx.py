@@ -93,6 +93,7 @@ class LifeTipsAdmin(object):
     list_display = ('title','date','author','content')
     list_filter = ('title','date','author','content')
     inlines = [LifeTipsImageAdmin]
+    exclude = ('int_date',)
     # reversion_enable = True
 
     formfield_overrides = {models.TextField:{'widget':Textarea(attrs={'rows':4,'cols':40})},}
@@ -107,6 +108,7 @@ class PartyWorkAdmin(object):
     list_display = ('title','date','author','content')
     list_filter = ('title','date','author','content')
     inlines = [PartyWorkImageAdmin]
+    exclude = ('int_date',)
 
     # reversion_enable = True
 
@@ -120,6 +122,7 @@ class NoticeAdmin(object):
     list_display = ('title','date','author','content')
     list_filter = ('title','date','author','content')
     inlines = [NoticeImageAdmin]
+    exclude = ('int_date',)
 
     # reversion_enable = True
 
@@ -133,6 +136,7 @@ class SpiritAdmin(object):
     list_display = ('title','date','author','content')
     list_filter = ('title','date','author','content')
     inlines = [SpiritImageAdmin]
+    exclude = ('int_date',)
 
     # reversion_enable = True
 
@@ -146,6 +150,7 @@ class PolicyAdmin(object):
     list_display = ('title','date','author','content')
     list_filter = ('title','date','author','content')
     inlines = [PolicyImageAdmin]
+    exclude = ('int_date',)
 
     # reversion_enable = True
     
