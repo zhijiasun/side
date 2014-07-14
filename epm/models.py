@@ -85,11 +85,27 @@ class party(models.Model):
         members = self.membersAtParty.all()
         return members
 
-class PartyModel(CsvDbModel):
+class PartyModel(CsvModel):
+
+    def transform_party_attribute(value):
+        for attribute in PARTY_ATTRIBUTE:
+            if attribute[1] == value:
+                return attribute[0]
+        return 0
+
+    party_name = CharField()
+    party_attribute = IntegerField(prepare=transform_party_attribute)
+    secretary_name = CharField()
+    secretary_phone = CharField()
+    responsible_name = CharField()
+    responsible_phone = CharField()
+    qq = CharField()
+    weixin = CharField()
+    party_email = CharField()
+
     class Meta:
         dbModel = party
         delimiter = ","
-        exclude = ['party_id','member_number']
         has_header = True
 
 
@@ -136,7 +152,8 @@ class enterprise(models.Model):
         return self.enter_name
 
     def related_party_status(self):
-        return PARTY_ATTRIBUTE[self.related_party.party_attribute - 1][1]
+        if self.related_party:
+            return PARTY_ATTRIBUTE[self.related_party.party_attribute - 1][1]
 
     related_party_status.short_description = u'党组织属性'
 
