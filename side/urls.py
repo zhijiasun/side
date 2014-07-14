@@ -1,6 +1,7 @@
 from django.conf.urls import patterns, include, url
 from rest_framework import routers
 from epm import views
+import epm
 from rest_auth import views
 from django.conf import settings
 from django.conf.urls.static import static
@@ -35,6 +36,7 @@ urlpatterns = patterns('',
     # url(r'^epm/',include('epm.urls')),
     url(r'^dangjian/laoshanparty/v1/',include('epm.urls')),
     url(r'^dangjian/laoshanparty/v1/',include('ams.urls')),
+    url(r'^dangjian/lspmanager/v1/questions',epm.views.worker_question_list),
     url(r'accounts/', include('django.contrib.auth.urls')),
     url(r'accounts/',include('registration.backends.default.urls')),
     # url(r'^rest-auth/', include('rest_auth.urls')),

@@ -519,6 +519,73 @@ def question_list(request,username):
     return Response(result,status = status.HTTP_200_OK)
 
 
+@api_view(['GET','POST'])
+def worker_question_list(request):
+    """
+    support four parameters in request.GET
+    startTime -- the start time of the record
+    endTime -- the end time of the record
+    maxCount -- the max number of the results
+    offset -- offset of the results
+    """
+    if request.method == 'GET':
+        result = {"errCode":10000,"errDesc":errMsg[10000],"data":[]}
+        startTime = time.localtime(float(request.GET.get('startTime',0)))
+        # endTime = time.localtime(float(request.GET.get('endTime',datetime.datetime.now().microsecond)))
+        startTime = datetime.datetime.fromtimestamp(time.mktime(startTime))
+        if 'endTime' in request.GET.keys():
+            endTime = time.localtime(float(request.GET.get('endTime')))
+            endTime = datetime.datetime.fromtimestamp(time.mktime(endTime))
+        else:
+            endTime = datetime.datetime.now()
+
+        maxCount = int(request.GET.get('maxCount',10))
+        offset = int(request.GET.get('offset',0))
+        published = request.GET.get('is_published','false')
+        if published == 'false':
+            is_published = False
+        else:
+            is_published = True
+
+        p = Question.objects.filter(reply_time__gte=startTime).filter(reply_time__lte=endTime).filter(is_published=is_published)
+
+        p = p[offset:offset+maxCount]
+        pa = QuestionSerializer(p,many=True)
+        # temp_data = []
+        # for temp in pa.data:
+        #     if not temp['is_published']:
+        #         temp['question_answer'] = u'未回复'
+
+        #     temp_data.append(temp)
+        result['data']=pa.data
+    elif request.method == 'POST':
+        result = {"errCode":10000,"errDesc":errMsg[10000]}
+        question_id = request.DATA.get('question_id',0)
+        answer = request.DATA.get('answer','')
+        published = request.DATA.get('is_published','false')
+
+        if published == 'false':
+            is_published = False
+        else:
+            is_published = True
+
+        if question_id:
+            try:
+                q = Question.objects.get(question_id=question_id)
+            except:
+                result['errCode'] = 10017
+                result['errDesc'] = errMsg[10017]
+                return Response(result, status=status.HTTP_200_OK)
+            q.question_answer = answer
+            q.is_published = is_published
+            q.save()
+            return Response(result, status=status.HTTP_200_OK)
+        else:
+            result['errCode']=10017
+            result ['errDesc']=errMsg[10017]
+    return Response(result,status = status.HTTP_200_OK)
+
+
 @api_view(['POST'])
 @csrf_exempt
 def create_user(request):

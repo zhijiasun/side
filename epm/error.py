@@ -16,4 +16,5 @@ errMsg = {
         10014:'member is not verified',
         10015:'invalid process type',
         10016:'username or password or email can not be NULL',
+        10017:'specified question is not existed',
         }
