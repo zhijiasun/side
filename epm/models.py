@@ -240,8 +240,8 @@ class member(models.Model):
         return self.member_party.party_name
     member_party_name.short_description = u'隶属党组织'
 
-    def save(self,*args, **kwargs):
-        if self.id_card:
+    def save(self, *args, **kwargs):
+        if self.id_card and not self.member_birth:
             self.member_birth = date(int(self.id_card[6:10]),int(self.id_card[10:12]),int(self.id_card[12:14]))
         super(member,self).save(*args, **kwargs)
 
