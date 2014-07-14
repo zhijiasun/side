@@ -32,9 +32,24 @@ def submit_comment(request):
 def get_version(request):
     result = {'errCode':10000, 'errDesc':errMsg[10000]}
     try:
-        version = VersionManager.objects.latest('version_id')
-        if version:
-            vs = VersionManagerSerializer(version)
+        versions = VersionManager.objects.filter(specified_app=0).order_by('-version_id')
+        if versions:
+            vs = VersionManagerSerializer(versions[0])
+            result['data']=vs.data
+    except:
+        print('version info not exist')
+        logger.debug('version info not exist')
+
+    return Response(result, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+def get_worker_version(request):
+    result = {'errCode':10000, 'errDesc':errMsg[10000]}
+    try:
+        versions = VersionManager.objects.filter(specified_app=1).order_by('-version_id')
+        if versions:
+            vs = VersionManagerSerializer(versions[0])
             result['data']=vs.data
     except:
         print('version info not exist')

@@ -16,6 +16,7 @@ class AppComment(models.Model):
 
 class VersionManager(models.Model):
     version_id = models.AutoField(primary_key=True, auto_created=True)
+    specified_app = models.IntegerField(u'针对',default=0,choices=((0,u'普通用户版本'),(1,u'工作人员版本')))
     version_code = models.CharField(u'版本号',max_length=30)
     version_name = models.CharField(u'版本名称',max_length=30)
     description = models.TextField(u'描述')
