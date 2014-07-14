@@ -685,8 +685,8 @@ class ImportAdminView(ImportMixin,CreateAdminView):
             default_storage.save(tmp_file, ContentFile(data.read()))
             convertFile(tmp_file)
         except Exception, e:
-            self.new_context['msg']=str(e)
-            print Exception,str(e)
+            logger.debug(str(e))
+            self.new_context['msg']=u'请选择导入正确的文件'
 
         if os.path.isfile(outputDir) and os.path.getsize(outputDir) > 0:
             try:
@@ -697,7 +697,6 @@ class ImportAdminView(ImportMixin,CreateAdminView):
                 os.remove(outputDir)
             except Exception, e:
                 self.new_context['msg']=str(e)
-                print e
 
         default_storage.delete(tmp_file)
 

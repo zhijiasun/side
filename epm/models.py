@@ -184,10 +184,10 @@ class EnterModel(CsvModel):
     enter_name = CharField()
     enter_address = CharField()
     enter_attribute = IntegerField(prepare=transform_enter_attribute)
-    industry_type = IntegerField()
-    industry_nature = IntegerField()
-    enter_scale = IntegerField()
-    total_assets = IntegerField()
+    industry_type = IntegerField(prepare=transform_industry_type)
+    industry_nature = IntegerField(prepare=transform_industry_nature)
+    enter_scale = IntegerField(prepare=transform_enter_scale)
+    total_assets = IntegerField(prepare=transform_total_assets)
     legal_person = CharField()
     legal_email = CharField()
     enter_email = CharField()
@@ -255,10 +255,28 @@ post_save.connect(update_member_number, sender=member)
 
 
 class MemberModel(CsvModel):
+    def transform_member_gender(value):
+        for attribute in GENDER:
+            if attribute[1] == value:
+                return attribute[0]
+        return 0
+
+    def transform_member_nation(value):
+        for attribute in NATION:
+            if attribute[1] == value:
+                return attribute[0]
+        return 0
+
+    def transform_member_education(value):
+        for attribute in EDUCATION:
+            if attribute[1] == value:
+                return attribute[0]
+        return 0
+
     member_name = CharField()
-    member_gender = IntegerField()
-    member_nation = IntegerField()
-    member_education = IntegerField()
+    member_gender = IntegerField(prepare=transform_member_gender)
+    member_nation = IntegerField(prepare=transform_member_nation)
+    member_education = IntegerField(prepare=transform_member_education)
     member_birth = DateField(format="%Y/%m/%d")
     member_worktime = DateField(format="%Y/%m/%d")
     join_party_time = DateField(format="%Y/%m/%d")
@@ -273,6 +291,8 @@ class MemberModel(CsvModel):
     weixin = CharField()
     school = CharField()
     id_card = CharField()
+    member_party = DjangoModelField(party, pk='party_name')### here we can add default parameter
+    member_enter = DjangoModelField(enterprise, pk='enter_name')### here we can add default parameter
     # member_party = models.ForeignKey(party,verbose_name=u'隶属党组织',blank=True,null=True,on_delete=models.SET_NULL,related_name='membersAtParty')
     # member_enter = models.ForeignKey(enterprise,verbose_name=u'隶属企业',blank=True,null=True,on_delete=models.SET_NULL,related_name='membersAtEnter')
     class Meta:
