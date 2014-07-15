@@ -223,7 +223,7 @@ class EnterModel(CsvModel):
 class member(models.Model):
     member_name = models.CharField(verbose_name=u'党员姓名',max_length=80)
     member_gender = models.IntegerField(u'性别',default=0,choices=GENDER)
-    member_nation = models.IntegerField(u'民族',default=0,choices=NATION)
+    member_nation = models.IntegerField(u'民族',default=1,choices=NATION)
     member_education = models.IntegerField(u'学历',default=0,choices=EDUCATION)
     member_birth = models.DateField(u'出生日期',blank=True,null=True)
     member_worktime = models.DateField(u'参加工作时间')
@@ -373,7 +373,7 @@ class Pioneer(models.Model):
 
 
 class PioneerImage(models.Model):
-    pioneer = models.ForeignKey(Pioneer,related_name='img_list', verbose_name=u"附图")
+    content = models.ForeignKey(Pioneer,related_name='img_list', verbose_name=u"附图")
     pic = models.ImageField(upload_to='upload/%Y_%m_%d/',blank=True,verbose_name=u"图片")
 
     class Meta:
@@ -419,32 +419,32 @@ class LifeTips(models.Model):
         super(LifeTips,self).save(*args,**kwargs)
 
 
-# class LifeTipsImage(models.Model):
-#     lifetips = models.ForeignKey(LifeTips,related_name='img_list', verbose_name=u"附图")
-#     pic = models.ImageField(upload_to='upload/%Y_%m_%d/',blank=True,verbose_name=u"图片")
+class LifeTipsImage(models.Model):
+    content = models.ForeignKey(LifeTips,related_name='img_list', verbose_name=u"附图")
+    pic = models.ImageField(upload_to='upload/%Y_%m_%d/',blank=True,verbose_name=u"图片")
 
-#     class Meta:
-#         verbose_name = u'生活小贴士附图'
-#         verbose_name_plural = u'生活小贴士附图'
+    class Meta:
+        verbose_name = u'生活小贴士附图'
+        verbose_name_plural = u'生活小贴士附图'
 
-#     def __unicode__(self):
-#         base, ext = os.path.splitext(os.path.basename(self.pic.url))
-#         base_url = os.path.dirname(self.pic.url)
-#         # return os.path.join(base_url + '/' + base + '_thumb' + ext)
-#         return self.pic.url
+    def __unicode__(self):
+        base, ext = os.path.splitext(os.path.basename(self.pic.url))
+        base_url = os.path.dirname(self.pic.url)
+        # return os.path.join(base_url + '/' + base + '_thumb' + ext)
+        return self.pic.url
 
-#     def save(self):
-#         super(LifeTipsImage, self).save()
-#         base, ext = os.path.splitext(os.path.basename(self.pic.path))
-#         directory = os.path.dirname(self.pic.path)
-#         picture = Image.open(self.pic.path)
-#         actual_size = picture.size
-#         for size in img_size:
-#             if size < actual_size:
-#                 thumb = picture.resize(size,Image.ANTIALIAS)
-#                 thumb_path = os.path.join(directory + '/' + base + '_thumb_' +str(size[0])+'_'+str(size[1])+ ext)
-#                 thumb.save(thumb_path)
-#         super(LifeTipsImage, self).save()
+    def save(self):
+        super(LifeTipsImage, self).save()
+        base, ext = os.path.splitext(os.path.basename(self.pic.path))
+        directory = os.path.dirname(self.pic.path)
+        picture = Image.open(self.pic.path)
+        actual_size = picture.size
+        for size in img_size:
+            if size < actual_size:
+                thumb = picture.resize(size,Image.ANTIALIAS)
+                thumb_path = os.path.join(directory + '/' + base + '_thumb_' +str(size[0])+'_'+str(size[1])+ ext)
+                thumb.save(thumb_path)
+        super(LifeTipsImage, self).save()
 
 
 class PartyWork(models.Model):
@@ -472,7 +472,7 @@ class PartyWork(models.Model):
 
 
 class PartyWorkImage(models.Model):
-    partywork = models.ForeignKey(PartyWork,related_name='img_list', verbose_name=u"附图")
+    content = models.ForeignKey(PartyWork,related_name='img_list', verbose_name=u"附图")
     pic = models.ImageField(upload_to='upload/%Y_%m_%d/',blank=True,verbose_name=u"图片")
 
     class Meta:
@@ -520,7 +520,7 @@ class Notice(models.Model):
 
 
 class NoticeImage(models.Model):
-    notice = models.ForeignKey(Notice,related_name='img_list', verbose_name=u"附图")
+    content = models.ForeignKey(Notice,related_name='img_list', verbose_name=u"附图")
     pic = models.ImageField(upload_to='upload/%Y_%m_%d/',blank=True,verbose_name=u"图片")
 
     class Meta:
@@ -568,7 +568,7 @@ class Spirit(models.Model):
 
 
 class SpiritImage(models.Model):
-    spirit = models.ForeignKey(Spirit,related_name='img_list', verbose_name=u"附图")
+    content = models.ForeignKey(Spirit,related_name='img_list', verbose_name=u"附图")
     pic = models.ImageField(upload_to='upload/%Y_%m_%d/',blank=True,verbose_name=u"图片")
 
     class Meta:
@@ -616,7 +616,7 @@ class Policy(models.Model):
 
 
 class PolicyImage(models.Model):
-    policy = models.ForeignKey(Policy,related_name='img_list', verbose_name=u"附图")
+    content = models.ForeignKey(Policy,related_name='img_list', verbose_name=u"附图")
     pic = models.ImageField(upload_to='upload/%Y_%m_%d/',blank=True,verbose_name=u"图片")
 
     class Meta:

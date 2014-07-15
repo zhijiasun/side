@@ -85,7 +85,7 @@ class MemberSerializer(serializers.HyperlinkedModelSerializer):
         return GENDER[obj.member_gender][1] 
 
     def str_nation(self,obj):
-        return NATION[obj.member_nation][1]
+        return NATION[obj.member_nation-1][1]
 
     def str_education(self,obj):
         return EDUCATION[obj.member_education][1]

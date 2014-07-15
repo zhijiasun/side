@@ -278,25 +278,31 @@ def party_info(request,username):
 
         return Response(result,status = status.HTTP_200_OK)
 
+def get_upload():
+    return 'upload/'+time.strfime("%Y_%m_%d")+"/"
 
-def post_result(model, kwargs):
-    title = kwargs.get('title', '')
-    author = kwargs.get('author', '')
-    content = kwargs.get('content', '')
+def post_result(model, modelImage, request):
+    title = request.DATA.get('title', '')
+    author = request.DATA.get('author', '')
+    content = request.DATA.get('content', '')
     result = {'errCode':10000, 'errDesc':errMsg[10000]}
 
-    """
-    if not title and not author:
-        return error
+    if not title or not author:
+        result['errCode']=10007
+        result['errDesc']=errMsg[10007]
+        return result
     if request.FILES and content:
-        return error
-    if request.FILES and not content:
+        result['errCode']=10019
+        result['errDesc']=errMsg[10019]
+        return result
+    if request.FILES and not content and model is not LifeTips:
         data = request.FILES['imgfile']
+        tmp_file = settings.MEDIA_ROOT+get_upload()+data.name
         default_storage.save(tmp_file, ContentFile(data.read()))
         obj = model(title=title, author=author)
         obj.save()
-        objpic = modelpic(pioneer=obj)
-        objpic.pic = 'path'
+        objpic = modelImage(content=obj)
+        objpic.pic = tmp_file
         objpic.save()
     if content and not request.FILES:
         try:
@@ -305,16 +311,15 @@ def post_result(model, kwargs):
         except Excepiton:
             result = {'errCode':10004, 'errDesc':errMsg[10004]}
 
-    """
-    if title and author and content:
-        try:
-            obj = model(title=title, author=author, content=content)
-            obj.save()
-        except Excepiton:
-            result = {'errCode':10004, 'errDesc':errMsg[10004]}
-    else:
-        result['errCode']=10007
-        result['errDesc']=errMsg[10007]
+    # if title and author and content:
+    #     try:
+    #         obj = model(title=title, author=author, content=content)
+    #         obj.save()
+    #     except Excepiton:
+    #         result = {'errCode':10004, 'errDesc':errMsg[10004]}
+    # else:
+    #     result['errCode']=10007
+    #     result['errDesc']=errMsg[10007]
 
     return result
 
@@ -345,7 +350,7 @@ def get_result(model, modelSerializer,kwargs):
 
     a = Pioneer.objects.all()
 
-    obj = model.objects.filter(int_date__gte=startTime).filter(int_date__lte=endTime)
+    obj = model.objects.filter(int_date__gt=startTime).filter(int_date__lte=endTime)
     maxCount = int(kwargs.get('maxCount',10))
     offset = int(kwargs.get('offset',0))
 
@@ -378,7 +383,7 @@ def lifetips_list(request):
         result = get_result(LifeTips,LifeTipsSerializer,request.GET)
         return Response(result,status = status.HTTP_200_OK)
     elif request.method == 'POST':
-        result = post_result(LifeTips, request.DATA)
+        result = post_result(LifeTips, LifeTipsImage, request)
         return Response(result, status=status.HTTP_200_OK)
 
 
@@ -388,7 +393,7 @@ def notice_list(request):
         result = get_result(Notice, NoticeSerializer,request.GET)
         return Response(result,status = status.HTTP_200_OK)
     elif request.method == 'POST':
-        result = post_result(Notice, request.DATA)
+        result = post_result(Notice, NoticeImage, request)
         return Response(result, status=status.HTTP_200_OK)
 
 
@@ -400,7 +405,7 @@ def spirit_list(request):
         result = get_result(Spirit, SpiritSerializer, request.GET)
         return Response(result, status=status.HTTP_200_OK)
     elif request.method == 'POST':
-        result = post_result(Spirit, request.DATA)
+        result = post_result(Spirit, SpiritImage, request)
         return Response(result, status=status.HTTP_200_OK)
 
 
@@ -411,7 +416,7 @@ def policy_list(request):
         result = get_result(Policy, PolicySerializer, request.GET)
         return Response(result, status=status.HTTP_200_OK)
     elif request.method == 'POST':
-        result = post_result(Policy, request.DATA)
+        result = post_result(Policy, PolicyImage, request)
         return Response(result, status=status.HTTP_200_OK)
 
 
@@ -466,7 +471,7 @@ def partywork_list(request,username):
                 endTime = datetime.datetime.fromtimestamp(time.mktime(endTime))
             else:
                 endTime = datetime.datetime.now()
-                p = objs.filter(date__gte=startTime).filter(date__lte=endTime)
+                p = objs.filter(date__gt=startTime).filter(date__lte=endTime)
 
                 maxCount = int(request.GET.get('maxCount',10))
                 offset = int(request.GET.get('offset',0))
@@ -529,7 +534,7 @@ def question_list(request,username):
                 endTime = request.GET.get('endTime')
             else:
                 endTime = int(time.time())
-            p = Question.objects.filter(question_author=username).filter(reply_int__gte=startTime).filter(reply_int__lte=endTime).order_by('-reply_int')
+            p = Question.objects.filter(question_author=username).filter(reply_int__gt=startTime).filter(reply_int__lte=endTime).order_by('-reply_int')
 
             maxCount = int(request.GET.get('maxCount',10))
             offset = int(request.GET.get('offset',0))
@@ -576,7 +581,7 @@ def worker_question_list(request):
         else:
             is_published = True
 
-        p = Question.objects.filter(reply_time__gte=startTime).filter(reply_time__lte=endTime).filter(is_published=is_published)
+        p = Question.objects.filter(reply_time__gt=startTime).filter(reply_time__lte=endTime).filter(is_published=is_published)
 
         p = p[offset:offset+maxCount]
         pa = QuestionSerializer(p,many=True)
