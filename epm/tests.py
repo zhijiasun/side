@@ -83,7 +83,6 @@ class LifeTipsListTestCase(TestCase):
         data = {"title":"first title","author":"test","content":"first content"}
         c = Client()
         response = c.post('/dangjian/laoshanparty/v1/lifetips',data)
-        print response.content
         result = json.loads(response.content)
         self.assertEquals(result['errCode'],10000)
 
@@ -91,7 +90,6 @@ class LifeTipsListTestCase(TestCase):
         data = {"title":"first title", "content":"first content"}
         c = Client()
         response = c.post('/dangjian/laoshanparty/v1/lifetips',data)
-        print response.content
         result = json.loads(response.content)
         self.assertEquals(result['errCode'],10007)
 
@@ -109,7 +107,6 @@ class NoticeListTestCase(TestCase):
         data = {"title":"first title","author":"test","content":"first content"}
         c = Client()
         response = c.post('/dangjian/laoshanparty/v1/notice',data)
-        print response.content
         result = json.loads(response.content)
         self.assertEquals(result['errCode'],10000)
         
@@ -117,7 +114,6 @@ class NoticeListTestCase(TestCase):
         data = {"title":"first title", "content":"first content"}
         c = Client()
         response = c.post('/dangjian/laoshanparty/v1/notice',data)
-        print response.content
         result = json.loads(response.content)
         self.assertEquals(result['errCode'],10007)
 
@@ -135,7 +131,6 @@ class SpiritListTestCase(TestCase):
         data = {"title":"first title","author":"test","content":"first content"}
         c = Client()
         response = c.post('/dangjian/laoshanparty/v1/spirit',data)
-        print response.content
         result = json.loads(response.content)
         self.assertEquals(result['errCode'],10000)
 
@@ -143,7 +138,6 @@ class SpiritListTestCase(TestCase):
         data = {"title":"first title", "content":"first content"}
         c = Client()
         response = c.post('/dangjian/laoshanparty/v1/spirit',data)
-        print response.content
         result = json.loads(response.content)
         self.assertEquals(result['errCode'],10007)
 
@@ -160,7 +154,6 @@ class PolicyListTestCase(TestCase):
         data = {"title":"first title","author":"test","content":"first content"}
         c = Client()
         response = c.post('/dangjian/laoshanparty/v1/policy',data)
-        print response.content
         result = json.loads(response.content)
         self.assertEquals(result['errCode'],10000)
 
@@ -168,7 +161,6 @@ class PolicyListTestCase(TestCase):
         data = {"title":"first title", "content":"first content"}
         c = Client()
         response = c.post('/dangjian/laoshanparty/v1/policy',data)
-        print response.content
         result = json.loads(response.content)
         self.assertEquals(result['errCode'],10007)
 
@@ -265,6 +257,49 @@ class UserRegisterTestCase(TestCase):
         
     def test_user_register_with_existed_username(self):
         pass
+
+
+class UserLoginTestCase(TestCase):
+    def setUp(self):
+        u1 = User.objects.create_user(username="jason",password="111111",email="fad@testc.om")
+        up = G(UserProfile, user=u1)
+
+    def test_user_login(self):
+        data = {'username': 'jason', 'password': '111111'}
+        c = Client()
+        response = c.post('/dangjian/laoshanparty/v1/login/', data)
+        result = json.loads(response.content)
+        self.assertEquals(result['errCode'],10000)
+
+    def test_user_with_invliad_login(self):
+        data = {'username': 'jason1', 'password': '111111'}
+        c = Client()
+        response = c.post('/dangjian/laoshanparty/v1/login/', data)
+        result = json.loads(response.content)
+        self.assertEquals(result['errCode'],10003)
+
+    def test_user_change_password(self):
+        data = {'old_password': '111111', 'new_password1': '222222', 'new_password2':'222222'}
+        c = Client()
+        response = c.post('/dangjian/laoshanparty/v1/jason/password/change/', data)
+        result = json.loads(response.content)
+        self.assertEquals(result['errCode'], 10000)
+
+    def test_user_change_password_with_invalid_old_password(self):
+        data = {'old_password': 'invalid', 'new_password1': '222222', 'new_password2':'222222'}
+        c = Client()
+        response = c.post('/dangjian/laoshanparty/v1/jason/password/change/', data)
+        result = json.loads(response.content)
+        self.assertEquals(result['errCode'], 10003)
+
+    def test_user_change_password_with_invalid_param(self):
+        data = {'old_password': '111111', 'password1': '222222', 'new_password2':'222222'}
+        c = Client()
+        response = c.post('/dangjian/laoshanparty/v1/jason/password/change/', data)
+        result = json.loads(response.content)
+        self.assertEquals(result['errCode'], 10018)
+
+
 
 class GetUserInfoTestCase(TestCase):
 

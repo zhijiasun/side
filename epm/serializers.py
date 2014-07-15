@@ -190,19 +190,19 @@ class PioneerSerializer(serializers.ModelSerializer):
 
 
 class LifeTipsSerializer(serializers.ModelSerializer):
-    pictureurl = serializers.SerializerMethodField('construct_images')
+    # pictureurl = serializers.SerializerMethodField('construct_images')
     date = serializers.SerializerMethodField('date_to_timestamp')
 
     class Meta:
         model = LifeTips
-        fields = ['title', 'date', 'author', 'content','pictureurl']
+        fields = ['title', 'date', 'author', 'content']
 
     def date_to_timestamp(self, obj):
         if obj.int_date:
             return obj.int_date
 
-    def construct_images(self,obj):
-        return return_images(obj)
+    # def construct_images(self,obj):
+    #     return return_images(obj)
 
 
 class PartyWorkSerializer(serializers.ModelSerializer):

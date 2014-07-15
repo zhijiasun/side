@@ -419,32 +419,32 @@ class LifeTips(models.Model):
         super(LifeTips,self).save(*args,**kwargs)
 
 
-class LifeTipsImage(models.Model):
-    lifetips = models.ForeignKey(LifeTips,related_name='img_list', verbose_name=u"附图")
-    pic = models.ImageField(upload_to='upload/%Y_%m_%d/',blank=True,verbose_name=u"图片")
+# class LifeTipsImage(models.Model):
+#     lifetips = models.ForeignKey(LifeTips,related_name='img_list', verbose_name=u"附图")
+#     pic = models.ImageField(upload_to='upload/%Y_%m_%d/',blank=True,verbose_name=u"图片")
 
-    class Meta:
-        verbose_name = u'生活小贴士附图'
-        verbose_name_plural = u'生活小贴士附图'
+#     class Meta:
+#         verbose_name = u'生活小贴士附图'
+#         verbose_name_plural = u'生活小贴士附图'
 
-    def __unicode__(self):
-        base, ext = os.path.splitext(os.path.basename(self.pic.url))
-        base_url = os.path.dirname(self.pic.url)
-        # return os.path.join(base_url + '/' + base + '_thumb' + ext)
-        return self.pic.url
+#     def __unicode__(self):
+#         base, ext = os.path.splitext(os.path.basename(self.pic.url))
+#         base_url = os.path.dirname(self.pic.url)
+#         # return os.path.join(base_url + '/' + base + '_thumb' + ext)
+#         return self.pic.url
 
-    def save(self):
-        super(LifeTipsImage, self).save()
-        base, ext = os.path.splitext(os.path.basename(self.pic.path))
-        directory = os.path.dirname(self.pic.path)
-        picture = Image.open(self.pic.path)
-        actual_size = picture.size
-        for size in img_size:
-            if size < actual_size:
-                thumb = picture.resize(size,Image.ANTIALIAS)
-                thumb_path = os.path.join(directory + '/' + base + '_thumb_' +str(size[0])+'_'+str(size[1])+ ext)
-                thumb.save(thumb_path)
-        super(LifeTipsImage, self).save()
+#     def save(self):
+#         super(LifeTipsImage, self).save()
+#         base, ext = os.path.splitext(os.path.basename(self.pic.path))
+#         directory = os.path.dirname(self.pic.path)
+#         picture = Image.open(self.pic.path)
+#         actual_size = picture.size
+#         for size in img_size:
+#             if size < actual_size:
+#                 thumb = picture.resize(size,Image.ANTIALIAS)
+#                 thumb_path = os.path.join(directory + '/' + base + '_thumb_' +str(size[0])+'_'+str(size[1])+ ext)
+#                 thumb.save(thumb_path)
+#         super(LifeTipsImage, self).save()
 
 
 class PartyWork(models.Model):

@@ -84,15 +84,15 @@ class PioneerAdmin(object):
     exclude = ('int_date',)
 
 
-class LifeTipsImageAdmin(object):
-    model = LifeTipsImage
-    extra = 1
+# class LifeTipsImageAdmin(object):
+#     model = LifeTipsImage
+#     extra = 1
 
 
 class LifeTipsAdmin(object):
     list_display = ('title','date','author','content')
     list_filter = ('title','date','author','content')
-    inlines = [LifeTipsImageAdmin]
+    # inlines = [LifeTipsImageAdmin]
     exclude = ('int_date',)
     # reversion_enable = True
 

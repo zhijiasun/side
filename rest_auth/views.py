@@ -425,6 +425,8 @@ class PasswordChange(GenericAPIView):
         # Create a serializer with request.DATA
         serializer = self.serializer_class(data=request.DATA)
         old_password = request.DATA.get('old_password','')
+        new_password1 = request.DATA.get('new_password1', '')
+        new_password2 = request.DATA.get('new_password2', '')
         user = authenticate(username=username, password=old_password)
         result = {}
         result['errCode'] = 10000
@@ -432,6 +434,11 @@ class PasswordChange(GenericAPIView):
         if user is None:
             result['errCode'] = 10003
             result['errDesc'] = errMsg[10003]
+            return Response(result, status=status.HTTP_200_OK)
+
+        if not old_password or not new_password1 or not new_password2:
+            result['errCode'] = 10018
+            result['errDesc'] = errMsg[10018]
             return Response(result, status=status.HTTP_200_OK)
 
         if serializer.is_valid():
@@ -446,4 +453,5 @@ class PasswordChange(GenericAPIView):
 
         result['errCode'] = 10004
         result['errDesc'] = errMsg[10004]
+        logger.debug(serializer.errors)
         return Response(result, status=status.HTTP_200_OK)

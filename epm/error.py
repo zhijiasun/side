@@ -18,6 +18,7 @@ errMsg = {
         10015:u'无效的业务处理流程',
         10016:u'用户名，密码或邮箱不能为空',
         10017:u'指定的问题不存在',
+        10018:u'提交的字段不能为空',
         }
 
 errMsg_EN = {
@@ -39,4 +40,5 @@ errMsg_EN = {
         10015:'invalid process type',
         10016:'username or password or email can not be NULL',
         10017:'specified question is not existed',
+        10018:'the submit field can not be NULL',
         }
