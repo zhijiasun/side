@@ -285,6 +285,27 @@ def post_result(model, kwargs):
     content = kwargs.get('content', '')
     result = {'errCode':10000, 'errDesc':errMsg[10000]}
 
+    """
+    if not title and not author:
+        return error
+    if request.FILES and content:
+        return error
+    if request.FILES and not content:
+        data = request.FILES['imgfile']
+        default_storage.save(tmp_file, ContentFile(data.read()))
+        obj = model(title=title, author=author)
+        obj.save()
+        objpic = modelpic(pioneer=obj)
+        objpic.pic = 'path'
+        objpic.save()
+    if content and not request.FILES:
+        try:
+            obj = model(title=title, author=author, content=content)
+            obj.save()
+        except Excepiton:
+            result = {'errCode':10004, 'errDesc':errMsg[10004]}
+
+    """
     if title and author and content:
         try:
             obj = model(title=title, author=author, content=content)
