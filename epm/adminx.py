@@ -161,8 +161,8 @@ class BusinessProcessAdmin(object):
 
 
 class QuestionAdmin(object):
-    list_display = ('question_id','question_title','create_time','reply_time','question_author','question_content')
-    list_filter = ('question_id','question_title','create_time','reply_time','question_author','question_content')
+    list_display = ('question_id','question_type_str','create_time','reply_time','question_author','question_content')
+    list_filter = ('question_id', 'create_time','reply_time','question_author','question_content')
     exclude = ('reply_int','create_int')
 
     @filter_hook

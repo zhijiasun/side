@@ -681,6 +681,10 @@ class Question(models.Model):
     def __unicode__(self):
         return self.question_title
 
+    def question_type_str(self):
+        return QUESTION_TYPE[self.question_type][1]
+    question_type_str.short_description=u'问题类型'
+
     def save(self,*args,**kwargs):
         """
         reply_time equals to the time that when the is_published set to true.
