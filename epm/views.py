@@ -279,7 +279,7 @@ def party_info(request,username):
         return Response(result,status = status.HTTP_200_OK)
 
 def get_upload():
-    return 'upload/'+time.strfime("%Y_%m_%d")+"/"
+    return 'upload/'+time.strftime("%Y_%m_%d")+"/"
 
 def post_result(model, modelImage, request):
     title = request.DATA.get('title', '')
@@ -296,30 +296,31 @@ def post_result(model, modelImage, request):
         result['errDesc']=errMsg[10019]
         return result
     if request.FILES and not content and model is not LifeTips:
-        data = request.FILES['imgfile']
-        tmp_file = settings.MEDIA_ROOT+get_upload()+data.name
-        default_storage.save(tmp_file, ContentFile(data.read()))
-        obj = model(title=title, author=author)
-        obj.save()
-        objpic = modelImage(content=obj)
-        objpic.pic = tmp_file
-        objpic.save()
+        try:
+            data = request.FILES['imgfile']
+            tmp_file = settings.MEDIA_ROOT+get_upload()+data.name
+            f = default_storage.save(tmp_file, ContentFile(data.read()))
+            obj = model(title=title, author=author)
+            obj.save()
+            objpic = modelImage(content=obj)
+            objpic.pic = get_upload()+os.path.basename(f)
+            objpic.save()
+        except Exception,e:
+            print str(e)
+            result['errCode']=10020
+            result['errDesc']=errMsg[10020]
+            return result
+    if request.FILES and not content and model is LifeTips:
+        logger.debug('can not post image to lifetips from app')
+        result['errCode']=10019
+        result['errDesc']=errMsg[10019]
+        return result
     if content and not request.FILES:
         try:
             obj = model(title=title, author=author, content=content)
             obj.save()
         except Excepiton:
             result = {'errCode':10004, 'errDesc':errMsg[10004]}
-
-    # if title and author and content:
-    #     try:
-    #         obj = model(title=title, author=author, content=content)
-    #         obj.save()
-    #     except Excepiton:
-    #         result = {'errCode':10004, 'errDesc':errMsg[10004]}
-    # else:
-    #     result['errCode']=10007
-    #     result['errDesc']=errMsg[10007]
 
     return result
 

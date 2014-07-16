@@ -32,3 +32,4 @@ party
 
 curl -X GET http://127.0.0.1:8000/dangjian/laoshanparty/v1/logout/ -H "Authorization: Token xxxxxx"
 curl -X GET http://127.0.0.1:8000/dangjian/laoshanparty/v1/member/ -u username:password
+curl -F "title=fadf" -F "author=fadf" -F "imgfile=@/home/jasonsun/git_repo/side/media/upload/Penguins.jpg" http://135.252.37.114:9981/dangjian/laoshanparty/v1/lifetips

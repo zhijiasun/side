@@ -125,7 +125,7 @@ def return_images(obj):
         base_name = os.path.basename(base_url)
         for i in img_size:
             if not cmp(i,'default'):
-                tmp_dict['objectId']= os.path.join('/'+base_name+'/'+base+'_default'+ext)
+                tmp_dict['objectId']= os.path.join('/'+base_name+'/'+base+ext)
                 tmp_dict['size']=i
                 tmp_dict['type']='original'
             else:
