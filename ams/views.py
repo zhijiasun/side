@@ -36,8 +36,8 @@ def get_version(request):
         if versions:
             vs = VersionManagerSerializer(versions[0])
             result['data']=vs.data
-    except:
-        print('version info not exist')
+    except Exception,e:
+        print str(e)
         logger.debug('version info not exist')
 
     return Response(result, status=status.HTTP_200_OK)

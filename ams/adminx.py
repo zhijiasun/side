@@ -8,8 +8,8 @@ class AppCommentAdmin(object):
 
 
 class VersionManagerAdmin(object):
-    list_display = ('version_code','version_name','description','apk')
-    list_filter = ('version_code','version_name','description','apk')
+    list_display = ('version_code','version_name','description','download_url')
+    list_filter = ('version_code','version_name','description')
 
 site.register(AppComment, AppCommentAdmin)
 site.register(VersionManager, VersionManagerAdmin)

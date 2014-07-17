@@ -9,11 +9,11 @@ class AppCommentSerializer(serializers.ModelSerializer):
 
 
 class VersionManagerSerializer(serializers.ModelSerializer):
-    apk = serializers.SerializerMethodField('apk_url')
+    download_url = serializers.SerializerMethodField('str_download_url')
     class Meta:
         model = VersionManager
-        fields = ['version_code','version_name','description','apk']
+        fields = ['version_code','version_name','description','download_url']
 
-    def apk_url(self,obj):
-        if obj.apk:
-            return apk.url
+    def str_download_url(self,obj):
+        if obj.download_url:
+            return obj.download_url.url
