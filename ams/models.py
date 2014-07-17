@@ -20,7 +20,7 @@ class VersionManager(models.Model):
     version_code = models.CharField(u'版本号',max_length=30)
     version_name = models.CharField(u'版本名称',max_length=30)
     description = models.TextField(u'描述')
-    download_url = models.URLField(u'apk下载地址')
+    apk = models.FileField(upload_to='upload/',verbose_name="apk")
 
     class Meta:
         verbose_name = u'版本管理'
