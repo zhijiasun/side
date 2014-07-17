@@ -302,6 +302,21 @@ def post_result(model, modelImage, request):
             f = default_storage.save(tmp_file, ContentFile(data.read()))
             obj = model(title=title, author=author)
             obj.save()
+            if model is PartyWork:
+                specific_person = request.DATA.get('specific_person',[])
+                all = request.DATA.get('all',False)
+                all_manager = request.DATA.get('all_manager',False)
+                print specific_person,all,all_manager
+                if all: 
+                    obj.specified = 1
+                elif all_manager: 
+                    obj.specified = 2
+                elif specific_person:
+                    for p in specific_person:
+                        m = member.objects.filter(member_name=p)
+                        if m:
+                            obj.specified_person.add(m[0])
+                obj.save()
             objpic = modelImage(content=obj)
             objpic.pic = get_upload()+os.path.basename(f)
             objpic.save()
@@ -319,7 +334,24 @@ def post_result(model, modelImage, request):
         try:
             obj = model(title=title, author=author, content=content)
             obj.save()
-        except Excepiton:
+            if model is PartyWork:
+                specific_person = request.DATA.get('specific_person',[])
+                all = request.DATA.get('all',False)
+                all_manager = request.DATA.get('all_manager',False)
+                print specific_person,all,all_manager
+                if all: 
+                    obj.specified = 1
+                elif all_manager: 
+                    obj.specified = 2
+                elif specific_person:
+                    for p in specific_person:
+                        m = member.objects.filter(member_name=p)
+                        if m:
+                            obj.specified_person.add(m[0])
+                obj.save()
+
+        except Exception,e:
+            print str(e)
             result = {'errCode':10004, 'errDesc':errMsg[10004]}
 
     return result
@@ -421,7 +453,15 @@ def policy_list(request):
         return Response(result, status=status.HTTP_200_OK)
 
 
-@api_view(['GET','POST'])
+@api_view(['POST'])
+def submit_partywork(request):
+    if request.method == 'POST':
+        result = post_result(PartyWork, PartyWorkImage, request)
+        return Response(result, status=status.HTTP_200_OK)
+
+
+
+@api_view(['GET'])
 def partywork_list(request,username):
     """
     support four parameters in request.GET
@@ -480,8 +520,6 @@ def partywork_list(request,username):
                 p = p[offset:offset+maxCount]
                 pa = PartyWorkSerializer(p,many=True)
                 result = {"errCode":10000,"errDesc":errMsg[10000],"data":pa.data}
-    elif request.method == 'POST':
-               print 'Method is POST'
     return Response(result,status = status.HTTP_200_OK)
 
 
