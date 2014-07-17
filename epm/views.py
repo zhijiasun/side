@@ -34,6 +34,7 @@ from epm.error import errMsg
 import csv
 import time
 import logging
+import os,random,base64
 logger = logging.getLogger(__name__)
 
 # Create your views here.
@@ -278,28 +279,39 @@ def party_info(request,username):
 
         return Response(result,status = status.HTTP_200_OK)
 
+
 def get_upload():
     return 'upload/'+time.strftime("%Y_%m_%d")+"/"
+
+
+def get_image_name():
+    p = os.path.join(settings.MEDIA_ROOT,get_upload())
+    if not os.path.isdir(p):
+        os.makedirs(p)
+    return time.strftime("%Y%m%d%H%M%S")+'_'+str(random.randint(0,10000))+".jpg"
 
 def post_result(model, modelImage, request):
     title = request.DATA.get('title', '')
     author = request.DATA.get('author', '')
     content = request.DATA.get('content', '')
+    imgfile = request.DATA.get('imgfile', '')
     result = {'errCode':10000, 'errDesc':errMsg[10000]}
 
     if not title or not author:
         result['errCode']=10007
         result['errDesc']=errMsg[10007]
         return result
-    if request.FILES and content:
+    if imgfile and content:
         result['errCode']=10019
         result['errDesc']=errMsg[10019]
         return result
-    if request.FILES and not content and model is not LifeTips:
+    if imgfile and not content and model is not LifeTips:
         try:
-            data = request.FILES['imgfile']
-            tmp_file = settings.MEDIA_ROOT+get_upload()+data.name
-            f = default_storage.save(tmp_file, ContentFile(data.read()))
+            url = get_upload() + get_image_name()
+            tmp_file = settings.MEDIA_ROOT + url
+            writefile = open(tmp_file,"w")
+            writefile.write(base64.decodestring(imgfile))
+            writefile.close()
             obj = model(title=title, author=author)
             obj.save()
             if model is PartyWork:
@@ -318,19 +330,19 @@ def post_result(model, modelImage, request):
                             obj.specified_person.add(m[0])
                 obj.save()
             objpic = modelImage(content=obj)
-            objpic.pic = get_upload()+os.path.basename(f)
+            objpic.pic = url
             objpic.save()
         except Exception,e:
             print str(e)
             result['errCode']=10020
             result['errDesc']=errMsg[10020]
             return result
-    if request.FILES and not content and model is LifeTips:
+    if imgfile and not content and model is LifeTips:
         logger.debug('can not post image to lifetips from app')
         result['errCode']=10019
         result['errDesc']=errMsg[10019]
         return result
-    if content and not request.FILES:
+    if content and not imgfile:
         try:
             obj = model(title=title, author=author, content=content)
             obj.save()
