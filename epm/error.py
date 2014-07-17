@@ -21,6 +21,7 @@ errMsg = {
         10018:u'提交的字段不能为空',
         10019:u'不能同时提交文本和图片',
         10020:u'图片上传失败',
+        10021:u'指定的公司不存在',
         }
 
 errMsg_EN = {
@@ -45,4 +46,5 @@ errMsg_EN = {
         10018:'the submit field can not be NULL',
         10019:'can not submit text and image at the same time',
         10020:'upload iamge file fail',
+        10021:'specified enterprise is not existed',
         }

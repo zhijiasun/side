@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.test.client import Client
-from epm.models import Pioneer, member, UserProfile, WorkUserProfile,Question
+from epm.models import Pioneer, member, UserProfile, WorkUserProfile,Question, enterprise
 from datetime import datetime
 from django.contrib.auth.models import User
 from django_dynamic_fixture import G
@@ -376,3 +376,39 @@ class MemberVerifyTestCase(TestCase):
 
         self.assertEquals(response.status_code,200)
         self.assertEquals(result['errCode'],10006)
+
+class EnterTestCase(TestCase):
+    def setUp(self):
+        self.clinet = Client()
+        enter1 = G(enterprise,enter_id=1,enter_name="enter1")
+        enter2 = G(enterprise,enter_id=2,enter_name="enter2")
+        enter3 = G(enterprise,enter_id=3,enter_name="enter3")
+        
+
+    def test_get_all_enters(self):
+        response = self.client.get('/dangjian/laoshanparty/v1/enters/')
+        result = json.loads(response.content)
+        self.assertEquals(response.status_code,200)
+        self.assertEquals(result['errCode'],10000)
+        self.assertEquals(len(result['data']),3)
+
+
+    def test_get_concrete_enter(self):
+        response = self.client.get('/dangjian/laoshanparty/v1/enters/1/')
+        result = json.loads(response.content)
+        self.assertEquals(response.status_code,200)
+        self.assertEquals(result['errCode'],10000)
+        self.assertEquals(result['data']['enter_id'],1)
+        self.assertEquals(result['data']['enter_name'],'enter1')
+
+        response = self.client.get('/dangjian/laoshanparty/v1/enters/2/')
+        result = json.loads(response.content)
+        self.assertEquals(response.status_code,200)
+        self.assertEquals(result['errCode'],10000)
+        self.assertEquals(result['data']['enter_id'],2)
+        self.assertEquals(result['data']['enter_name'],'enter2')
+
+        response = self.client.get('/dangjian/laoshanparty/v1/enters/4/')
+        result = json.loads(response.content)
+        self.assertEquals(response.status_code,200)
+        self.assertEquals(result['errCode'],10021)

@@ -20,10 +20,60 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
 		fields = ('url','name')
 
 
-class EnterpriseSerializer(serializers.HyperlinkedModelSerializer):
+class EnterpriseSerializer(serializers.ModelSerializer):
+    enter_address = serializers.SerializerMethodField('str_enter_address')
+    enter_attribute = serializers.SerializerMethodField('str_enter_attribute')
+    industry_type = serializers.SerializerMethodField('str_enter_industry_type')
+    industry_nature = serializers.SerializerMethodField('str_nature')
+    enter_scale = serializers.SerializerMethodField('str_enter_scale')
+    total_assets = serializers.SerializerMethodField('str_total_assets')
+
+    class Meta:
+		model = enterprise
+		fields = ['enter_id', 'enter_name','enter_address', 'enter_attribute', 'industry_type', 'industry_nature','enter_scale', 'total_assets', 'legal_person', 'legal_email', 'enter_email', 'legal_phone', 'fixed_phone']
+
+    def str_enter_address(self, obj):
+        if obj.enter_address:
+            return obj.enter_address
+        else:
+            return ''
+
+    def str_enter_attribute(self, obj):
+        if obj.enter_attribute:
+            return NATURE_CHOICES[obj.enter_attribute-1][1]
+        else:
+            return ''
+
+    def str_enter_industry_type(self, obj):
+        if obj.industry_type:
+            return INDUSTRY_TYPE[obj.enter_attribute-1][1]
+        else:
+            return ''
+
+    def str_nature(self, obj):
+        if obj.industry_nature:
+            return INDUSTRY_NATURE[obj.industry_nature-1][1]
+        else:
+            return ''
+
+    def str_enter_scale(self, obj):
+        if obj.enter_scale:
+            return ENTER_SCALE[obj.enter_scale-1][1]
+        else:
+            return ''
+
+    def str_total_assets(self, obj):
+        if obj.total_assets:
+            return TOTAL_ASSETS[obj.total_assets-1][1]
+        else:
+            return ''
+    
+
+
+class OutlineEnterSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = enterprise
-		fields = ['enter_name','enter_address']
+		fields = ['enter_id', 'enter_name']
 
 
 class PartySerializer(serializers.HyperlinkedModelSerializer):

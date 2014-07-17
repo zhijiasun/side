@@ -621,6 +621,32 @@ def worker_question_list(request):
     return Response(result,status = status.HTTP_200_OK)
 
 
+@api_view(['GET'])
+def enter_list(request):
+    result = {'errCode':10000,'errDesc':errMsg[10000]}
+    if request.method == 'GET':
+        enters = enterprise.objects.all()
+        serializers = OutlineEnterSerializer(enters, many=True)
+        result['data']=serializers.data
+        return Response(result, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+def enter_detail(request,pk):
+    result = {'errCode':10000,'errDesc':errMsg[10000]}
+    if request.method == 'GET':
+        try:
+            enter = enterprise.objects.get(enter_id=pk)
+        except Exception, e:
+            result['errCode']=10021
+            result['errDesc']=errMsg[10021]
+            return Response(result, status=status.HTTP_200_OK)
+
+        es = EnterpriseSerializer(enter)
+        result['data']=es.data
+        return Response(result, status=status.HTTP_200_OK)
+
+
 @api_view(['POST'])
 @csrf_exempt
 def create_user(request):
