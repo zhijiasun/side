@@ -661,12 +661,15 @@ class BusinessProcess(models.Model):
 
 
 class Question(models.Model):
-    question_id = models.AutoField(primary_key=True,auto_created=True)
+    def create_int_default():
+        return int(time.time())
+
+    question_id = models.AutoField(primary_key=True,auto_created=True, verbose_name=u'问题ID')
     question_title = models.CharField(u'标题',max_length=30,default=u'问题咨询')
     create_time = models.DateTimeField(u'创建日期',auto_now_add=True)
     reply_time = models.DateTimeField(u'回复时间', auto_now_add=True)
-    create_int = models.IntegerField(blank=True, null=True)
-    reply_int = models.IntegerField(blank=True, null=True)
+    create_int = models.IntegerField(blank=True, null=True, default=create_int_default())
+    reply_int = models.IntegerField(blank=True, null=True, default=create_int_default())
     # question_author = models.ManyToManyField(User, verbose_name=u'提问者',related_name='user_questions')
     question_author = models.CharField(verbose_name=u'提问者', max_length='40')
     question_type = models.IntegerField(u'问题类型',default=0, choices=QUESTION_TYPE)
@@ -692,9 +695,7 @@ class Question(models.Model):
         """
         if self.is_published:
             self.reply_time = datetime.datetime.now()
-            self.int_date = int(time.time())
-        else:
-            self.create_int = self.reply_int = int(time.time())
+            self.reply_int = int(time.time())
 
         super(Question,self).save(*args,**kwargs)
 
