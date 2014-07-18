@@ -662,7 +662,7 @@ class BusinessProcess(models.Model):
 
 class Question(models.Model):
     def create_int_default():
-        return int(time.time())
+        return int(time.time())#question about this function , why always this is fixed value to create_int
 
     question_id = models.AutoField(primary_key=True,auto_created=True, verbose_name=u'问题ID')
     question_title = models.CharField(u'标题',max_length=30,default=u'问题咨询')

@@ -49,6 +49,7 @@ INSTALLED_APPS = (
     'gunicorn',
     'registration',
     'rest_auth',
+    'south',
 )
 
 MIDDLEWARE_CLASSES = (
