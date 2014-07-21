@@ -320,6 +320,12 @@ class MemberModel(CsvModel):
         has_header = True
 
 
+def delete_user(sender,**kwargs):
+    obj = kwargs['instance']
+    if obj and obj.user:
+        obj.user.delete()
+
+
 class UserProfile(models.Model):
     user = models.ForeignKey(User, unique=True, related_name='app_user', verbose_name=u'用户名')
     # member_info = models.OneToOneField(member,blank=True,null=True)
@@ -337,6 +343,9 @@ class UserProfile(models.Model):
         verbose_name_plural = u'终端用户认证'
 
 
+post_delete.connect(delete_user, sender=UserProfile)
+
+
 class WorkUserProfile(models.Model):
     user = models.ForeignKey(User, unique=True, related_name='worker', verbose_name = u'用户名')
     has_published = models.IntegerField(u'是否具有发布权限', default=0, choices=((0,u'不具有'),(1,u'具有')))
@@ -345,10 +354,6 @@ class WorkUserProfile(models.Model):
         verbose_name = u'工作人员用户'
         verbose_name_plural = u'工作人员用户'
 
-def delete_user(sender,**kwargs):
-    obj = kwargs['instance']
-    if obj and obj.user:
-        obj.user.delete()
 
 post_delete.connect(delete_user, sender=WorkUserProfile)
 
