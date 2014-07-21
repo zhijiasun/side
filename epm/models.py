@@ -20,7 +20,7 @@ from adaptor.fields import *
 import datetime
 import time
 from datetime import date
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, post_delete
 
 telephone_validator = RegexValidator(regex = '^(1(([35][0-9])|(47)|[8][01236789]))\d{8}$'
         ,message = 'Invalid phone number'
@@ -344,6 +344,13 @@ class WorkUserProfile(models.Model):
     class Meta:
         verbose_name = u'工作人员用户'
         verbose_name_plural = u'工作人员用户'
+
+def delete_user(sender,**kwargs):
+    obj = kwargs['instance']
+    if obj and obj.user:
+        obj.user.delete()
+
+post_delete.connect(delete_user, sender=WorkUserProfile)
 
 
 class Pioneer(models.Model):
