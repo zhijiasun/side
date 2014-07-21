@@ -301,18 +301,21 @@ def post_result(model, modelImage, request):
         result['errCode']=10007
         result['errDesc']=errMsg[10007]
         return result
-    if imgfile and content:
+
+    if imgfile and model is LifeTips:
+        logger.debug('can not post image to lifetips from app')
         result['errCode']=10019
         result['errDesc']=errMsg[10019]
         return result
-    if imgfile and not content and model is not LifeTips:
+
+    if imgfile and content and model is not LifeTips:
         try:
             url = get_upload() + get_image_name()
             tmp_file = settings.MEDIA_ROOT + url
             writefile = open(tmp_file,"w")
             writefile.write(base64.decodestring(imgfile))
             writefile.close()
-            obj = model(title=title, author=author)
+            obj = model(title=title, author=author, content=content)
             obj.save()
             if model is PartyWork:
                 specific_person = request.DATA.get('specific_person',[])
@@ -337,11 +340,6 @@ def post_result(model, modelImage, request):
             result['errCode']=10020
             result['errDesc']=errMsg[10020]
             return result
-    if imgfile and not content and model is LifeTips:
-        logger.debug('can not post image to lifetips from app')
-        result['errCode']=10019
-        result['errDesc']=errMsg[10019]
-        return result
     if content and not imgfile:
         try:
             obj = model(title=title, author=author, content=content)
