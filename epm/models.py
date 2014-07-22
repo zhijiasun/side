@@ -114,7 +114,6 @@ class enterprise(models.Model):
 
     def validate_notnull(obj):
         if not obj:
-            print 'aaaa'
             raise ValidationError('related party is NULL')
 
     enter_id = models.AutoField(primary_key=True,auto_created=True)
@@ -220,6 +219,18 @@ class EnterModel(CsvModel):
         has_header = True
 
 
+def validate_idcard(value):
+    message = u'请输入正确长度的身份证号'
+    message2 = u'身份证号内的出生年月不对'
+    if len(value) != 18 and len(value) != 15:
+        raise ValidationError(message)
+    try:
+        date(int(value[6:10]),int(value[10:12]),int(value[12:14]))
+    except Exception, e:
+        print str(e)
+        raise ValidationError(message2)
+
+
 class member(models.Model):
     member_name = models.CharField(verbose_name=u'党员姓名',max_length=80)
     member_gender = models.IntegerField(u'性别',default=0,choices=GENDER)
@@ -238,7 +249,7 @@ class member(models.Model):
     qq = models.CharField(u'QQ号',max_length=15,blank=True,null=True)
     weixin = models.CharField(u'微信号',max_length=20,blank=True,null=True)
     school = models.CharField(u'毕业院校',max_length=80,blank=True,null=True)
-    id_card = models.CharField(u'身份证号',unique=True, max_length=30)
+    id_card = models.CharField(u'身份证号',unique=True, max_length=30, validators=[validate_idcard,])
     member_party = models.ForeignKey(party,verbose_name=u'隶属党组织',blank=True,null=True,on_delete=models.SET_NULL,related_name='membersAtParty')
     member_enter = models.ForeignKey(enterprise,verbose_name=u'隶属企业',blank=True,null=True,on_delete=models.SET_NULL,related_name='membersAtEnter')
 
