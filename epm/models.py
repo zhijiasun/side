@@ -23,7 +23,7 @@ from datetime import date
 from django.db.models.signals import post_save, post_delete
 
 telephone_validator = RegexValidator(regex = '^(1(([35][0-9])|(47)|[8][01236789]))\d{8}$'
-        ,message = 'Invalid phone number'
+        ,message = u'请输入正确的手机号'
         ,code = 'invalid_telephone')
 
 img_size = [(266,300),(400,300),(800,300)]
