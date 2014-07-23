@@ -2,6 +2,7 @@
 from ams.models import AppComment, VersionManager
 from rest_framework import serializers
 
+BASE_URL = 'http://115.28.79.151:8081'
 
 class AppCommentSerializer(serializers.ModelSerializer):
     class Meta:
@@ -16,4 +17,4 @@ class VersionManagerSerializer(serializers.ModelSerializer):
 
     def str_download_url(self,obj):
         if obj.download_url:
-            return obj.download_url.url
+            return BASE_URL + obj.download_url.url
