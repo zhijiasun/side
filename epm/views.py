@@ -613,14 +613,13 @@ def worker_question_list(request):
     """
     if request.method == 'GET':
         result = {"errCode":10000,"errDesc":errMsg[10000],"data":[]}
-        startTime = time.localtime(float(request.GET.get('startTime',0)))
+        # startTime = time.localtime(float(request.GET.get('startTime',0)))
+        startTime = request.GET.get('startTime',0)
         # endTime = time.localtime(float(request.GET.get('endTime',datetime.datetime.now().microsecond)))
-        startTime = datetime.datetime.fromtimestamp(time.mktime(startTime))
         if 'endTime' in request.GET.keys():
-            endTime = time.localtime(float(request.GET.get('endTime')))
-            endTime = datetime.datetime.fromtimestamp(time.mktime(endTime))
+            endTime = request.GET.get('endTime')
         else:
-            endTime = datetime.datetime.now()
+            endTime = int(time.time())
 
         maxCount = int(request.GET.get('maxCount',10))
         offset = int(request.GET.get('offset',0))
@@ -630,7 +629,7 @@ def worker_question_list(request):
         else:
             is_published = True
 
-        p = Question.objects.filter(reply_time__gt=startTime).filter(reply_time__lte=endTime).filter(is_published=is_published)
+        p = Question.objects.filter(reply_int__gt=startTime).filter(reply_int__lte=endTime).filter(is_published=is_published).order_by('-reply_int')
 
         p = p[offset:offset+maxCount]
         pa = QuestionSerializer(p,many=True)
