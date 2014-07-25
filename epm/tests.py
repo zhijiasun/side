@@ -53,6 +53,62 @@ class QuestionTestCase(TestCase):
         self.assertEquals(result1['errCode'],10000)
         self.assertEquals(len(result1['data']),2)
 
+
+class WorkerQuestionTestCase(TestCase):
+    def setUp(self):
+        u = G(User, username='test',password='123456')
+        up = G(UserProfile,user=u)
+        q1 = G(Question, question_title='test question1', question_author='test',question_type=1,question_content='test content1')
+        q2 = G(Question, question_title='test question2', question_author='test',question_type=2,question_content='test content2')
+        q3 = G(Question, question_title='test question3', question_author='test',question_type=3,question_content='test content3')
+
+    def test_get_all_published_questions(self):
+        q4 = G(Question, question_title='test question4', question_author='test',question_type=4,question_content='test content4')
+        q4.is_published = True
+        q4.save()
+        c = Client()
+        response = c.get('/dangjian/lspmanager/v1/questions?is_published=true')
+        result = json.loads(response.content)
+        self.assertEquals(result['errCode'], 10000)
+        self.assertEquals(len(result['data']), 1)
+
+    def test_get_all_unpublished_questions(self):
+        c = Client()
+        response = c.get('/dangjian/lspmanager/v1/questions?is_published=false')
+        result = json.loads(response.content)
+        self.assertEquals(result['errCode'], 10000)
+        self.assertEquals(len(result['data']), 3)
+
+    def test_update_specified_question(self):
+        data = {"question_id":1,"answer":"answer for test question", "published": "false"}
+        c = Client()
+        response = c.post('/dangjian/lspmanager/v1/questions', data)
+        result = json.loads(response.content)
+        self.assertEquals(result['errCode'], 10000)
+
+        response1 = c.get('/dangjian/lspmanager/v1/questions?is_published=false')
+        result1 = json.loads(response1.content)
+        self.assertEquals(result1['errCode'], 10000)
+        self.assertEquals(len(result1['data']), 3)
+
+    def test_publish_specified_question(self):
+        data = {"question_id":1,"answer":"answer for test question", "is_published": "true"}
+        c = Client()
+        response = c.post('/dangjian/lspmanager/v1/questions', data)
+        result = json.loads(response.content)
+        self.assertEquals(result['errCode'], 10000)
+
+        response1 = c.get('/dangjian/lspmanager/v1/questions?is_published=true')
+        result1 = json.loads(response1.content)
+        self.assertEquals(result1['errCode'], 10000)
+        self.assertEquals(len(result1['data']), 1)
+
+        response2 = c.get('/dangjian/lspmanager/v1/questions?is_published=false')
+        result2 = json.loads(response2.content)
+        self.assertEquals(result2['errCode'], 10000)
+        self.assertEquals(len(result2['data']), 2)
+
+
 class PioneerTestCase(TestCase):
     
     def test_pioneer_create(self):

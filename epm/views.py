@@ -644,9 +644,9 @@ def worker_question_list(request):
         result = {"errCode":10000,"errDesc":errMsg[10000]}
         question_id = request.DATA.get('question_id',0)
         answer = request.DATA.get('answer','')
-        published = request.DATA.get('is_published','false')
+        published = request.DATA.get('is_published', False)
 
-        if published == 'false':
+        if not published:
             is_published = False
         else:
             is_published = True
