@@ -27,10 +27,11 @@ class EnterpriseSerializer(serializers.ModelSerializer):
     industry_nature = serializers.SerializerMethodField('str_nature')
     enter_scale = serializers.SerializerMethodField('str_enter_scale')
     total_assets = serializers.SerializerMethodField('str_total_assets')
+    related_party = serializers.SerializerMethodField('str_related_party')
 
     class Meta:
 		model = enterprise
-		fields = ['enter_id', 'enter_name','enter_address', 'enter_attribute', 'industry_type', 'industry_nature','enter_scale', 'total_assets', 'legal_person', 'legal_email', 'enter_email', 'legal_phone', 'fixed_phone']
+		fields = ['enter_id', 'enter_name','enter_address', 'enter_attribute', 'industry_type', 'industry_nature','enter_scale', 'total_assets', 'legal_person', 'legal_email', 'enter_email', 'legal_phone', 'fixed_phone', 'related_party']
 
     def str_enter_address(self, obj):
         if obj.enter_address:
@@ -65,6 +66,12 @@ class EnterpriseSerializer(serializers.ModelSerializer):
     def str_total_assets(self, obj):
         if obj.total_assets:
             return TOTAL_ASSETS[obj.total_assets-1][1]
+        else:
+            return ''
+
+    def str_related_party(self, obj):
+        if obj.related_party:
+            return PARTY_ATTRIBUTE[obj.related_party.party_attribute - 1][1]
         else:
             return ''
     
