@@ -393,7 +393,7 @@ def get_result(model, modelSerializer,kwargs):
 
     a = Pioneer.objects.all()
 
-    obj = model.objects.filter(int_date__gt=startTime).filter(int_date__lte=endTime)
+    obj = model.objects.filter(int_date__gt=startTime).filter(int_date__lte=endTime).order_by('-int_date')
     maxCount = int(kwargs.get('maxCount',10))
     offset = int(kwargs.get('offset',0))
 
