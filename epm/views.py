@@ -614,6 +614,7 @@ def worker_question_list(request):
         result = {"errCode":10000,"errDesc":errMsg[10000],"data":[]}
         # startTime = time.localtime(float(request.GET.get('startTime',0)))
         startTime = request.GET.get('startTime',0)
+        action = request.GET.get('action', 0)
         # endTime = time.localtime(float(request.GET.get('endTime',datetime.datetime.now().microsecond)))
         if 'endTime' in request.GET.keys():
             endTime = request.GET.get('endTime')
@@ -628,7 +629,10 @@ def worker_question_list(request):
         else:
             is_published = True
 
-        p = Question.objects.filter(reply_int__gt=startTime).filter(reply_int__lte=endTime).filter(is_published=is_published).order_by('-reply_int')
+        if action == '2':
+            p = Question.objects.filter(reply_int__gt=startTime).filter(reply_int__lte=endTime).filter(is_published=is_published).order_by('reply_int')
+        else:
+            p = Question.objects.filter(reply_int__gt=startTime).filter(reply_int__lte=endTime).filter(is_published=is_published).order_by('-reply_int')
 
         p = p[offset:offset+maxCount]
         pa = QuestionSerializer(p,many=True)

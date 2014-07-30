@@ -699,7 +699,7 @@ class Question(models.Model):
     question_author = models.CharField(verbose_name=u'提问者', max_length='40')
     question_type = models.IntegerField(u'问题类型',default=0, choices=QUESTION_TYPE)
     question_content = models.TextField(u'咨询内容')
-    question_answer = models.TextField(u'咨询回复',blank=True,null=True,default=u'未回复')
+    question_answer = models.TextField(u'咨询回复',blank=True,null=True)
     is_published = models.BooleanField(u'是否发布',default=False)
     class Meta:
         verbose_name = u'咨询服务'
