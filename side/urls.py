@@ -14,8 +14,8 @@ admin.autodiscover()
 import xadmin
 xadmin.autodiscover()
 
-from xadmin.plugins import xversion
-xversion.register_models()
+# from xadmin.plugins import xversion
+# xversion.register_models()
 
 
 router = routers.DefaultRouter()
