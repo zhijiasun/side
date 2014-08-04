@@ -592,7 +592,7 @@ def question_list(request,username):
             temp_data = []
             for temp in pa.data:
                 if not temp['is_published']:
-                    temp['question_answer'] = u'未回复'
+                    temp['question_answer'] = ''
 
                 temp_data.append(temp)
             result['data']=temp_data
