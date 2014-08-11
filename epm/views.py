@@ -393,10 +393,13 @@ def get_result(model, modelSerializer,kwargs):
     a = Pioneer.objects.all()
 
     obj = model.objects.filter(int_date__gt=startTime).filter(int_date__lte=endTime).order_by('-int_date')
-    maxCount = int(kwargs.get('maxCount',10))
+    maxCount = int(kwargs.get('maxCount',0))
     offset = int(kwargs.get('offset',0))
 
-    obj = obj[offset:offset+maxCount]
+    if maxCount:
+        obj = obj[offset:offset+maxCount]
+    else:
+        obj = obj[offset:]
     objs = modelSerializer(obj,many=True)
     result = {"errCode":10000,"errDesc":errMsg[10000],"data":objs.data}
     # if objs.is_valid():
@@ -514,21 +517,29 @@ def partywork_list(request,username):
 
 
         if objs.exists():
-            startTime = time.localtime(float(request.GET.get('startTime',0)))
-            startTime = datetime.datetime.fromtimestamp(time.mktime(startTime))
+            startTime = request.GET.get('startTime', 0)
+
             if 'endTime' in request.GET.keys():
-                endTime = time.localtime(float(request.GET.get('endTime')))
-                endTime = datetime.datetime.fromtimestamp(time.mktime(endTime))
+                endTime = request.GET.get('endTime')
             else:
-                endTime = datetime.datetime.now()
-                p = objs.filter(date__gt=startTime).filter(date__lte=endTime)
+                endTime = int(time.time())
+            # startTime = time.localtime(float(request.GET.get('startTime',0)))
+            # startTime = datetime.datetime.fromtimestamp(time.mktime(startTime))
+            # if 'endTime' in request.GET.keys():
+            #     endTime = time.localtime(float(request.GET.get('endTime')))
+            #     endTime = datetime.datetime.fromtimestamp(time.mktime(endTime))
+            # else:
+            #     endTime = datetime.datetime.now()
+            p = objs.filter(int_date__gt=startTime).filter(int_date__lte=endTime).order_by('-int_date')
 
-                maxCount = int(request.GET.get('maxCount',10))
-                offset = int(request.GET.get('offset',0))
-
+            maxCount = int(request.GET.get('maxCount',0))
+            offset = int(request.GET.get('offset',0))
+            if maxCount:
                 p = p[offset:offset+maxCount]
-                pa = PartyWorkSerializer(p,many=True)
-                result = {"errCode":10000,"errDesc":errMsg[10000],"data":pa.data}
+            else:
+                p = p[offset:]
+            pa = PartyWorkSerializer(p,many=True)
+            result = {"errCode":10000,"errDesc":errMsg[10000],"data":pa.data}
     return Response(result,status = status.HTTP_200_OK)
 
 
