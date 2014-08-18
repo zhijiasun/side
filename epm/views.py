@@ -345,10 +345,23 @@ def post_result(model, modelImage, request):
             obj.save()
             if model is PartyWork:
                 specific_person = request.DATA.get('specific_person',[])
-                all = request.DATA.get('all',False)
+                if type(specific_person) is unicode:
+                    specific_person = specific_person.split(',')
+                all_person = request.DATA.get('all',False)
                 all_manager = request.DATA.get('all_manager',False)
-                print specific_person,all,all_manager
-                if all: 
+                if type(all_person) is unicode:
+                    if str(all_person) is '1':
+                        all_person = True
+                    elif str(all_person) is '0':
+                        all_person = False
+
+                if type(all_manager) is unicode:
+                    if str(all_manager) is '1':
+                        all_manager = True
+                    elif str(all_manager) is '0':
+                        all_manager = False
+
+                if all_person: 
                     obj.specified = 1
                 elif all_manager: 
                     obj.specified = 2
@@ -390,9 +403,8 @@ def get_result(model, modelSerializer,kwargs):
     else:
         endTime = int(time.time())
 
-    a = Pioneer.objects.all()
 
-    obj = model.objects.filter(int_date__gt=startTime).filter(int_date__lte=endTime).order_by('-int_date')
+    obj = model.objects.filter(int_date__gt=startTime).filter(int_date__lt=endTime).order_by('-int_date')
     maxCount = int(kwargs.get('maxCount',0))
     offset = int(kwargs.get('offset',0))
 
@@ -530,7 +542,7 @@ def partywork_list(request,username):
             #     endTime = datetime.datetime.fromtimestamp(time.mktime(endTime))
             # else:
             #     endTime = datetime.datetime.now()
-            p = objs.filter(int_date__gt=startTime).filter(int_date__lte=endTime).order_by('-int_date')
+            p = objs.filter(int_date__gt=startTime).filter(int_date__lt=endTime).order_by('-int_date')
 
             maxCount = int(request.GET.get('maxCount',0))
             offset = int(request.GET.get('offset',0))
