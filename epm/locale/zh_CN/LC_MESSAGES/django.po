@@ -39,3 +39,6 @@ msgstr "搜索 %s"
 
 msgid "Search%s"
 msgstr "搜索 %s"
+
+msgid "Import"
+msgstr "导入"
