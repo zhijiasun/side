@@ -38,7 +38,10 @@ def get_version(request):
         versions = VersionManager.objects.filter(specified_app=0).order_by('-version_id')
         if versions:
             vs = VersionManagerSerializer(versions[0])
+            #should alwasy return the fixed URL address
+            vs.data['download_url'] = BASE_URL + '/media/upload/LSPO_new.apk'
             result['data']=vs.data
+            shutil.copy(settings.MEDIA_ROOT+versions[0].download_url.name,apk_file)
     except Exception,e:
         print str(e)
         logger.debug('version info not exist')
@@ -53,7 +56,10 @@ def get_worker_version(request):
         versions = VersionManager.objects.filter(specified_app=1).order_by('-version_id')
         if versions:
             vs = VersionManagerSerializer(versions[0])
+            #should alwasy return the fixed URL address
+            vs.data['download_url'] = BASE_URL + '/media/upload/LSPM_new.apk'
             result['data']=vs.data
+            shutil.copy(settings.MEDIA_ROOT+versions[0].download_url.name,worker_apk_file)
     except:
         print('version info not exist')
         logger.debug('version info not exist')
