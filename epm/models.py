@@ -23,7 +23,8 @@ import time
 from datetime import date
 from django.db.models.signals import post_save, post_delete
 
-telephone_validator = RegexValidator(regex = '^(1(([35][0-9])|(47)|[8][01236789]))\d{8}$'
+#telephone number validator:13x,15x,18X
+telephone_validator = RegexValidator(regex = '^(1(([358][0-9])|(47)|[8][01236789]))\d{8}$'
         ,message = u'请输入正确的手机号'
         ,code = 'invalid_telephone')
 
@@ -153,16 +154,16 @@ class enterprise(models.Model):
             raise ValidationError('related party is NULL')
 
     enter_id = models.AutoField(primary_key=True,auto_created=True)
-    enter_name = models.CharField(u'企业名称',max_length=50)
-    enter_address = models.CharField(u'企业地址',max_length=300)
+    enter_name = models.CharField(u'单位名称',max_length=50)
+    enter_address = models.CharField(u'单位地址',max_length=300)
     enter_attribute = models.IntegerField(u'单位属性',default=1,choices=NATURE_CHOICES,blank=True)
     industry_type = models.IntegerField(u'行业类别',default=1,choices=INDUSTRY_TYPE)
-    industry_nature = models.IntegerField(u'企业类型',default=1,choices=INDUSTRY_NATURE,blank=True)
-    enter_scale = models.IntegerField(u'企业规模',default=1,choices=ENTER_SCALE,blank=True)
+    industry_nature = models.IntegerField(u'单位类型',default=1,choices=INDUSTRY_NATURE,blank=True)
+    enter_scale = models.IntegerField(u'单位规模',default=1,choices=ENTER_SCALE,blank=True)
     total_assets = models.IntegerField(u'资产总额',default=1,choices=TOTAL_ASSETS,blank=True)
     legal_person = models.CharField(u'法人姓名',max_length=50)
     legal_email = models.EmailField(u'法人邮箱')
-    enter_email = models.EmailField(u'企业邮箱', blank=True)
+    enter_email = models.EmailField(u'单位邮箱', blank=True)
     legal_phone = models.CharField(u'负责人手机',max_length=50,validators=[telephone_validator,])
     fixed_phone = models.CharField(u'固定电话',max_length=50,blank=True)
     """
@@ -180,8 +181,8 @@ class enterprise(models.Model):
     related_party = models.ForeignKey(party,verbose_name = u'党组织情况',blank=True,null=True,on_delete=models.SET_NULL,related_name='enters')
 
     class Meta:
-        verbose_name = u'企业信息'
-        verbose_name_plural = u'企业信息'
+        verbose_name = u'单位信息'
+        verbose_name_plural = u'单位信息'
 
 
     def __unicode__(self):
@@ -338,6 +339,13 @@ class MemberModel(CsvModel):
                 return attribute[0]
         return 0
 
+
+    def change_member_phone(value):
+        if type(value) is str and value:
+            return value[0:11]
+        else:
+            return value
+
     member_name = CharField()
     member_gender = IntegerField(prepare=transform_member_gender)
     member_nation = IntegerField(prepare=transform_member_nation)
@@ -347,15 +355,15 @@ class MemberModel(CsvModel):
     join_party_time = DateField(format="%Y/%m/%d")
     formal_member_time = DateField(format="%Y/%m/%d")
     now_party_time = DateField(format="%Y/%m/%d")
-    birth_address = CharField()
-    home_address = CharField()
-    living_address = CharField()
-    member_phone = CharField()
-    member_email = CharField()
-    qq = CharField()
-    weixin = CharField()
-    school = CharField()
-    id_card = CharField()
+    birth_address = CharField(null=True,default='')
+    home_address = CharField(null=True,default='')
+    living_address = CharField(null=True,default='')
+    member_phone = CharField(null=True,default='',prepare=change_member_phone)
+    member_email = CharField(null=True,default='')
+    qq = CharField(null=True,default='')
+    weixin = CharField(null=True,default='')
+    school = CharField(null=True,default='')
+    id_card = CharField(null=True,default='')
     member_party = DjangoModelField(party, pk='party_name')### here we can add default parameter
     member_enter = DjangoModelField(enterprise, pk='enter_name')### here we can add default parameter
     # member_party = models.ForeignKey(party,verbose_name=u'隶属党组织',blank=True,null=True,on_delete=models.SET_NULL,related_name='membersAtParty')
