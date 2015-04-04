@@ -1,8 +1,8 @@
 #coding:utf-8
 from ams.models import AppComment, VersionManager
 from rest_framework import serializers
+from side.settings import BASE_URL
 
-BASE_URL = 'http://115.28.79.151:8081'
 
 class AppCommentSerializer(serializers.ModelSerializer):
     class Meta:

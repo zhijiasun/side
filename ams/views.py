@@ -4,11 +4,14 @@ from rest_framework import status
 from ams.models import AppComment, VersionManager
 from ams.serializers import VersionManagerSerializer
 from epm.error import errMsg
-
+from side.settings import BASE_URL, MEDIA_ROOT
+import shutil
 import logging
 logger = logging.getLogger(__name__)
 # Create your views here.
 
+apk_file = MEDIA_ROOT + 'upload/LSPO_new.apk'
+worker_apk_file = MEDIA_ROOT + 'upload/LSPM_new.apk'
 
 @api_view(['POST'])
 def submit_comment(request):
