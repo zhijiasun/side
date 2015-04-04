@@ -719,6 +719,21 @@ def enter_detail(request,pk):
         result['data']=es.data
         return Response(result, status=status.HTTP_200_OK)
 
+@api_view(['GET'])
+def member_detail(request,pk):
+    result = {'errCode':10000,'errDesc':errMsg[10000]}
+    if request.method == 'GET':
+        try:
+            enter = enterprise.objects.get(enter_id=pk)
+        except Exception, e:
+            result['errCode']=10021
+            result['errDesc']=errMsg[10021]
+            return Response(result, status=status.HTTP_200_OK)
+        members = member.objects.filter(member_enter=enter)
+        ms = OutlineMemberSerializer(members, many=True)
+        result['data']=ms.data                                                                                                   
+        return Response(result, status=status.HTTP_200_OK)
+
 
 @api_view(['POST'])
 @csrf_exempt

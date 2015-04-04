@@ -7,6 +7,13 @@ GENDER = (
 EDUCATION = (
         (0,u'本科'),
         (1,u'研究生'),
+        (2,u'普通高中'),
+        (3,u'中等专科'),
+        (4,u'大专'),
+        (5,u'博士研究生'),
+        (6,u'初中'),
+        (7,u'小学'),
+        (8,u'职业高中'),
         )
 VERIFY_PROCESS = (
         (0,u'未申请认证'),
@@ -24,7 +31,7 @@ QUESTION_TYPE = (
 PROCESS_TYPE = (
         ('join',u'我要入党'),
         ('setup',u'我要成立党支部'),
-        ('record',u'民主生活评议备案'),
+        ('record',u'党组织关系转移'),
         )
 PARTY_ATTRIBUTE = (
         (1,u'党委'),        
