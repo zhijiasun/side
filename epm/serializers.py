@@ -27,11 +27,18 @@ class EnterpriseSerializer(serializers.ModelSerializer):
     industry_nature = serializers.SerializerMethodField('str_nature')
     enter_scale = serializers.SerializerMethodField('str_enter_scale')
     total_assets = serializers.SerializerMethodField('str_total_assets')
+    member_num = serializers.SerializerMethodField('int_member_number')
     related_party = serializers.SerializerMethodField('str_related_party')
 
     class Meta:
 		model = enterprise
-		fields = ['enter_id', 'enter_name','enter_address', 'enter_attribute', 'industry_type', 'industry_nature','enter_scale', 'total_assets', 'legal_person', 'legal_email', 'enter_email', 'legal_phone', 'fixed_phone', 'related_party']
+		fields = ['enter_id', 'enter_name','enter_address', 'enter_attribute', 'industry_type', 'industry_nature','enter_scale', 'total_assets', 'legal_person', 'legal_email', 'enter_email', 'legal_phone', 'fixed_phone', 'related_party','member_num']
+
+    def int_member_number(self, obj):
+        if obj:
+            return len(member.objects.filter(member_enter=obj))
+        else:
+            return 0
 
     def str_enter_address(self, obj):
         if obj.enter_address:
@@ -159,6 +166,13 @@ class MemberSerializer(serializers.HyperlinkedModelSerializer):
         else:
             return ''
 
+
+class OutlineMemberSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = member
+        fields = ['member_name', 'member_gender']
+
+
 # class TestSerializer(serializers.HyperlinkedModelSerializer):
 #     class Meta:
 #         model = Test
@@ -167,7 +181,7 @@ class MemberSerializer(serializers.HyperlinkedModelSerializer):
 
 # img_size = ['default',(148,111),(400,300),(640,480)]
 img_size = ['default',(266,300),(400,300),(800,300)]
-BASE_DL = 'http://115.28.79.151:8081/media/upload'
+BASE_DL = settings.BASE_URL + '/media/upload'
 
 def return_images(obj):
     images = obj.img_list.all()
